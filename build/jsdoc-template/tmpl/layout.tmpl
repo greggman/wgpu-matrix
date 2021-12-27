@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title><?js= title ?> - Documentation</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <link rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav>
+    <?js= this.nav ?>
+</nav>
+
+<div id="main">
+    <?js if (title != 'Home') { ?>
+    <h1 class="page-title"><?js= title ?></h1>
+    <?js } ?>
+
+    <?js= content ?>
+</div>
+
+<br class="clear">
+
+<script src="scripts/prep.js"></script>
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>
