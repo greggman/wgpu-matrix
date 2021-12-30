@@ -1,7 +1,7 @@
 :root {
   --main-bg-color: white;
   --main-fg-color: black;
-  --a-fg-color: #0176b1;
+  --a-fg-color: #005c8a;
   --h-fg-color: #black;
   --code-bg-color: #f4f4f4;
   --params-head-fg: #666;
@@ -256,8 +256,7 @@ nav {
   position: fixed;
   height: 100%;
   padding: 10px;
-  border-right: 1px solid #eee;
-  background: vac(--nav-bg-color);
+  background: var(--nav-bg-color);
 }
 
 nav ul {

@@ -54,7 +54,7 @@
 <pre class="prettyprint source lang-js"><code>import {
   vec3,
   mat4,
-} from 'https://wgpu-matrix.org/dist/1.x/wgpu-matrix.module.js';
+} from 'https://wgpu-matrix.org/dist/0.x/wgpu-matrix.module.js';
 
 const fov = 60 * Math.PI / 180
 const aspect = width / height;
@@ -72,20 +72,20 @@ const view = mat4.inverse(camera);
 <p>Note: for translation, rotation, and scaling there are 2 versions<br>
 of each function. One generates a translation, rotation, or scaling matrix.<br>
 The other translates, rotates, or scales a matrix.</p>
-<pre class="prettyprint source lang-js"><code>const t = mat4.translation([1, 2, 3]);    // generates a translation matrix
-const r = mat4.rotationX(Math.PI * 0.5);  // generates a rotation matrix
-const s = mat4.scaling([1, 2, 3]);        // generates a scaling matrix
+<pre class="prettyprint source lang-js"><code>const t = mat4.translation([1, 2, 3]);    // a translation matrix
+const r = mat4.rotationX(Math.PI * 0.5);  // a rotation matrix
+const s = mat4.scaling([1, 2, 3]);        // a scaling matrix
 </code></pre>
-<pre class="prettyprint source lang-js"><code>const m = mat4.create();
-const t = mat4.translate(m, [1, 2, 3]);    // generates m translated
-const r = mat4.rotateX(m, Math.PI * 0.5);  // generates m rotated
-const s = mat4.scale(m, [1, 2, 3]);        // generates m scaled
+<pre class="prettyprint source lang-js"><code>const m = mat4.identity();
+const t = mat4.translate(m, [1, 2, 3]);    // m * translation([1, 2, 3])
+const r = mat4.rotateX(m, Math.PI * 0.5);  // m * rotationX(Math.PI * 0.5)
+const s = mat4.scale(m, [1, 2, 3]);        // m * scaling([1, 2, 3])
 </code></pre>
 <p>Functions take an optional destination to hold the result.</p>
-<pre class="prettyprint source lang-js"><code>const m = mat4.create();
-mat4.translate(m, [1, 2, 3], m);    // translates m
-mat4.rotateX(m, Math.PI * 0.5, m);  // rotates m
-mat4.scale(m, [1, 2, 3], m);        // scales m
+<pre class="prettyprint source lang-js"><code>const m = mat4.identity();
+mat4.translate(m, [1, 2, 3], m);    // m = m * translation([1, 2, 3])
+mat4.rotateX(m, Math.PI * 0.5, m);  // m = m * rotationX(Math.PI * 0.5)
+mat4.scale(m, [1, 2, 3], m);        // m = m * scaling([1, 2, 3])
 </code></pre>
 <h2>Download</h2>
 <ul>
