@@ -11,7 +11,7 @@ Fast 3d math library for webgpu
 import {
   vec3,
   mat4,
-} from 'https://wgpu-matrix.org/dist/1.x/wgpu-matrix.module.js';
+} from 'https://wgpu-matrix.org/dist/0.x/wgpu-matrix.module.js';
 
 const fov = 60 * Math.PI / 180
 const aspect = width / height;
