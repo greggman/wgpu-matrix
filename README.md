@@ -53,6 +53,22 @@ mat4.rotateX(m, Math.PI * 0.5, m);  // m = m * rotationX(Math.PI * 0.5)
 mat4.scale(m, [1, 2, 3], m);        // m = m * scaling([1, 2, 3])
 ```
 
+or via npm
+
+```
+npm install --save wgpu-matrix
+```
+
+then using a build process
+
+```
+import {vec3, mat3} from 'wgpu-matrix';
+
+... etc ...
+```
+
+[Example](https://codesandbox.io/s/cocky-bogdan-bwq5x?file=/src/index.js)
+
 ## Download
 
 * [zip](https://github.com/greggman/wgpu-matrix/zipball/main)
@@ -97,7 +113,7 @@ struct Foo {
 };
 ```
 
-then bar[0] is at offset 0, bar[1] at byte offset 16, bar[2] at byte offset 32.
+then bar[0] is at byte offset 0, bar[1] at byte offset 16, bar[2] at byte offset 32.
 
 See [the WGSL spec on alignment and size](https://www.w3.org/TR/WGSL/#alignment-and-size).
 
@@ -119,9 +135,9 @@ To put it another way, the translation vector is in elements 12, 13, 14
 
 ```js
 [
-  xx, xy, xz, 0,  // <- xaxis
-  yx, yy, yz, 0,  // <- yaxis
-  zx, zy, zz, 0,  // <- zaxis
+  xx, xy, xz, 0,  // <- x-axis
+  yx, yy, yz, 0,  // <- y-axis
+  zx, zy, zz, 0,  // <- z-axis
   tx, ty, tz, 1,  // <- translation
 ]
 ```
@@ -154,7 +170,10 @@ mat4.target(eye, target, up, camera);
 mat4.inverse(camera, view);
 ```
 
-For me, most of the stuff I do in WebGPU, the supposed performance I might loss from using the convenient style is so small as to be unmeasurable. I'd prefer to be stay convenient and then, if and only if I find a performance issue, then I might bother to switch to the performant style.
+For me, most of the stuff I do in WebGPU, the supposed performance I might lose
+from using the convenient style is so small as to be unmeasurable. I'd prefer to
+stay convenient and then, if and only if I find a performance issue, then I
+might bother to switch to the performant style.
 
 As the saying goes [*premature optimization is the root of all evil.*](https://softwareengineering.stackexchange.com/questions/80084/is-premature-optimization-really-the-root-of-all-evil) 😉
 

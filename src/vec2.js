@@ -106,6 +106,7 @@ export function create(x, y) {
 
 /**
  * Creates a Vec2; may be called with x, y, z to set initial values. (same as create)
+ * @function
  * @param {number} [x] Initial x value.
  * @param {number} [y] Initial y value.
  * @return {Vec2} the created vector
