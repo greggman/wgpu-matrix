@@ -1,4 +1,4 @@
-/* @license wgpu-matrix.js 0.0.1 Copyright (c) 2022, Gregg Tavares All Rights Reserved.
+/* @license wgpu-matrix.js 0.0.2 Copyright (c) 2022, Gregg Tavares All Rights Reserved.
 Available via the MIT license.
 see: http://github.com/greggman/wgpu-matrix.js for details */
 /*
@@ -29,6 +29,1626 @@ see: http://github.com/greggman/wgpu-matrix.js for details */
 
 
 let EPSILON = 0.000001;
+
+/**
+ * Set the value for EPSILON for various checks
+ * @param {number} v Value to use for EPSILON.
+ * @returns {number} previous value of EPSILON;
+ */
+function setEpsilon(v) {
+  const old = EPSILON;
+  EPSILON = v;
+  return old;
+}
+
+/**
+ * Convert degrees to radians
+ * @param {number} degrees Angle in degrees
+ * @returns {number} angle converted to radians
+ */
+function degToRad(degrees) {
+  return degrees * Math.PI / 180;
+}
+
+/**
+ * Convert radians to degrees
+ * @param {number} radians Angle in radians
+ * @returns {number} angle converted to degrees
+ */
+function radToDeg(radians) {
+  return radians * 180 / Math.PI;
+}
+
+/**
+ * Lerps between a and b via t
+ * @param {number} a starting value
+ * @param {number} b ending value
+ * @param {number} t value where 0 = a and 1 = b
+ * @returns {number} a + (b - a) * t
+ */
+function lerp$3(a, b, t) {
+  return a + (b - a) * t;
+}
+
+/**
+ * Compute the opposite of lerp. Given a and b and a value between
+ * a and b returns a value between 0 and 1. 0 if a, 1 if b.
+ * Note: no clamping is done.
+ * @param {number} a start value
+ * @param {number} b end value
+ * @param {number} v value between a and b
+ * @returns {number} (v - a) / (b - a)
+ */
+function inverseLerp(a, b, v) {
+  const d = b - a;
+  return (Math.abs(b - a) < EPSILON)
+     ? a
+     : (v - a) / d;
+}
+
+/**
+ * Compute the euclidean modulo
+ *
+ * ```
+ * // table for n / 3
+ * -5, -4, -3, -2, -1,  0,  1,  2,  3,  4,  5   <- n
+ * ------------------------------------
+ * -2  -1  -0  -2  -1   0,  1,  2,  0,  1,  2   <- n % 3
+ *  1   2   0   1   2   0,  1,  2,  0,  1,  2   <- euclideanModule(n, 3)
+ * ```
+ *
+ * @param {number} n dividend
+ * @param {number} m divisor
+ * @returns {number} the euclidean modulo of n / m
+ */
+function euclideanModulo(n, m) {
+  return ((n % m) + m) % m;
+}
+
+var utils = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  get EPSILON () { return EPSILON; },
+  setEpsilon: setEpsilon,
+  degToRad: degToRad,
+  radToDeg: radToDeg,
+  lerp: lerp$3,
+  inverseLerp: inverseLerp,
+  euclideanModulo: euclideanModulo
+});
+
+/*
+ * Copyright 2022 Gregg Tavares
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
+
+/**
+ *
+ * Vec2 math functions.
+ *
+ * Almost all functions take an optional `dst` argument. If it is not passed in the
+ * functions will create a new Vec2. In other words you can do this
+ *
+ *     const v = vec2.cross(v1, v2);  // Creates a new Vec2 with the cross product of v1 x v2.
+ *
+ * or
+ *
+ *     const v = vec2.create();
+ *     vec2.cross(v1, v2, v);  // Puts the cross product of v1 x v2 in v
+ *
+ * The first style is often easier but depending on where it's used it generates garbage where
+ * as there is almost never allocation with the second style.
+ *
+ * It is always safe to pass any vector as the destination. So for example
+ *
+ *     vec2.cross(v1, v2, v1);  // Puts the cross product of v1 x v2 in v1
+ *
+ * @module vec2
+ */
+
+let VecType$2 = Float32Array;
+
+/**
+ * A JavaScript array with 2 values, Float32Array with 2 values, or a Float64Array with 2 values.
+ * When created by the library will create the default type which is `Float32Array`
+ * but can be set by calling {@link vec2.setDefaultType}.
+ * @typedef {(number[]|Float32Array|Float64Array)} Vec2
+ */
+
+/**
+ * Sets the type this library creates for a Vec2
+ * @param {constructor} ctor the constructor for the type. Either `Float32Array`, 'Float64Array', or `Array`
+ * @return {constructor} previous constructor for Vec2
+ */
+function setDefaultType$5(ctor) {
+  const oldType = VecType$2;
+  VecType$2 = ctor;
+  return oldType;
+}
+
+/**
+ * Creates a Vec2; may be called with x, y, z to set initial values.
+ *
+ * Note: Since passing in a raw JavaScript array
+ * is valid in all circumstances, if you want to
+ * force a JavaScript array into a Vec2's specified type
+ * it would be faster to use
+ *
+ * ```
+ * const v = vec2.clone(someJSArray);
+ * ```
+ *
+ * Note: a consequence of the implementation is if your Vec2Type = `Array`
+ * instead of `Float32Array` or `Float64Array` then any values you
+ * don't pass in will be undefined. Usually this is not an issue since
+ * (a) using `Array` is rare and (b) using `vec2.create` is usually used
+ * to create a Vec2 to be filled out as in
+ *
+ * ```
+ * const sum = vec2.create();
+ * vec2.add(v1, v2, sum);
+ * ```
+ *
+ * @param {number} [x] Initial x value.
+ * @param {number} [y] Initial y value.
+ * @return {Vec2} the created vector
+ */
+function create$4(x, y) {
+  const dst = new VecType$2(2);
+  if (x !== undefined) {
+    dst[0] = x;
+    if (y !== undefined) {
+      dst[1] = y;
+    }
+  }
+  return dst;
+}
+
+/**
+ * Creates a Vec2; may be called with x, y, z to set initial values. (same as create)
+ * @function
+ * @param {number} [x] Initial x value.
+ * @param {number} [y] Initial y value.
+ * @return {Vec2} the created vector
+ */
+const fromValues$2 = create$4;
+
+/**
+ * Applies Math.ceil to each element of vector
+ * @param {Vec2} v Operand vector.
+ * @param {Vec2} [dst] vector to hold result. If not new one is created.
+ * @return {Vec2} A vector that is the ceil of each element of v.
+ */
+function ceil$2(v, dst) {
+  dst = dst || new VecType$2(2);
+
+  dst[0] = Math.ceil(v[0]);
+  dst[1] = Math.ceil(v[1]);
+
+  return dst;
+}
+
+/**
+ * Applies Math.floor to each element of vector
+ * @param {Vec2} v Operand vector.
+ * @param {Vec2} [dst] vector to hold result. If not new one is created.
+ * @return {Vec2} A vector that is the floor of each element of v.
+ */
+function floor$2(v, dst) {
+  dst = dst || new VecType$2(2);
+
+  dst[0] = Math.floor(v[0]);
+  dst[1] = Math.floor(v[1]);
+
+  return dst;
+}
+
+/**
+ * Applies Math.round to each element of vector
+ * @param {Vec2} v Operand vector.
+ * @param {Vec2} [dst] vector to hold result. If not new one is created.
+ * @return {Vec2} A vector that is the round of each element of v.
+ */
+function round$2(v, dst) {
+  dst = dst || new VecType$2(2);
+
+  dst[0] = Math.round(v[0]);
+  dst[1] = Math.round(v[1]);
+
+  return dst;
+}
+
+/**
+ * Clamp each element of vector between min and max
+ * @param {Vec2} v Operand vector.
+ * @param {number} [max] Min value, default 0
+ * @param {number} [min] Max value, default 1
+ * @param {Vec2} [dst] vector to hold result. If not new one is created.
+ * @return {Vec2} A vector that the clamped value of each element of v.
+ */
+function clamp$2(v, min = 0, max = 1, dst) {
+  dst = dst || new VecType$2(2);
+
+  dst[0] = Math.min(max, Math.max(min, v[0]));
+  dst[1] = Math.min(max, Math.max(min, v[1]));
+
+  return dst;
+}
+
+/**
+ * Adds two vectors; assumes a and b have the same dimension.
+ * @param {Vec2} a Operand vector.
+ * @param {Vec2} b Operand vector.
+ * @param {Vec2} [dst] vector to hold result. If not new one is created.
+ * @return {Vec2} A vector that is the sum of a and b.
+ */
+function add$2(a, b, dst) {
+  dst = dst || new VecType$2(2);
+
+  dst[0] = a[0] + b[0];
+  dst[1] = a[1] + b[1];
+
+  return dst;
+}
+
+/**
+ * Adds two vectors, scaling the 2nd; assumes a and b have the same dimension.
+ * @param {Vec2} a Operand vector.
+ * @param {Vec2} b Operand vector.
+ * @param {number} scale Amount to scale b
+ * @param {Vec2} [dst] vector to hold result. If not new one is created.
+ * @return {Vec2} A vector that is the sum of a + b * scale.
+ */
+function addScaled$2(a, b, scale, dst) {
+  dst = dst || new VecType$2(2);
+
+  dst[0] = a[0] + b[0] * scale;
+  dst[1] = a[1] + b[1] * scale;
+
+  return dst;
+}
+
+/**
+ * Returns the angle in radians between two vectors.
+ * @param {Vec2} a Operand vector.
+ * @param {Vec2} b Operand vector.
+ * @return {number} The angle in radians between the 2 vectors.
+ */
+function angle$1(a, b) {
+  const ax = a[0];
+  const ay = a[1];
+  const bx = a[0];
+  const by = a[1];
+  const mag1 = Math.sqrt(ax * ax + ay * ay);
+  const mag2 = Math.sqrt(bx * bx + by * by);
+  const mag = mag1 * mag2;
+  const cosine = mag && dot$2(a, b) / mag;
+  return Math.acos(cosine);
+}
+
+/**
+ * Subtracts two vectors.
+ * @param {Vec2} a Operand vector.
+ * @param {Vec2} b Operand vector.
+ * @param {Vec2} [dst] vector to hold result. If not new one is created.
+ * @return {Vec2} A vector that is the difference of a and b.
+ */
+function subtract$2(a, b, dst) {
+  dst = dst || new VecType$2(2);
+
+  dst[0] = a[0] - b[0];
+  dst[1] = a[1] - b[1];
+
+  return dst;
+}
+
+/**
+ * Subtracts two vectors.
+ * @function
+ * @param {Vec2} a Operand vector.
+ * @param {Vec2} b Operand vector.
+ * @param {Vec2} [dst] vector to hold result. If not new one is created.
+ * @return {Vec2} A vector that is the difference of a and b.
+ */
+const sub$2 = subtract$2;
+
+/**
+ * Check if 2 vectors are approximately equal
+ * @param {Vec2} a Operand vector.
+ * @param {Vec2} b Operand vector.
+ * @returns {bool} true if vectors are approximately equal
+ */
+function equalsApproximately$4(a, b) {
+  return Math.abs(a[0] - b[0]) < EPSILON &&
+         Math.abs(a[1] - b[1]) < EPSILON;
+}
+
+/**
+ * Check if 2 vectors are exactly equal
+ * @param {Vec2} a Operand vector.
+ * @param {Vec2} b Operand vector.
+ * @returns {bool} true if vectors are exactly equal
+ */
+function equals$4(a, b) {
+  return a[0] === b[0] && a[1] === b[1];
+}
+
+/**
+ * Performs linear interpolation on two vectors.
+ * Given vectors a and b and interpolation coefficient t, returns
+ * a + t * (b - a).
+ * @param {Vec2} a Operand vector.
+ * @param {Vec2} b Operand vector.
+ * @param {number} t Interpolation coefficient.
+ * @param {Vec2} [dst] vector to hold result. If not new one is created.
+ * @return {Vec2} The linear interpolated result.
+ */
+function lerp$2(a, b, t, dst) {
+  dst = dst || new VecType$2(2);
+
+  dst[0] = a[0] + t * (b[0] - a[0]);
+  dst[1] = a[1] + t * (b[1] - a[1]);
+
+  return dst;
+}
+
+/**
+ * Performs linear interpolation on two vectors.
+ * Given vectors a and b and interpolation coefficient vector t, returns
+ * a + t * (b - a).
+ * @param {Vec2} a Operand vector.
+ * @param {Vec2} b Operand vector.
+ * @param {Vec2} t Interpolation coefficients vector.
+ * @param {Vec2} [dst] vector to hold result. If not new one is created.
+ * @return {Vec2} the linear interpolated result.
+ */
+function lerpV$2(a, b, t, dst) {
+  dst = dst || new VecType$2(2);
+
+  dst[0] = a[0] + t[0] * (b[0] - a[0]);
+  dst[1] = a[1] + t[1] * (b[1] - a[1]);
+
+  return dst;
+}
+
+/**
+ * Return max values of two vectors.
+ * Given vectors a and b returns
+ * [max(a[0], b[0]), max(a[1], b[1]), max(a[2], b[2])].
+ * @param {Vec2} a Operand vector.
+ * @param {Vec2} b Operand vector.
+ * @param {Vec2} [dst] vector to hold result. If not new one is created.
+ * @return {Vec2} The max components vector.
+ */
+function max$2(a, b, dst) {
+  dst = dst || new VecType$2(2);
+
+  dst[0] = Math.max(a[0], b[0]);
+  dst[1] = Math.max(a[1], b[1]);
+
+  return dst;
+}
+
+/**
+ * Return min values of two vectors.
+ * Given vectors a and b returns
+ * [min(a[0], b[0]), min(a[1], b[1]), min(a[2], b[2])].
+ * @param {Vec2} a Operand vector.
+ * @param {Vec2} b Operand vector.
+ * @param {Vec2} [dst] vector to hold result. If not new one is created.
+ * @return {Vec2} The min components vector.
+ */
+function min$2(a, b, dst) {
+  dst = dst || new VecType$2(2);
+
+  dst[0] = Math.min(a[0], b[0]);
+  dst[1] = Math.min(a[1], b[1]);
+
+  return dst;
+}
+
+/**
+ * Multiplies a vector by a scalar.
+ * @param {Vec2} v The vector.
+ * @param {number} k The scalar.
+ * @param {Vec2} [dst] vector to hold result. If not new one is created.
+ * @return {Vec2} The scaled vector.
+ */
+function mulScalar$2(v, k, dst) {
+  dst = dst || new VecType$2(2);
+
+  dst[0] = v[0] * k;
+  dst[1] = v[1] * k;
+
+  return dst;
+}
+
+/**
+ * Multiplies a vector by a scalar. (same as mulScalar)
+ * @function
+ * @param {Vec2} v The vector.
+ * @param {number} k The scalar.
+ * @param {Vec2} [dst] vector to hold result. If not new one is created.
+ * @return {Vec2} The scaled vector.
+ */
+const scale$4 = mulScalar$2;
+
+/**
+ * Divides a vector by a scalar.
+ * @param {Vec2} v The vector.
+ * @param {number} k The scalar.
+ * @param {Vec2} [dst] vector to hold result. If not new one is created.
+ * @return {Vec2} The scaled vector.
+ */
+function divScalar$2(v, k, dst) {
+  dst = dst || new VecType$2(2);
+
+  dst[0] = v[0] / k;
+  dst[1] = v[1] / k;
+
+  return dst;
+}
+
+/**
+ * Inverse a vector.
+ * @param {Vec2} v The vector.
+ * @param {Vec2} [dst] vector to hold result. If not new one is created.
+ * @return {Vec2} The inverted vector.
+ */
+function inverse$4(v, dst) {
+  dst = dst || new VecType$2(2);
+
+  dst[0] = 1 / v[0];
+  dst[1] = 1 / v[1];
+
+  return dst;
+}
+
+/**
+ * Invert a vector. (same as inverse)
+ * @function
+ * @param {Vec2} v The vector.
+ * @param {Vec2} [dst] vector to hold result. If not new one is created.
+ * @return {Vec2} The inverted vector.
+ */
+const invert$4 = inverse$4;
+
+/**
+ * Computes the cross product of two vectors; assumes both vectors have
+ * three entries.
+ * @param {Vec2} a Operand vector.
+ * @param {Vec2} b Operand vector.
+ * @param {Vec3} [dst] vector to hold result. If not new one is created.
+ * @return {Vec3} The vector of a cross b.
+ */
+function cross$1(a, b, dst) {
+  dst = dst || new VecType$2(3);
+  const z = a[0] * b[1] - a[1] * b[0];
+  dst[0] = 0;
+  dst[1] = 0;
+  dst[2] = z;
+
+  return dst;
+}
+
+/**
+ * Computes the dot product of two vectors; assumes both vectors have
+ * three entries.
+ * @param {Vec2} a Operand vector.
+ * @param {Vec2} b Operand vector.
+ * @return {number} dot product
+ */
+function dot$2(a, b) {
+  return a[0] * b[0] + a[1] * b[1];
+}
+
+/**
+ * Computes the length of vector
+ * @param {Vec2} v vector.
+ * @return {number} length of vector.
+ */
+function length$2(v) {
+  const v0 = v[0];
+  const v1 = v[1];
+  return Math.sqrt(v0 * v0 + v1 * v1);
+}
+
+/**
+ * Computes the length of vector (same as length)
+ * @function
+ * @param {Vec2} v vector.
+ * @return {number} length of vector.
+ */
+const len$2 = length$2;
+
+/**
+ * Computes the square of the length of vector
+ * @param {Vec2} v vector.
+ * @return {number} square of the length of vector.
+ */
+function lengthSq$2(v) {
+  const v0 = v[0];
+  const v1 = v[1];
+  return v0 * v0 + v1 * v1;
+}
+
+/**
+ * Computes the square of the length of vector (same as lengthSq)
+ * @function
+ * @param {Vec2} v vector.
+ * @return {number} square of the length of vector.
+ */
+const lenSq$2 = lengthSq$2;
+
+/**
+ * Computes the distance between 2 points
+ * @param {Vec2} a vector.
+ * @param {Vec2} b vector.
+ * @return {number} distance between a and b
+ */
+function distance$2(a, b) {
+  const dx = a[0] - b[0];
+  const dy = a[1] - b[1];
+  return Math.sqrt(dx * dx + dy * dy);
+}
+
+/**
+ * Computes the distance between 2 points (same as distance)
+ * @function
+ * @param {Vec2} a vector.
+ * @param {Vec2} b vector.
+ * @return {number} distance between a and b
+ */
+const dist$2 = distance$2;
+
+/**
+ * Computes the square of the distance between 2 points
+ * @param {Vec2} a vector.
+ * @param {Vec2} b vector.
+ * @return {number} square of the distance between a and b
+ */
+function distanceSq$2(a, b) {
+  const dx = a[0] - b[0];
+  const dy = a[1] - b[1];
+  return dx * dx + dy * dy;
+}
+
+/**
+ * Computes the square of the distance between 2 points (same as distanceSq)
+ * @function
+ * @param {Vec2} a vector.
+ * @param {Vec2} b vector.
+ * @return {number} square of the distance between a and b
+ */
+const distSq$2 = distanceSq$2;
+
+/**
+ * Divides a vector by its Euclidean length and returns the quotient.
+ * @param {Vec2} v The vector.
+ * @param {Vec2} [dst] vector to hold result. If not new one is created.
+ * @return {Vec2} The normalized vector.
+ */
+function normalize$2(v, dst) {
+  dst = dst || new VecType$2(2);
+
+  const v0 = v[0];
+  const v1 = v[1];
+  const len = Math.sqrt(v0 * v0 + v1 * v1);
+
+  if (len > 0.00001) {
+    dst[0] = v0 / len;
+    dst[1] = v1 / len;
+  } else {
+    dst[0] = 0;
+    dst[1] = 0;
+  }
+
+  return dst;
+}
+
+/**
+ * Negates a vector.
+ * @param {Vec2} v The vector.
+ * @param {Vec2} [dst] vector to hold result. If not new one is created.
+ * @return {Vec2} -v.
+ */
+function negate$4(v, dst) {
+  dst = dst || new VecType$2(2);
+
+  dst[0] = -v[0];
+  dst[1] = -v[1];
+
+  return dst;
+}
+
+/**
+ * Copies a vector. (same as clone)
+ * @param {Vec2} v The vector.
+ * @param {Vec2} [dst] vector to hold result. If not new one is created.
+ * @return {Vec2} A copy of v.
+ */
+function copy$4(v, dst) {
+  dst = dst || new VecType$2(2);
+
+  dst[0] = v[0];
+  dst[1] = v[1];
+
+  return dst;
+}
+
+/**
+ * Clones a vector. (same as copy)
+ * @param {Vec2} v The vector.
+ * @param {Vec2} [dst] vector to hold result. If not new one is created.
+ * @return {Vec2} A copy of v.
+ * @function
+ */
+const clone$4 = copy$4;
+
+/**
+ * Multiplies a vector by another vector (component-wise); assumes a and
+ * b have the same length.
+ * @param {Vec2} a Operand vector.
+ * @param {Vec2} b Operand vector.
+ * @param {Vec2} [dst] vector to hold result. If not new one is created.
+ * @return {Vec2} The vector of products of entries of a and b.
+ */
+function multiply$4(a, b, dst) {
+  dst = dst || new VecType$2(2);
+
+  dst[0] = a[0] * b[0];
+  dst[1] = a[1] * b[1];
+
+  return dst;
+}
+
+/**
+ * Multiplies a vector by another vector (component-wise); assumes a and
+ * b have the same length. (same as mul)
+ * @param {Vec2} a Operand vector.
+ * @param {Vec2} b Operand vector.
+ * @param {Vec2} [dst] vector to hold result. If not new one is created.
+ * @return {Vec2} The vector of products of entries of a and b.
+ * @function
+ */
+const mul$4 = multiply$4;
+
+/**
+ * Divides a vector by another vector (component-wise); assumes a and
+ * b have the same length.
+ * @param {Vec2} a Operand vector.
+ * @param {Vec2} b Operand vector.
+ * @param {Vec2} [dst] vector to hold result. If not new one is created.
+ * @return {Vec2} The vector of quotients of entries of a and b.
+ */
+function divide$2(a, b, dst) {
+  dst = dst || new VecType$2(2);
+
+  dst[0] = a[0] / b[0];
+  dst[1] = a[1] / b[1];
+
+  return dst;
+}
+
+/**
+ * Divides a vector by another vector (component-wise); assumes a and
+ * b have the same length. (same as divide)
+ * @function
+ * @param {Vec2} a Operand vector.
+ * @param {Vec2} b Operand vector.
+ * @param {Vec2} [dst] vector to hold result. If not new one is created.
+ * @return {Vec2} The vector of quotients of entries of a and b.
+ */
+const div$2 = divide$2;
+
+/**
+ * Creates a random unit vector * scale
+ * @param {number} scale Default 1
+ * @param {Vec2} [dst] vector to hold result. If not new one is created.
+ * @return {Vec2} The random vector.
+ */
+function random$1(scale = 1, dst) {
+  dst = dst || new VecType$2(2);
+
+  const angle = Math.random() * 2 * Math.PI;
+  dst[0] = Math.cos(angle) * scale;
+  dst[1] = Math.sin(angle) * scale;
+
+  return dst;
+}
+
+/**
+ * Zero's a vector
+ * @param {Vec2} [dst] vector to hold result. If not new one is created.
+ * @return {Vec2} The zeroed vector.
+ */
+function zero$2(dst) {
+  dst = dst || new VecType$2(2);
+
+  dst[0] = 0;
+  dst[1] = 0;
+
+  return dst;
+}
+
+
+/**
+ * transform Vec2 by 4x4 matrix
+ * @param {Vec2} v the vector
+ * @param {Mat4} m The matrix.
+ * @param {Vec2} [dst] optional Vec2 to store result. If not passed a new one is created.
+ * @returns {Vec2} the transformed vector
+ */
+function transformMat4$2(v, m, dst) {
+  dst = dst || new VecType$2(2);
+
+  const x = v[0];
+  const y = v[1];
+
+  dst[0] = x * m[0] + y * m[4] + m[12];
+  dst[1] = x * m[1] + y * m[5] + m[13];
+
+  return dst;
+}
+
+/**
+ * Transforms vec4 by 3x3 matrix
+ *
+ * @param {Vec2} v the vector
+ * @param {Mat3} m The matrix.
+ * @param {Vec2} [dst] optional Vec2 to store result. If not passed a new one is created.
+ * @returns {Vec2} the transformed vector
+ */
+function transformMat3$1(v, m, dst) {
+  dst = dst || new VecType$2(2);
+
+  const x = v[0];
+  const y = v[1];
+
+  dst[0] = m[0] * x + m[4] * y + m[8];
+  dst[1] = m[1] * x + m[5] * y + m[9];
+
+  return dst;
+}
+
+/**
+ * Transforms vec4 by 3x3 matrix
+ *
+ * @param {Vec2} v the vector
+ * @param {Mat2} m The matrix.
+ * @param {Vec2} [dst] optional Vec2 to store result. If not passed a new one is created.
+ * @returns {Vec2} the transformed vector
+ */
+function transformMat2(v, m, dst) {
+  dst = dst || new VecType$2(2);
+
+  const x = v[0];
+  const y = v[1];
+
+  dst[0] = m[0] * x + m[2] * y;
+  dst[1] = m[1] * x + m[3] * y;
+
+  return dst;
+}
+
+var vec2 = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  setDefaultType: setDefaultType$5,
+  create: create$4,
+  fromValues: fromValues$2,
+  ceil: ceil$2,
+  floor: floor$2,
+  round: round$2,
+  clamp: clamp$2,
+  add: add$2,
+  addScaled: addScaled$2,
+  angle: angle$1,
+  subtract: subtract$2,
+  sub: sub$2,
+  equalsApproximately: equalsApproximately$4,
+  equals: equals$4,
+  lerp: lerp$2,
+  lerpV: lerpV$2,
+  max: max$2,
+  min: min$2,
+  mulScalar: mulScalar$2,
+  scale: scale$4,
+  divScalar: divScalar$2,
+  inverse: inverse$4,
+  invert: invert$4,
+  cross: cross$1,
+  dot: dot$2,
+  length: length$2,
+  len: len$2,
+  lengthSq: lengthSq$2,
+  lenSq: lenSq$2,
+  distance: distance$2,
+  dist: dist$2,
+  distanceSq: distanceSq$2,
+  distSq: distSq$2,
+  normalize: normalize$2,
+  negate: negate$4,
+  copy: copy$4,
+  clone: clone$4,
+  multiply: multiply$4,
+  mul: mul$4,
+  divide: divide$2,
+  div: div$2,
+  random: random$1,
+  zero: zero$2,
+  transformMat4: transformMat4$2,
+  transformMat3: transformMat3$1,
+  transformMat2: transformMat2
+});
+
+/*
+ * Copyright 2022 Gregg Tavares
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
+
+/**
+ * 3x3 Matrix math math functions.
+ *
+ * Almost all functions take an optional `dst` argument. If it is not passed in the
+ * functions will create a new matrix. In other words you can do this
+ *
+ *     const mat = mat3.translation([1, 2, 3]);  // Creates a new translation matrix
+ *
+ * or
+ *
+ *     const mat = mat3.create();
+ *     mat3.translation([1, 2, 3], mat);  // Puts translation matrix in mat.
+ *
+ * The first style is often easier but depending on where it's used it generates garbage where
+ * as there is almost never allocation with the second style.
+ *
+ * It is always save to pass any matrix as the destination. So for example
+ *
+ *     const mat = mat3.identity();
+ *     const trans = mat3.translation([1, 2, 3]);
+ *     mat3.multiply(mat, trans, mat);  // Multiplies mat * trans and puts result in mat.
+ *
+ * @module mat3
+ */
+let MatType$1 = Float32Array;
+
+/**
+ * A JavaScript array with 12 values, a Float32Array with 12 values, or a Float64Array with 12 values.
+ * When created by the library will create the default type which is `Float32Array`
+ * but can be set by calling {@link mat3.setDefaultType}.
+ *
+ * `mat3` uses the space of 12 elements
+ *
+ * ```js
+ * // a mat3
+ * [
+ *   xx, xy, xz, ?
+ *   yx, yy, yz, ?
+ *   zx, zy, zz, ?
+ * ]
+ * ```
+ *
+ * @typedef {(number[]|Float32Array|Float64Array)} Mat3
+ */
+
+// This mess is because with Mat3 we have 3 unused elements.
+// For Float32Array and Float64Array that's not an issue
+// but for Array it's troublesome
+const ctorMap = new Map([
+  [Float32Array, () => new Float32Array(12)],
+  [Float64Array, () => new Float64Array(12)],
+  [Array, () => new Array(12).fill(0)],
+]);
+let newMat3 = ctorMap.get(Float32Array);
+
+/**
+ * Sets the type this library creates for a Mat3
+ * @param {constructor} ctor the constructor for the type. Either `Float32Array`, 'Float64Array', or `Array`
+ * @return {constructor} previous constructor for Mat3
+ */
+function setDefaultType$4(ctor) {
+  const oldType = MatType$1;
+  MatType$1 = ctor;
+  newMat3 = ctorMap.get(ctor);
+  return oldType;
+}
+
+/**
+ * Create a Mat3 from values
+ *
+ * Note: Since passing in a raw JavaScript array
+ * is valid in all circumstances, if you want to
+ * force a JavaScript array into a Mat3's specified type
+ * it would be faster to use
+ *
+ * ```
+ * const m = mat3.clone(someJSArray);
+ * ```
+ *
+ * Note: a consequence of the implementation is if your Mat3Type = `Array`
+ * instead of `Float32Array` or `Float64Array` then any values you
+ * don't pass in will be undefined. Usually this is not an issue since
+ * (a) using `Array` is rare and (b) using `mat3.create` is usually used
+ * to create a Mat3 to be filled out as in
+ *
+ * ```
+ * const m = mat3.create();
+ * mat3.perspective(fov, aspect, near, far, m);
+ * ```
+ *
+ * @param {number} [v0] value for element 0
+ * @param {number} [v1] value for element 1
+ * @param {number} [v2] value for element 2
+ * @param {number} [v3] value for element 3
+ * @param {number} [v4] value for element 4
+ * @param {number} [v5] value for element 5
+ * @param {number} [v6] value for element 6
+ * @param {number} [v7] value for element 7
+ * @param {number} [v8] value for element 8
+ * @returns {Mat3} created from values.
+ */
+function create$3(
+    v0, v1, v2,
+    v3, v4, v5,
+    v6, v7, v8) {
+  const dst = newMat3();
+  // to make the array homogenous
+  dst[3] = 0;
+  dst[7] = 0;
+  dst[11] = 0;
+  if (v0 !== undefined) {
+    dst[0] = v0;
+    if (v1 !== undefined) {
+      dst[1] = v1;
+      if (v2 !== undefined) {
+        dst[2] = v2;
+        if (v3 !== undefined) {
+          dst[4] = v3;
+          if (v4 !== undefined) {
+            dst[5] = v4;
+            if (v5 !== undefined) {
+              dst[6] = v5;
+              if (v6 !== undefined) {
+                dst[8] = v6;
+                if (v7 !== undefined) {
+                  dst[9] = v7;
+                  if (v8 !== undefined) {
+                    dst[10] = v8;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  return dst;
+}
+
+/**
+ * Negates a matrix.
+ * @param {Mat3} m The matrix.
+ * @param {Mat3} [dst] matrix to hold result. If not passed a new one is created.
+ * @return {Mat3} -m.
+ */
+function negate$3(m, dst) {
+  dst = dst || newMat3();
+
+  dst[ 0] = -m[ 0];
+  dst[ 1] = -m[ 1];
+  dst[ 2] = -m[ 2];
+  dst[ 4] = -m[ 4];
+  dst[ 5] = -m[ 5];
+  dst[ 6] = -m[ 6];
+  dst[ 8] = -m[ 8];
+  dst[ 9] = -m[ 9];
+  dst[10] = -m[10];
+
+  return dst;
+}
+
+/**
+ * Copies a matrix.
+ * @param {Mat3} m The matrix.
+ * @param {Mat3} [dst] The matrix. If not passed a new one is created.
+ * @return {Mat3} A copy of m.
+ */
+function copy$3(m, dst) {
+  dst = dst || newMat3();
+
+  dst[ 0] = m[ 0];
+  dst[ 1] = m[ 1];
+  dst[ 2] = m[ 2];
+
+  dst[ 4] = m[ 4];
+  dst[ 5] = m[ 5];
+  dst[ 6] = m[ 6];
+
+  dst[ 8] = m[ 8];
+  dst[ 9] = m[ 9];
+  dst[10] = m[10];
+
+  return dst;
+}
+
+/**
+ * Copies a matrix (same as copy)
+ * @function
+ * @param {Mat3} m The matrix.
+ * @param {Mat3} [dst] The matrix. If not passed a new one is created.
+ * @return {Mat3} A copy of m.
+ */
+const clone$3 = copy$3;
+
+/**
+ * Check if 2 matrices are approximately equal
+ * @param {Mat3} a Operand matrix.
+ * @param {Mat3} b Operand matrix.
+ * @returns {bool} true if matrices are approximately equal
+ */
+function equalsApproximately$3(a, b) {
+  return Math.abs(a[ 0] - b[ 0]) < EPSILON &&
+         Math.abs(a[ 1] - b[ 1]) < EPSILON &&
+         Math.abs(a[ 2] - b[ 2]) < EPSILON &&
+         Math.abs(a[ 4] - b[ 4]) < EPSILON &&
+         Math.abs(a[ 5] - b[ 5]) < EPSILON &&
+         Math.abs(a[ 6] - b[ 6]) < EPSILON &&
+         Math.abs(a[ 8] - b[ 8]) < EPSILON &&
+         Math.abs(a[ 9] - b[ 9]) < EPSILON &&
+         Math.abs(a[10] - b[10]) < EPSILON;
+}
+
+/**
+ * Check if 2 matrices are exactly equal
+ * @param {Mat3} a Operand matrix.
+ * @param {Mat3} b Operand matrix.
+ * @returns {bool} true if matrices are exactly equal
+ */
+function equals$3(a, b) {
+  return a[ 0] === b[ 0] &&
+         a[ 1] === b[ 1] &&
+         a[ 2] === b[ 2] &&
+         a[ 4] === b[ 4] &&
+         a[ 5] === b[ 5] &&
+         a[ 6] === b[ 6] &&
+         a[ 8] === b[ 8] &&
+         a[ 9] === b[ 9] &&
+         a[10] === b[10];
+}
+
+/**
+ * Creates an n-by-n identity matrix.
+ *
+ * @param {Mat3} [dst] matrix to hold result. If not passed a new one is created.
+ * @return {Mat3} An n-by-n identity matrix.
+ */
+function identity$1(dst) {
+  dst = dst || newMat3();
+
+  dst[ 0] = 1;
+  dst[ 1] = 0;
+  dst[ 2] = 0;
+  dst[ 4] = 0;
+  dst[ 5] = 1;
+  dst[ 6] = 0;
+  dst[ 8] = 0;
+  dst[ 9] = 0;
+  dst[10] = 1;
+
+  return dst;
+}
+
+/**
+ * Takes the transpose of a matrix.
+ * @param {Mat3} m The matrix.
+ * @param {Mat3} [dst] matrix to hold result. If not passed a new one is created.
+ * @return {Mat3} The transpose of m.
+ */
+function transpose$1(m, dst) {
+  dst = dst || newMat3();
+  if (dst === m) {
+    let t;
+
+    // 0 1 2
+    // 4 5 6
+    // 8 9 10
+
+    t = m[1];
+    m[1] = m[4];
+    m[4] = t;
+
+    t = m[2];
+    m[2] = m[8];
+    m[8] = t;
+
+    t = m[6];
+    m[6] = m[9];
+    m[9] = t;
+
+    return dst;
+  }
+
+  const m00 = m[0 * 4 + 0];
+  const m01 = m[0 * 4 + 1];
+  const m02 = m[0 * 4 + 2];
+  const m10 = m[1 * 4 + 0];
+  const m11 = m[1 * 4 + 1];
+  const m12 = m[1 * 4 + 2];
+  const m20 = m[2 * 4 + 0];
+  const m21 = m[2 * 4 + 1];
+  const m22 = m[2 * 4 + 2];
+
+  dst[ 0] = m00;
+  dst[ 1] = m10;
+  dst[ 2] = m20;
+  dst[ 4] = m01;
+  dst[ 5] = m11;
+  dst[ 6] = m21;
+  dst[ 8] = m02;
+  dst[ 9] = m12;
+  dst[10] = m22;
+
+  return dst;
+}
+
+/**
+ * Computes the inverse of a 3-by-3 matrix.
+ * @param {Mat3} m The matrix.
+ * @param {Mat3} [dst] matrix to hold result. If not passed a new one is created.
+ * @return {Mat3} The inverse of m.
+ */
+function inverse$3(m, dst) {
+  dst = dst || newMat3();
+
+  const m00 = m[0 * 4 + 0];
+  const m01 = m[0 * 4 + 1];
+  const m02 = m[0 * 4 + 2];
+  const m10 = m[1 * 4 + 0];
+  const m11 = m[1 * 4 + 1];
+  const m12 = m[1 * 4 + 2];
+  const m20 = m[2 * 4 + 0];
+  const m21 = m[2 * 4 + 1];
+  const m22 = m[2 * 4 + 2];
+
+  const m11_x_m22 = m11 * m22;
+  const m21_x_m12 = m21 * m12;
+  const m01_x_m22 = m01 * m22;
+  const m21_x_m02 = m21 * m02;
+  const m01_x_m12 = m01 * m12;
+  const m11_x_m02 = m11 * m02;
+
+  const invDet = 1 / (
+      m00 * (m11_x_m22 - m21_x_m12) -
+      m10 * (m01_x_m22 - m21_x_m02) +
+      m20 * (m01_x_m12 - m11_x_m02));
+
+  dst[ 0] = +(m11_x_m22 - m21_x_m12) * invDet;
+  dst[ 1] = -(m10 * m22 - m20 * m12) * invDet;
+  dst[ 2] = +(m10 * m21 - m20 * m11) * invDet;
+  dst[ 4] = -(m01_x_m22 - m21_x_m02) * invDet;
+  dst[ 5] = +(m00 * m22 - m20 * m02) * invDet;
+  dst[ 6] = -(m00 * m21 - m20 * m01) * invDet;
+  dst[ 8] = +(m01_x_m12 - m11_x_m02) * invDet;
+  dst[ 9] = -(m00 * m12 - m10 * m02) * invDet;
+  dst[10] = +(m00 * m11 - m10 * m01) * invDet;
+
+  return dst;
+}
+
+/**
+ * Compute the determinant of a matrix
+ * @param {Mat3} m the matrix
+ * @returns {number} the determinant
+ */
+function determinant$1(m) {
+  const m00 = m[0 * 4 + 0];
+  const m01 = m[0 * 4 + 1];
+  const m02 = m[0 * 4 + 2];
+  const m10 = m[1 * 4 + 0];
+  const m11 = m[1 * 4 + 1];
+  const m12 = m[1 * 4 + 2];
+  const m20 = m[2 * 4 + 0];
+  const m21 = m[2 * 4 + 1];
+  const m22 = m[2 * 4 + 2];
+
+  return m00 * (m11 * m22 - m21 * m12) -
+         m10 * (m01 * m22 - m21 * m02) +
+         m20 * (m01 * m12 - m11 * m02);
+}
+
+/**
+ * Computes the inverse of a 3-by-3 matrix. (same as inverse)
+ * @function
+ * @param {Mat3} m The matrix.
+ * @param {Mat3} [dst] matrix to hold result. If not passed a new one is created.
+ * @return {Mat3} The inverse of m.
+ */
+const invert$3 = inverse$3;
+
+/**
+ * Multiplies two 3-by-3 matrices with a on the left and b on the right
+ * @param {Mat3} a The matrix on the left.
+ * @param {Mat3} b The matrix on the right.
+ * @param {Mat3} [dst] matrix to hold result. If not passed a new one is created.
+ * @return {Mat3} The matrix product of a and b.
+ */
+function multiply$3(a, b, dst) {
+  dst = dst || newMat3();
+
+  const a00 = a[0];
+  const a01 = a[1];
+  const a02 = a[2];
+  const a10 = a[ 4 + 0];
+  const a11 = a[ 4 + 1];
+  const a12 = a[ 4 + 2];
+  const a20 = a[ 8 + 0];
+  const a21 = a[ 8 + 1];
+  const a22 = a[ 8 + 2];
+  const b00 = b[0];
+  const b01 = b[1];
+  const b02 = b[2];
+  const b10 = b[ 4 + 0];
+  const b11 = b[ 4 + 1];
+  const b12 = b[ 4 + 2];
+  const b20 = b[ 8 + 0];
+  const b21 = b[ 8 + 1];
+  const b22 = b[ 8 + 2];
+
+  dst[ 0] = a00 * b00 + a10 * b01 + a20 * b02;
+  dst[ 1] = a01 * b00 + a11 * b01 + a21 * b02;
+  dst[ 2] = a02 * b00 + a12 * b01 + a22 * b02;
+  dst[ 4] = a00 * b10 + a10 * b11 + a20 * b12;
+  dst[ 5] = a01 * b10 + a11 * b11 + a21 * b12;
+  dst[ 6] = a02 * b10 + a12 * b11 + a22 * b12;
+  dst[ 8] = a00 * b20 + a10 * b21 + a20 * b22;
+  dst[ 9] = a01 * b20 + a11 * b21 + a21 * b22;
+  dst[10] = a02 * b20 + a12 * b21 + a22 * b22;
+
+  return dst;
+}
+
+/**
+ * Multiplies two 3-by-3 matrices with a on the left and b on the right (same as multiply)
+ * @function
+ * @param {Mat3} a The matrix on the left.
+ * @param {Mat3} b The matrix on the right.
+ * @param {Mat3} [dst] matrix to hold result. If not passed a new one is created.
+ * @return {Mat3} The matrix product of a and b.
+ */
+const mul$3 = multiply$3;
+
+/**
+ * Sets the translation component of a 3-by-3 matrix to the given
+ * vector.
+ * @param {Mat3} a The matrix.
+ * @param {Vec2} v The vector.
+ * @param {Mat3} [dst] matrix to hold result. If not passed a new one is created.
+ * @return {Mat3} The matrix with translation set.
+ */
+function setTranslation$1(a, v, dst) {
+  dst = dst || identity$1();
+  if (a !== dst) {
+    dst[ 0] = a[ 0];
+    dst[ 1] = a[ 1];
+    dst[ 2] = a[ 2];
+    dst[ 4] = a[ 4];
+    dst[ 5] = a[ 5];
+    dst[ 6] = a[ 6];
+  }
+  dst[ 8] = v[0];
+  dst[ 9] = v[1];
+  dst[10] = 1;
+  return dst;
+}
+
+/**
+ * Returns the translation component of a 3-by-3 matrix as a vector with 3
+ * entries.
+ * @param {Mat3} m The matrix.
+ * @param {Vec2} [dst] vector to hold result. If not passed a new one is created.
+ * @return {Vec2} The translation component of m.
+ */
+function getTranslation$1(m, dst) {
+  dst = dst || create$4();
+  dst[0] = m[8];
+  dst[1] = m[9];
+  return dst;
+}
+
+/**
+ * Returns an axis of a 3x3 matrix as a vector with 2 entries
+ * @param {Mat3} m The matrix.
+ * @param {number} axis The axis 0 = x, 1 = y,
+ * @return {Vec2} The axis component of m.
+ */
+function getAxis$1(m, axis, dst) {
+  dst = dst || create$4();
+  const off = axis * 4;
+  dst[0] = m[off + 0];
+  dst[1] = m[off + 1];
+  return dst;
+}
+
+/**
+ * Sets an axis of a 3x3 matrix as a vector with 2 entries
+ * @param {Mat3} m The matrix.
+ * @param {Vec2} v the axis vector
+ * @param {number} axis The axis  0 = x, 1 = y;
+ * @param {Mat3} [dst] The matrix to set. If not passed a new one is created.
+ * @return {Mat3} The matrix with axis set.
+ */
+function setAxis$1(a, v, axis, dst) {
+  if (dst !== a) {
+    dst = copy$3(a, dst);
+  }
+  const off = axis * 4;
+  dst[off + 0] = v[0];
+  dst[off + 1] = v[1];
+  return dst;
+}
+
+/**
+ * Returns the scaling component of the matrix
+ * @param {Mat3} m The Matrix
+ * @param {Vec2} [dst] The vector to set. If not passed a new one is created.
+ */
+function getScaling$1(m, dst) {
+  dst = dst || create$4();
+
+  const xx = m[0];
+  const xy = m[1];
+  const yx = m[4];
+  const yy = m[5];
+
+  dst[0] = Math.sqrt(xx * xx + xy * xy);
+  dst[1] = Math.sqrt(yx * yx + yy * yy);
+
+  return dst;
+}
+
+/**
+ * Creates a 3-by-3 matrix which translates by the given vector v.
+ * @param {Vec2} v The vector by which to translate.
+ * @param {Mat3} [dst] matrix to hold result. If not passed a new one is created.
+ * @return {Mat3} The translation matrix.
+ */
+function translation$1(v, dst) {
+  dst = dst || newMat3();
+
+  dst[ 0] = 1;
+  dst[ 1] = 0;
+  dst[ 2] = 0;
+  dst[ 4] = 0;
+  dst[ 5] = 1;
+  dst[ 6] = 0;
+  dst[ 8] = v[0];
+  dst[ 9] = v[1];
+  dst[10] = 1;
+  return dst;
+}
+
+/**
+ * Translates the given 3-by-3 matrix by the given vector v.
+ * @param {Mat3} m The matrix.
+ * @param {Vec2} v The vector by which to translate.
+ * @param {Mat3} [dst] matrix to hold result. If not passed a new one is created.
+ * @return {Mat3} The translated matrix.
+ */
+function translate$1(m, v, dst) {
+  dst = dst || newMat3();
+
+  const v0 = v[0];
+  const v1 = v[1];
+
+  const m00 = m[0];
+  const m01 = m[1];
+  const m02 = m[2];
+  const m10 = m[1 * 4 + 0];
+  const m11 = m[1 * 4 + 1];
+  const m12 = m[1 * 4 + 2];
+  const m20 = m[2 * 4 + 0];
+  const m21 = m[2 * 4 + 1];
+  const m22 = m[2 * 4 + 2];
+
+  if (m !== dst) {
+    dst[ 0] = m00;
+    dst[ 1] = m01;
+    dst[ 2] = m02;
+    dst[ 4] = m10;
+    dst[ 5] = m11;
+    dst[ 6] = m12;
+  }
+
+  dst[ 8] = m00 * v0 + m10 * v1 + m20;
+  dst[ 9] = m01 * v0 + m11 * v1 + m21;
+  dst[10] = m02 * v0 + m12 * v1 + m22;
+
+  return dst;
+}
+
+/**
+ * Creates a 3-by-3 matrix which rotates  by the given angle.
+ * @param {number} angleInRadians The angle by which to rotate (in radians).
+ * @param {Mat3} [dst] matrix to hold result. If not passed a new one is created.
+ * @return {Mat3} The rotation matrix.
+ */
+function rotation$1(angleInRadians, dst) {
+  dst = dst || newMat3();
+
+  const c = Math.cos(angleInRadians);
+  const s = Math.sin(angleInRadians);
+
+  dst[ 0] = c;
+  dst[ 1] = s;
+  dst[ 2] = 0;
+  dst[ 4] = -s;
+  dst[ 5] = c;
+  dst[ 6] = 0;
+  dst[ 8] = 0;
+  dst[ 9] = 0;
+  dst[10] = 1;
+
+  return dst;
+}
+
+/**
+ * Rotates the given 3-by-3 matrix  by the given angle.
+ * @param {Mat3} m The matrix.
+ * @param {number} angleInRadians The angle by which to rotate (in radians).
+ * @param {Mat3} [dst] matrix to hold result. If not passed a new one is created.
+ * @return {Mat3} The rotated matrix.
+ */
+function rotate$1(m, angleInRadians, dst) {
+  dst = dst || newMat3();
+
+  const m00 = m[0 * 4 + 0];
+  const m01 = m[0 * 4 + 1];
+  const m02 = m[0 * 4 + 2];
+  const m10 = m[1 * 4 + 0];
+  const m11 = m[1 * 4 + 1];
+  const m12 = m[1 * 4 + 2];
+  const c = Math.cos(angleInRadians);
+  const s = Math.sin(angleInRadians);
+
+  dst[ 0] = c * m00 + s * m10;
+  dst[ 1] = c * m01 + s * m11;
+  dst[ 2] = c * m02 + s * m12;
+
+  dst[ 4] = c * m10 - s * m00;
+  dst[ 5] = c * m11 - s * m01;
+  dst[ 6] = c * m12 - s * m02;
+
+
+  if (m !== dst) {
+    dst[ 8] = m[ 8];
+    dst[ 9] = m[ 9];
+    dst[10] = m[10];
+  }
+
+  return dst;
+}
+
+/**
+ * Creates a 3-by-3 matrix which scales in each dimension by an amount given by
+ * the corresponding entry in the given vector; assumes the vector has three
+ * entries.
+ * @param {Vec2} v A vector of
+ *     2 entries specifying the factor by which to scale in each dimension.
+ * @param {Mat3} [dst] matrix to hold result. If not passed a new one is created.
+ * @return {Mat3} The scaling matrix.
+ */
+function scaling$1(v, dst) {
+  dst = dst || newMat3();
+
+  dst[ 0] = v[0];
+  dst[ 1] = 0;
+  dst[ 2] = 0;
+  dst[ 4] = 0;
+  dst[ 5] = v[1];
+  dst[ 6] = 0;
+  dst[ 8] = 0;
+  dst[ 9] = 0;
+  dst[10] = 1;
+
+  return dst;
+}
+
+/**
+ * Scales the given 3-by-3 matrix in each dimension by an amount
+ * given by the corresponding entry in the given vector; assumes the vector has
+ * three entries.
+ * @param {Mat3} m The matrix to be modified.
+ * @param {Vec2} v A vector of 2 entries specifying the
+ *     factor by which to scale in each dimension.
+ * @param {Mat3} [dst] matrix to hold result. If not passed a new one is created.
+ * @return {Mat3} The scaled matrix.
+ */
+function scale$3(m, v, dst) {
+  dst = dst || newMat3();
+
+  const v0 = v[0];
+  const v1 = v[1];
+
+  dst[ 0] = v0 * m[0 * 4 + 0];
+  dst[ 1] = v0 * m[0 * 4 + 1];
+  dst[ 2] = v0 * m[0 * 4 + 2];
+
+  dst[ 4] = v1 * m[1 * 4 + 0];
+  dst[ 5] = v1 * m[1 * 4 + 1];
+  dst[ 6] = v1 * m[1 * 4 + 2];
+
+  if (m !== dst) {
+    dst[ 8] = m[ 8];
+    dst[ 9] = m[ 9];
+    dst[10] = m[10];
+  }
+
+  return dst;
+}
+
+var mat3 = /*#__PURE__*/Object.freeze({
+  __proto__: null,
+  setDefaultType: setDefaultType$4,
+  create: create$3,
+  negate: negate$3,
+  copy: copy$3,
+  clone: clone$3,
+  equalsApproximately: equalsApproximately$3,
+  equals: equals$3,
+  identity: identity$1,
+  transpose: transpose$1,
+  inverse: inverse$3,
+  determinant: determinant$1,
+  invert: invert$3,
+  multiply: multiply$3,
+  mul: mul$3,
+  setTranslation: setTranslation$1,
+  getTranslation: getTranslation$1,
+  getAxis: getAxis$1,
+  setAxis: setAxis$1,
+  getScaling: getScaling$1,
+  translation: translation$1,
+  translate: translate$1,
+  rotation: rotation$1,
+  rotate: rotate$1,
+  scaling: scaling$1,
+  scale: scale$3
+});
 
 /*
  * Copyright 2022 Gregg Tavares
@@ -77,7 +1697,7 @@ let EPSILON = 0.000001;
  * @module vec3
  */
 
-let VecType$2 = Float32Array;
+let VecType$1 = Float32Array;
 
 /**
  * A JavaScript array with 3 values, Float32Array with 3 values, or a Float64Array with 3 values.
@@ -91,9 +1711,9 @@ let VecType$2 = Float32Array;
  * @param {constructor} ctor the constructor for the type. Either `Float32Array`, 'Float64Array', or `Array`
  * @return {constructor} previous constructor for Vec3
  */
-function setDefaultType$4(ctor) {
-  const oldType = VecType$2;
-  VecType$2 = ctor;
+function setDefaultType$3(ctor) {
+  const oldType = VecType$1;
+  VecType$1 = ctor;
   return oldType;
 }
 
@@ -104,8 +1724,8 @@ function setDefaultType$4(ctor) {
  * @param {number} [z] Initial z value.
  * @return {Vec3} the created vector
  */
-function create$3(x, y, z) {
-  const dst = new VecType$2(3);
+function create$2(x, y, z) {
+  const dst = new VecType$1(3);
   if (x !== undefined) {
     dst[0] = x;
     if (y !== undefined) {
@@ -126,7 +1746,7 @@ function create$3(x, y, z) {
  * @param {number} [z] Initial z value.
  * @return {Vec3} the created vector
  */
-const fromValues$2 = create$3;
+const fromValues$1 = create$2;
 
 /**
  * Applies Math.ceil to each element of vector
@@ -134,8 +1754,8 @@ const fromValues$2 = create$3;
  * @param {Vec3} [dst] vector to hold result. If not new one is created.
  * @return {Vec3} A vector that is the ceil of each element of v.
  */
-function ceil$2(v, dst) {
-  dst = dst || new VecType$2(3);
+function ceil$1(v, dst) {
+  dst = dst || new VecType$1(3);
 
   dst[0] = Math.ceil(v[0]);
   dst[1] = Math.ceil(v[1]);
@@ -150,8 +1770,8 @@ function ceil$2(v, dst) {
  * @param {Vec3} [dst] vector to hold result. If not new one is created.
  * @return {Vec3} A vector that is the floor of each element of v.
  */
-function floor$2(v, dst) {
-  dst = dst || new VecType$2(3);
+function floor$1(v, dst) {
+  dst = dst || new VecType$1(3);
 
   dst[0] = Math.floor(v[0]);
   dst[1] = Math.floor(v[1]);
@@ -166,8 +1786,8 @@ function floor$2(v, dst) {
  * @param {Vec3} [dst] vector to hold result. If not new one is created.
  * @return {Vec3} A vector that is the round of each element of v.
  */
-function round$2(v, dst) {
-  dst = dst || new VecType$2(3);
+function round$1(v, dst) {
+  dst = dst || new VecType$1(3);
 
   dst[0] = Math.round(v[0]);
   dst[1] = Math.round(v[1]);
@@ -184,8 +1804,8 @@ function round$2(v, dst) {
  * @param {Vec3} [dst] vector to hold result. If not new one is created.
  * @return {Vec3} A vector that the clamped value of each element of v.
  */
-function clamp$2(v, min = 0, max = 1, dst) {
-  dst = dst || new VecType$2(3);
+function clamp$1(v, min = 0, max = 1, dst) {
+  dst = dst || new VecType$1(3);
 
   dst[0] = Math.min(max, Math.max(min, v[0]));
   dst[1] = Math.min(max, Math.max(min, v[1]));
@@ -201,8 +1821,8 @@ function clamp$2(v, min = 0, max = 1, dst) {
  * @param {Vec3} [dst] vector to hold result. If not new one is created.
  * @return {Vec3} A vector that is the sum of a and b.
  */
-function add$2(a, b, dst) {
-  dst = dst || new VecType$2(3);
+function add$1(a, b, dst) {
+  dst = dst || new VecType$1(3);
 
   dst[0] = a[0] + b[0];
   dst[1] = a[1] + b[1];
@@ -219,8 +1839,8 @@ function add$2(a, b, dst) {
  * @param {Vec3} [dst] vector to hold result. If not new one is created.
  * @return {Vec3} A vector that is the sum of a + b * scale.
  */
-function addScaled$2(a, b, scale, dst) {
-  dst = dst || new VecType$2(3);
+function addScaled$1(a, b, scale, dst) {
+  dst = dst || new VecType$1(3);
 
   dst[0] = a[0] + b[0] * scale;
   dst[1] = a[1] + b[1] * scale;
@@ -235,7 +1855,7 @@ function addScaled$2(a, b, scale, dst) {
  * @param {Vec3} b Operand vector.
  * @return {number} The angle in radians between the 2 vectors.
  */
-function angle$1(a, b) {
+function angle(a, b) {
   const ax = a[0];
   const ay = a[1];
   const az = a[2];
@@ -245,7 +1865,7 @@ function angle$1(a, b) {
   const mag1 = Math.sqrt(ax * ax + ay * ay + az * az);
   const mag2 = Math.sqrt(bx * bx + by * by + bz * bz);
   const mag = mag1 * mag2;
-  const cosine = mag && dot$2(a, b) / mag;
+  const cosine = mag && dot$1(a, b) / mag;
   return Math.acos(cosine);
 }
 
@@ -256,8 +1876,8 @@ function angle$1(a, b) {
  * @param {Vec3} [dst] vector to hold result. If not new one is created.
  * @return {Vec3} A vector that is the difference of a and b.
  */
-function subtract$2(a, b, dst) {
-  dst = dst || new VecType$2(3);
+function subtract$1(a, b, dst) {
+  dst = dst || new VecType$1(3);
 
   dst[0] = a[0] - b[0];
   dst[1] = a[1] - b[1];
@@ -274,7 +1894,7 @@ function subtract$2(a, b, dst) {
  * @param {Vec3} [dst] vector to hold result. If not new one is created.
  * @return {Vec3} A vector that is the difference of a and b.
  */
-const sub$2 = subtract$2;
+const sub$1 = subtract$1;
 
 /**
  * Check if 2 vectors are approximately equal
@@ -282,7 +1902,7 @@ const sub$2 = subtract$2;
  * @param {Vec3} b Operand vector.
  * @returns {bool} true if vectors are approximately equal
  */
-function equalsApproximately$3(a, b) {
+function equalsApproximately$2(a, b) {
   return Math.abs(a[0] - b[0]) < EPSILON &&
          Math.abs(a[1] - b[1]) < EPSILON &&
          Math.abs(a[2] - b[2]) < EPSILON;
@@ -294,7 +1914,7 @@ function equalsApproximately$3(a, b) {
  * @param {Vec3} b Operand vector.
  * @returns {bool} true if vectors are exactly equal
  */
-function equals$3(a, b) {
+function equals$2(a, b) {
   return a[0] === b[0] && a[1] === b[1] && a[2] === b[2];
 }
 
@@ -308,8 +1928,8 @@ function equals$3(a, b) {
  * @param {Vec3} [dst] vector to hold result. If not new one is created.
  * @return {Vec3} The linear interpolated result.
  */
-function lerp$2(a, b, t, dst) {
-  dst = dst || new VecType$2(3);
+function lerp$1(a, b, t, dst) {
+  dst = dst || new VecType$1(3);
 
   dst[0] = a[0] + t * (b[0] - a[0]);
   dst[1] = a[1] + t * (b[1] - a[1]);
@@ -328,8 +1948,8 @@ function lerp$2(a, b, t, dst) {
  * @param {Vec3} [dst] vector to hold result. If not new one is created.
  * @return {Vec3} the linear interpolated result.
  */
-function lerpV$2(a, b, t, dst) {
-  dst = dst || new VecType$2(3);
+function lerpV$1(a, b, t, dst) {
+  dst = dst || new VecType$1(3);
 
   dst[0] = a[0] + t[0] * (b[0] - a[0]);
   dst[1] = a[1] + t[1] * (b[1] - a[1]);
@@ -347,8 +1967,8 @@ function lerpV$2(a, b, t, dst) {
  * @param {Vec3} [dst] vector to hold result. If not new one is created.
  * @return {Vec3} The max components vector.
  */
-function max$2(a, b, dst) {
-  dst = dst || new VecType$2(3);
+function max$1(a, b, dst) {
+  dst = dst || new VecType$1(3);
 
   dst[0] = Math.max(a[0], b[0]);
   dst[1] = Math.max(a[1], b[1]);
@@ -366,8 +1986,8 @@ function max$2(a, b, dst) {
  * @param {Vec3} [dst] vector to hold result. If not new one is created.
  * @return {Vec3} The min components vector.
  */
-function min$2(a, b, dst) {
-  dst = dst || new VecType$2(3);
+function min$1(a, b, dst) {
+  dst = dst || new VecType$1(3);
 
   dst[0] = Math.min(a[0], b[0]);
   dst[1] = Math.min(a[1], b[1]);
@@ -383,8 +2003,8 @@ function min$2(a, b, dst) {
  * @param {Vec3} [dst] vector to hold result. If not new one is created.
  * @return {Vec3} The scaled vector.
  */
-function mulScalar$2(v, k, dst) {
-  dst = dst || new VecType$2(3);
+function mulScalar$1(v, k, dst) {
+  dst = dst || new VecType$1(3);
 
   dst[0] = v[0] * k;
   dst[1] = v[1] * k;
@@ -401,7 +2021,7 @@ function mulScalar$2(v, k, dst) {
  * @param {Vec3} [dst] vector to hold result. If not new one is created.
  * @return {Vec3} The scaled vector.
  */
-const scale$3 = mulScalar$2;
+const scale$2 = mulScalar$1;
 
 /**
  * Divides a vector by a scalar.
@@ -410,8 +2030,8 @@ const scale$3 = mulScalar$2;
  * @param {Vec3} [dst] vector to hold result. If not new one is created.
  * @return {Vec3} The scaled vector.
  */
-function divScalar$2(v, k, dst) {
-  dst = dst || new VecType$2(3);
+function divScalar$1(v, k, dst) {
+  dst = dst || new VecType$1(3);
 
   dst[0] = v[0] / k;
   dst[1] = v[1] / k;
@@ -426,8 +2046,8 @@ function divScalar$2(v, k, dst) {
  * @param {Vec3} [dst] vector to hold result. If not new one is created.
  * @return {Vec3} The inverted vector.
  */
-function inverse$3(v, dst) {
-  dst = dst || new VecType$2(3);
+function inverse$2(v, dst) {
+  dst = dst || new VecType$1(3);
 
   dst[0] = 1 / v[0];
   dst[1] = 1 / v[1];
@@ -443,7 +2063,7 @@ function inverse$3(v, dst) {
  * @param {Vec3} [dst] vector to hold result. If not new one is created.
  * @return {Vec3} The inverted vector.
  */
-const invert$3 = inverse$3;
+const invert$2 = inverse$2;
 
 /**
  * Computes the cross product of two vectors; assumes both vectors have
@@ -453,8 +2073,8 @@ const invert$3 = inverse$3;
  * @param {Vec3} [dst] vector to hold result. If not new one is created.
  * @return {Vec3} The vector of a cross b.
  */
-function cross$1(a, b, dst) {
-  dst = dst || new VecType$2(3);
+function cross(a, b, dst) {
+  dst = dst || new VecType$1(3);
 
   const t1 = a[2] * b[0] - a[0] * b[2];
   const t2 = a[0] * b[1] - a[1] * b[0];
@@ -472,7 +2092,7 @@ function cross$1(a, b, dst) {
  * @param {Vec3} b Operand vector.
  * @return {number} dot product
  */
-function dot$2(a, b) {
+function dot$1(a, b) {
   return (a[0] * b[0]) + (a[1] * b[1]) + (a[2] * b[2]);
 }
 
@@ -481,7 +2101,7 @@ function dot$2(a, b) {
  * @param {Vec3} v vector.
  * @return {number} length of vector.
  */
-function length$2(v) {
+function length$1(v) {
   const v0 = v[0];
   const v1 = v[1];
   const v2 = v[2];
@@ -494,14 +2114,14 @@ function length$2(v) {
  * @param {Vec3} v vector.
  * @return {number} length of vector.
  */
-const len$2 = length$2;
+const len$1 = length$1;
 
 /**
  * Computes the square of the length of vector
  * @param {Vec3} v vector.
  * @return {number} square of the length of vector.
  */
-function lengthSq$2(v) {
+function lengthSq$1(v) {
   const v0 = v[0];
   const v1 = v[1];
   const v2 = v[2];
@@ -514,7 +2134,7 @@ function lengthSq$2(v) {
  * @param {Vec3} v vector.
  * @return {number} square of the length of vector.
  */
-const lenSq$2 = lengthSq$2;
+const lenSq$1 = lengthSq$1;
 
 /**
  * Computes the distance between 2 points
@@ -522,7 +2142,7 @@ const lenSq$2 = lengthSq$2;
  * @param {Vec3} b vector.
  * @return {number} distance between a and b
  */
-function distance$2(a, b) {
+function distance$1(a, b) {
   const dx = a[0] - b[0];
   const dy = a[1] - b[1];
   const dz = a[2] - b[2];
@@ -536,7 +2156,7 @@ function distance$2(a, b) {
  * @param {Vec3} b vector.
  * @return {number} distance between a and b
  */
-const dist$2 = distance$2;
+const dist$1 = distance$1;
 
 /**
  * Computes the square of the distance between 2 points
@@ -544,7 +2164,7 @@ const dist$2 = distance$2;
  * @param {Vec3} b vector.
  * @return {number} square of the distance between a and b
  */
-function distanceSq$2(a, b) {
+function distanceSq$1(a, b) {
   const dx = a[0] - b[0];
   const dy = a[1] - b[1];
   const dz = a[2] - b[2];
@@ -558,7 +2178,7 @@ function distanceSq$2(a, b) {
  * @param {Vec3} b vector.
  * @return {number} square of the distance between a and b
  */
-const distSq$2 = distanceSq$2;
+const distSq$1 = distanceSq$1;
 
 /**
  * Divides a vector by its Euclidean length and returns the quotient.
@@ -566,8 +2186,8 @@ const distSq$2 = distanceSq$2;
  * @param {Vec3} [dst] vector to hold result. If not new one is created.
  * @return {Vec3} The normalized vector.
  */
-function normalize$2(v, dst) {
-  dst = dst || new VecType$2(3);
+function normalize$1(v, dst) {
+  dst = dst || new VecType$1(3);
 
   const v0 = v[0];
   const v1 = v[1];
@@ -594,8 +2214,8 @@ function normalize$2(v, dst) {
  * @param {Vec3} [dst] vector to hold result. If not new one is created.
  * @return {Vec3} -v.
  */
-function negate$3(v, dst) {
-  dst = dst || new VecType$2(3);
+function negate$2(v, dst) {
+  dst = dst || new VecType$1(3);
 
   dst[0] = -v[0];
   dst[1] = -v[1];
@@ -610,8 +2230,8 @@ function negate$3(v, dst) {
  * @param {Vec3} [dst] vector to hold result. If not new one is created.
  * @return {Vec3} A copy of v.
  */
-function copy$3(v, dst) {
-  dst = dst || new VecType$2(3);
+function copy$2(v, dst) {
+  dst = dst || new VecType$1(3);
 
   dst[0] = v[0];
   dst[1] = v[1];
@@ -627,7 +2247,7 @@ function copy$3(v, dst) {
  * @return {Vec3} A copy of v.
  * @function
  */
-const clone$3 = copy$3;
+const clone$2 = copy$2;
 
 /**
  * Multiplies a vector by another vector (component-wise); assumes a and
@@ -637,8 +2257,8 @@ const clone$3 = copy$3;
  * @param {Vec3} [dst] vector to hold result. If not new one is created.
  * @return {Vec3} The vector of products of entries of a and b.
  */
-function multiply$3(a, b, dst) {
-  dst = dst || new VecType$2(3);
+function multiply$2(a, b, dst) {
+  dst = dst || new VecType$1(3);
 
   dst[0] = a[0] * b[0];
   dst[1] = a[1] * b[1];
@@ -656,7 +2276,7 @@ function multiply$3(a, b, dst) {
  * @return {Vec3} The vector of products of entries of a and b.
  * @function
  */
-const mul$3 = multiply$3;
+const mul$2 = multiply$2;
 
 /**
  * Divides a vector by another vector (component-wise); assumes a and
@@ -666,8 +2286,8 @@ const mul$3 = multiply$3;
  * @param {Vec3} [dst] vector to hold result. If not new one is created.
  * @return {Vec3} The vector of quotients of entries of a and b.
  */
-function divide$2(a, b, dst) {
-  dst = dst || new VecType$2(3);
+function divide$1(a, b, dst) {
+  dst = dst || new VecType$1(3);
 
   dst[0] = a[0] / b[0];
   dst[1] = a[1] / b[1];
@@ -685,7 +2305,7 @@ function divide$2(a, b, dst) {
  * @param {Vec3} [dst] vector to hold result. If not new one is created.
  * @return {Vec3} The vector of quotients of entries of a and b.
  */
-const div$2 = divide$2;
+const div$1 = divide$1;
 
 /**
  * Creates a random vector
@@ -693,8 +2313,8 @@ const div$2 = divide$2;
  * @param {Vec3} [dst] vector to hold result. If not new one is created.
  * @return {Vec3} The random vector.
  */
-function random$1(scale = 1, dst) {
-  dst = dst || new VecType$2(3);
+function random(scale = 1, dst) {
+  dst = dst || new VecType$1(3);
 
   const angle = Math.random() * 2 * Math.PI;
   const z = Math.random() * 2 - 1;
@@ -711,8 +2331,8 @@ function random$1(scale = 1, dst) {
  * @param {Vec3} [dst] vector to hold result. If not new one is created.
  * @return {Vec3} The zeroed vector.
  */
-function zero$2(dst) {
-  dst = dst || new VecType$2(3);
+function zero$1(dst) {
+  dst = dst || new VecType$1(3);
 
   dst[0] = 0;
   dst[1] = 0;
@@ -729,8 +2349,8 @@ function zero$2(dst) {
  * @param {Vec3} [dst] optional vec3 to store result. If not passed a new one is created.
  * @returns {Vec3} the transformed vector
  */
-function transformMat4$2(v, m, dst) {
-  dst = dst || new VecType$2(3);
+function transformMat4$1(v, m, dst) {
+  dst = dst || new VecType$1(3);
 
   const x = v[0];
   const y = v[1];
@@ -752,8 +2372,8 @@ function transformMat4$2(v, m, dst) {
  * @param {Vec3} [dst] optional vec3 to store result. If not passed a new one is created.
  * @returns {Vec3} the transformed vector
  */
-function transformMat3$1(v, m, dst) {
-  dst = dst || new VecType$2(3);
+function transformMat3(v, m, dst) {
+  dst = dst || new VecType$1(3);
 
   const x = v[0];
   const y = v[1];
@@ -768,51 +2388,51 @@ function transformMat3$1(v, m, dst) {
 
 var vec3 = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  setDefaultType: setDefaultType$4,
-  create: create$3,
-  fromValues: fromValues$2,
-  ceil: ceil$2,
-  floor: floor$2,
-  round: round$2,
-  clamp: clamp$2,
-  add: add$2,
-  addScaled: addScaled$2,
-  angle: angle$1,
-  subtract: subtract$2,
-  sub: sub$2,
-  equalsApproximately: equalsApproximately$3,
-  equals: equals$3,
-  lerp: lerp$2,
-  lerpV: lerpV$2,
-  max: max$2,
-  min: min$2,
-  mulScalar: mulScalar$2,
-  scale: scale$3,
-  divScalar: divScalar$2,
-  inverse: inverse$3,
-  invert: invert$3,
-  cross: cross$1,
-  dot: dot$2,
-  length: length$2,
-  len: len$2,
-  lengthSq: lengthSq$2,
-  lenSq: lenSq$2,
-  distance: distance$2,
-  dist: dist$2,
-  distanceSq: distanceSq$2,
-  distSq: distSq$2,
-  normalize: normalize$2,
-  negate: negate$3,
-  copy: copy$3,
-  clone: clone$3,
-  multiply: multiply$3,
-  mul: mul$3,
-  divide: divide$2,
-  div: div$2,
-  random: random$1,
-  zero: zero$2,
-  transformMat4: transformMat4$2,
-  transformMat3: transformMat3$1
+  setDefaultType: setDefaultType$3,
+  create: create$2,
+  fromValues: fromValues$1,
+  ceil: ceil$1,
+  floor: floor$1,
+  round: round$1,
+  clamp: clamp$1,
+  add: add$1,
+  addScaled: addScaled$1,
+  angle: angle,
+  subtract: subtract$1,
+  sub: sub$1,
+  equalsApproximately: equalsApproximately$2,
+  equals: equals$2,
+  lerp: lerp$1,
+  lerpV: lerpV$1,
+  max: max$1,
+  min: min$1,
+  mulScalar: mulScalar$1,
+  scale: scale$2,
+  divScalar: divScalar$1,
+  inverse: inverse$2,
+  invert: invert$2,
+  cross: cross,
+  dot: dot$1,
+  length: length$1,
+  len: len$1,
+  lengthSq: lengthSq$1,
+  lenSq: lenSq$1,
+  distance: distance$1,
+  dist: dist$1,
+  distanceSq: distanceSq$1,
+  distSq: distSq$1,
+  normalize: normalize$1,
+  negate: negate$2,
+  copy: copy$2,
+  clone: clone$2,
+  multiply: multiply$2,
+  mul: mul$2,
+  divide: divide$1,
+  div: div$1,
+  random: random,
+  zero: zero$1,
+  transformMat4: transformMat4$1,
+  transformMat3: transformMat3
 });
 
 /*
@@ -875,7 +2495,7 @@ let MatType = Float32Array;
  * @param {constructor} ctor the constructor for the type. Either `Float32Array`, 'Float64Array', or `Array`
  * @return {constructor} previous constructor for Mat4
  */
-function setDefaultType$3(ctor) {
+function setDefaultType$2(ctor) {
   const oldType = MatType;
   MatType = ctor;
   return oldType;
@@ -922,7 +2542,7 @@ function setDefaultType$3(ctor) {
  * @param {number} [v15] value for element 15
  * @returns {Mat4} created from values.
  */
-function create$2(
+function create$1(
     v0, v1, v2, v3,
     v4, v5, v6, v7,
     v8, v9, v10, v11,
@@ -985,7 +2605,7 @@ function create$2(
  * @param {Mat4} [dst] matrix to hold result. If not passed a new one is created.
  * @return {Mat4} -m.
  */
-function negate$2(m, dst) {
+function negate$1(m, dst) {
   dst = dst || new MatType(16);
 
   dst[ 0] = -m[ 0];
@@ -1014,7 +2634,7 @@ function negate$2(m, dst) {
  * @param {Mat4} [dst] The matrix. If not passed a new one is created.
  * @return {Mat4} A copy of m.
  */
-function copy$2(m, dst) {
+function copy$1(m, dst) {
   dst = dst || new MatType(16);
 
   dst[ 0] = m[ 0];
@@ -1044,7 +2664,7 @@ function copy$2(m, dst) {
  * @param {Mat4} [dst] The matrix. If not passed a new one is created.
  * @return {Mat4} A copy of m.
  */
-const clone$2 = copy$2;
+const clone$1 = copy$1;
 
 /**
  * Check if 2 matrices are approximately equal
@@ -1052,7 +2672,7 @@ const clone$2 = copy$2;
  * @param {Mat4} b Operand matrix.
  * @returns {bool} true if matrices are approximately equal
  */
-function equalsApproximately$2(a, b) {
+function equalsApproximately$1(a, b) {
   return Math.abs(a[ 0] - b[ 0]) < EPSILON &&
          Math.abs(a[ 1] - b[ 1]) < EPSILON &&
          Math.abs(a[ 2] - b[ 2]) < EPSILON &&
@@ -1077,7 +2697,7 @@ function equalsApproximately$2(a, b) {
  * @param {Mat4} b Operand matrix.
  * @returns {bool} true if matrices are exactly equal
  */
-function equals$2(a, b) {
+function equals$1(a, b) {
   return a[ 0] === b[ 0] &&
          a[ 1] === b[ 1] &&
          a[ 2] === b[ 2] &&
@@ -1205,7 +2825,7 @@ function transpose(m, dst) {
  * @param {Mat4} [dst] matrix to hold result. If not passed a new one is created.
  * @return {Mat4} The inverse of m.
  */
-function inverse$2(m, dst) {
+function inverse$1(m, dst) {
   dst = dst || new MatType(16);
 
   const m00 = m[0 * 4 + 0];
@@ -1347,7 +2967,7 @@ function determinant(m) {
  * @param {Mat4} [dst] matrix to hold result. If not passed a new one is created.
  * @return {Mat4} The inverse of m.
  */
-const invert$2 = inverse$2;
+const invert$1 = inverse$1;
 
 /**
  * Multiplies two 4-by-4 matrices with a on the left and b on the right
@@ -1356,7 +2976,7 @@ const invert$2 = inverse$2;
  * @param {Mat4} [dst] matrix to hold result. If not passed a new one is created.
  * @return {Mat4} The matrix product of a and b.
  */
-function multiply$2(a, b, dst) {
+function multiply$1(a, b, dst) {
   dst = dst || new MatType(16);
 
   const a00 = a[0];
@@ -1420,7 +3040,7 @@ function multiply$2(a, b, dst) {
  * @param {Mat4} [dst] matrix to hold result. If not passed a new one is created.
  * @return {Mat4} The matrix product of a and b.
  */
-const mul$2 = multiply$2;
+const mul$1 = multiply$1;
 
 /**
  * Sets the translation component of a 4-by-4 matrix to the given
@@ -1461,7 +3081,7 @@ function setTranslation(a, v, dst) {
  * @return {Vec3} The translation component of m.
  */
 function getTranslation(m, dst) {
-  dst = dst || create$3();
+  dst = dst || create$2();
   dst[0] = m[12];
   dst[1] = m[13];
   dst[2] = m[14];
@@ -1475,7 +3095,7 @@ function getTranslation(m, dst) {
  * @return {Vec3} The axis component of m.
  */
 function getAxis(m, axis, dst) {
-  dst = dst || create$3();
+  dst = dst || create$2();
   const off = axis * 4;
   dst[0] = m[off + 0];
   dst[1] = m[off + 1];
@@ -1493,7 +3113,7 @@ function getAxis(m, axis, dst) {
  */
 function setAxis(a, v, axis, dst) {
   if (dst !== a) {
-    dst = copy$2(a, dst);
+    dst = copy$1(a, dst);
   }
   const off = axis * 4;
   dst[off + 0] = v[0];
@@ -1508,7 +3128,7 @@ function setAxis(a, v, axis, dst) {
  * @param {Vec3} [dst] The vector to set. If not passed a new one is created.
  */
 function getScaling(m, dst) {
-  dst = dst || create$3();
+  dst = dst || create$2();
 
   const xx = m[0];
   const xy = m[1];
@@ -1682,14 +3302,14 @@ let zAxis;
 function lookAt(eye, target, up, dst) {
   dst = dst || new MatType(16);
 
-  xAxis = xAxis || create$3();
-  yAxis = yAxis || create$3();
-  zAxis = zAxis || create$3();
+  xAxis = xAxis || create$2();
+  yAxis = yAxis || create$2();
+  zAxis = zAxis || create$2();
 
-  normalize$2(
-      subtract$2(eye, target, zAxis), zAxis);
-  normalize$2(cross$1(up, zAxis, xAxis), xAxis);
-  normalize$2(cross$1(zAxis, xAxis, yAxis), yAxis);
+  normalize$1(
+      subtract$1(eye, target, zAxis), zAxis);
+  normalize$1(cross(up, zAxis, xAxis), xAxis);
+  normalize$1(cross(zAxis, xAxis, yAxis), yAxis);
 
   dst[ 0] = xAxis[0];
   dst[ 1] = xAxis[1];
@@ -2213,7 +3833,7 @@ function scaling(v, dst) {
  * @param {Mat4} [dst] matrix to hold result. If not passed a new one is created.
  * @return {Mat4} The scaled matrix.
  */
-function scale$2(m, v, dst) {
+function scale$1(m, v, dst) {
   dst = dst || new MatType(16);
 
   const v0 = v[0];
@@ -2253,7 +3873,7 @@ function scale$2(m, v, dst) {
  * @return {Vec3} The transformed point.
  */
 function transformPoint(m, v, dst) {
-  dst = dst || create$3();
+  dst = dst || create$2();
   const v0 = v[0];
   const v1 = v[1];
   const v2 = v[2];
@@ -2279,7 +3899,7 @@ function transformPoint(m, v, dst) {
  * @return {Vec3} The transformed direction.
  */
 function transformDirection(m, v, dst) {
-  dst = dst || create$3();
+  dst = dst || create$2();
 
   const v0 = v[0];
   const v1 = v[1];
@@ -2307,8 +3927,8 @@ function transformDirection(m, v, dst) {
  * @return {Vec3} The transformed normal.
  */
 function transformNormal(m, v, dst) {
-  dst = dst || create$3();
-  const mi = inverse$2(m);
+  dst = dst || create$2();
+  const mi = inverse$1(m);
   const v0 = v[0];
   const v1 = v[1];
   const v2 = v[2];
@@ -2322,20 +3942,20 @@ function transformNormal(m, v, dst) {
 
 var mat4 = /*#__PURE__*/Object.freeze({
   __proto__: null,
-  setDefaultType: setDefaultType$3,
-  create: create$2,
-  negate: negate$2,
-  copy: copy$2,
-  clone: clone$2,
-  equalsApproximately: equalsApproximately$2,
-  equals: equals$2,
+  setDefaultType: setDefaultType$2,
+  create: create$1,
+  negate: negate$1,
+  copy: copy$1,
+  clone: clone$1,
+  equalsApproximately: equalsApproximately$1,
+  equals: equals$1,
   identity: identity,
   transpose: transpose,
-  inverse: inverse$2,
+  inverse: inverse$1,
   determinant: determinant,
-  invert: invert$2,
-  multiply: multiply$2,
-  mul: mul$2,
+  invert: invert$1,
+  multiply: multiply$1,
+  mul: mul$1,
   setTranslation: setTranslation,
   getTranslation: getTranslation,
   getAxis: getAxis,
@@ -2358,791 +3978,10 @@ var mat4 = /*#__PURE__*/Object.freeze({
   axisRotate: axisRotate,
   rotate: rotate,
   scaling: scaling,
-  scale: scale$2,
+  scale: scale$1,
   transformPoint: transformPoint,
   transformDirection: transformDirection,
   transformNormal: transformNormal
-});
-
-/*
- * Copyright 2022 Gregg Tavares
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
- * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- */
-
-
-/**
- *
- * Vec2 math functions.
- *
- * Almost all functions take an optional `dst` argument. If it is not passed in the
- * functions will create a new Vec2. In other words you can do this
- *
- *     const v = vec2.cross(v1, v2);  // Creates a new Vec2 with the cross product of v1 x v2.
- *
- * or
- *
- *     const v = vec2.create();
- *     vec2.cross(v1, v2, v);  // Puts the cross product of v1 x v2 in v
- *
- * The first style is often easier but depending on where it's used it generates garbage where
- * as there is almost never allocation with the second style.
- *
- * It is always safe to pass any vector as the destination. So for example
- *
- *     vec2.cross(v1, v2, v1);  // Puts the cross product of v1 x v2 in v1
- *
- * @module vec2
- */
-
-let VecType$1 = Float32Array;
-
-/**
- * A JavaScript array with 2 values, Float32Array with 2 values, or a Float64Array with 2 values.
- * When created by the library will create the default type which is `Float32Array`
- * but can be set by calling {@link vec2.setDefaultType}.
- * @typedef {(number[]|Float32Array|Float64Array)} Vec2
- */
-
-/**
- * Sets the type this library creates for a Vec2
- * @param {constructor} ctor the constructor for the type. Either `Float32Array`, 'Float64Array', or `Array`
- * @return {constructor} previous constructor for Vec2
- */
-function setDefaultType$2(ctor) {
-  const oldType = VecType$1;
-  VecType$1 = ctor;
-  return oldType;
-}
-
-/**
- * Creates a Vec2; may be called with x, y, z to set initial values.
- *
- * Note: Since passing in a raw JavaScript array
- * is valid in all circumstances, if you want to
- * force a JavaScript array into a Vec2's specified type
- * it would be faster to use
- *
- * ```
- * const v = vec2.clone(someJSArray);
- * ```
- *
- * Note: a consequence of the implementation is if your Vec2Type = `Array`
- * instead of `Float32Array` or `Float64Array` then any values you
- * don't pass in will be undefined. Usually this is not an issue since
- * (a) using `Array` is rare and (b) using `vec2.create` is usually used
- * to create a Vec2 to be filled out as in
- *
- * ```
- * const sum = vec2.create();
- * vec2.add(v1, v2, sum);
- * ```
- *
- * @param {number} [x] Initial x value.
- * @param {number} [y] Initial y value.
- * @return {Vec2} the created vector
- */
-function create$1(x, y) {
-  const dst = new VecType$1(2);
-  if (x !== undefined) {
-    dst[0] = x;
-    if (y !== undefined) {
-      dst[1] = y;
-    }
-  }
-  return dst;
-}
-
-/**
- * Creates a Vec2; may be called with x, y, z to set initial values. (same as create)
- * @param {number} [x] Initial x value.
- * @param {number} [y] Initial y value.
- * @return {Vec2} the created vector
- */
-const fromValues$1 = create$1;
-
-/**
- * Applies Math.ceil to each element of vector
- * @param {Vec2} v Operand vector.
- * @param {Vec2} [dst] vector to hold result. If not new one is created.
- * @return {Vec2} A vector that is the ceil of each element of v.
- */
-function ceil$1(v, dst) {
-  dst = dst || new VecType$1(2);
-
-  dst[0] = Math.ceil(v[0]);
-  dst[1] = Math.ceil(v[1]);
-
-  return dst;
-}
-
-/**
- * Applies Math.floor to each element of vector
- * @param {Vec2} v Operand vector.
- * @param {Vec2} [dst] vector to hold result. If not new one is created.
- * @return {Vec2} A vector that is the floor of each element of v.
- */
-function floor$1(v, dst) {
-  dst = dst || new VecType$1(2);
-
-  dst[0] = Math.floor(v[0]);
-  dst[1] = Math.floor(v[1]);
-
-  return dst;
-}
-
-/**
- * Applies Math.round to each element of vector
- * @param {Vec2} v Operand vector.
- * @param {Vec2} [dst] vector to hold result. If not new one is created.
- * @return {Vec2} A vector that is the round of each element of v.
- */
-function round$1(v, dst) {
-  dst = dst || new VecType$1(2);
-
-  dst[0] = Math.round(v[0]);
-  dst[1] = Math.round(v[1]);
-
-  return dst;
-}
-
-/**
- * Clamp each element of vector between min and max
- * @param {Vec2} v Operand vector.
- * @param {number} [max] Min value, default 0
- * @param {number} [min] Max value, default 1
- * @param {Vec2} [dst] vector to hold result. If not new one is created.
- * @return {Vec2} A vector that the clamped value of each element of v.
- */
-function clamp$1(v, min = 0, max = 1, dst) {
-  dst = dst || new VecType$1(2);
-
-  dst[0] = Math.min(max, Math.max(min, v[0]));
-  dst[1] = Math.min(max, Math.max(min, v[1]));
-
-  return dst;
-}
-
-/**
- * Adds two vectors; assumes a and b have the same dimension.
- * @param {Vec2} a Operand vector.
- * @param {Vec2} b Operand vector.
- * @param {Vec2} [dst] vector to hold result. If not new one is created.
- * @return {Vec2} A vector that is the sum of a and b.
- */
-function add$1(a, b, dst) {
-  dst = dst || new VecType$1(2);
-
-  dst[0] = a[0] + b[0];
-  dst[1] = a[1] + b[1];
-
-  return dst;
-}
-
-/**
- * Adds two vectors, scaling the 2nd; assumes a and b have the same dimension.
- * @param {Vec2} a Operand vector.
- * @param {Vec2} b Operand vector.
- * @param {number} scale Amount to scale b
- * @param {Vec2} [dst] vector to hold result. If not new one is created.
- * @return {Vec2} A vector that is the sum of a + b * scale.
- */
-function addScaled$1(a, b, scale, dst) {
-  dst = dst || new VecType$1(2);
-
-  dst[0] = a[0] + b[0] * scale;
-  dst[1] = a[1] + b[1] * scale;
-
-  return dst;
-}
-
-/**
- * Returns the angle in radians between two vectors.
- * @param {Vec2} a Operand vector.
- * @param {Vec2} b Operand vector.
- * @return {number} The angle in radians between the 2 vectors.
- */
-function angle(a, b) {
-  const ax = a[0];
-  const ay = a[1];
-  const bx = a[0];
-  const by = a[1];
-  const mag1 = Math.sqrt(ax * ax + ay * ay);
-  const mag2 = Math.sqrt(bx * bx + by * by);
-  const mag = mag1 * mag2;
-  const cosine = mag && dot$1(a, b) / mag;
-  return Math.acos(cosine);
-}
-
-/**
- * Subtracts two vectors.
- * @param {Vec2} a Operand vector.
- * @param {Vec2} b Operand vector.
- * @param {Vec2} [dst] vector to hold result. If not new one is created.
- * @return {Vec2} A vector that is the difference of a and b.
- */
-function subtract$1(a, b, dst) {
-  dst = dst || new VecType$1(2);
-
-  dst[0] = a[0] - b[0];
-  dst[1] = a[1] - b[1];
-
-  return dst;
-}
-
-/**
- * Subtracts two vectors.
- * @function
- * @param {Vec2} a Operand vector.
- * @param {Vec2} b Operand vector.
- * @param {Vec2} [dst] vector to hold result. If not new one is created.
- * @return {Vec2} A vector that is the difference of a and b.
- */
-const sub$1 = subtract$1;
-
-/**
- * Check if 2 vectors are approximately equal
- * @param {Vec2} a Operand vector.
- * @param {Vec2} b Operand vector.
- * @returns {bool} true if vectors are approximately equal
- */
-function equalsApproximately$1(a, b) {
-  return Math.abs(a[0] - b[0]) < EPSILON &&
-         Math.abs(a[1] - b[1]) < EPSILON;
-}
-
-/**
- * Check if 2 vectors are exactly equal
- * @param {Vec2} a Operand vector.
- * @param {Vec2} b Operand vector.
- * @returns {bool} true if vectors are exactly equal
- */
-function equals$1(a, b) {
-  return a[0] === b[0] && a[1] === b[1];
-}
-
-/**
- * Performs linear interpolation on two vectors.
- * Given vectors a and b and interpolation coefficient t, returns
- * a + t * (b - a).
- * @param {Vec2} a Operand vector.
- * @param {Vec2} b Operand vector.
- * @param {number} t Interpolation coefficient.
- * @param {Vec2} [dst] vector to hold result. If not new one is created.
- * @return {Vec2} The linear interpolated result.
- */
-function lerp$1(a, b, t, dst) {
-  dst = dst || new VecType$1(2);
-
-  dst[0] = a[0] + t * (b[0] - a[0]);
-  dst[1] = a[1] + t * (b[1] - a[1]);
-
-  return dst;
-}
-
-/**
- * Performs linear interpolation on two vectors.
- * Given vectors a and b and interpolation coefficient vector t, returns
- * a + t * (b - a).
- * @param {Vec2} a Operand vector.
- * @param {Vec2} b Operand vector.
- * @param {Vec2} t Interpolation coefficients vector.
- * @param {Vec2} [dst] vector to hold result. If not new one is created.
- * @return {Vec2} the linear interpolated result.
- */
-function lerpV$1(a, b, t, dst) {
-  dst = dst || new VecType$1(2);
-
-  dst[0] = a[0] + t[0] * (b[0] - a[0]);
-  dst[1] = a[1] + t[1] * (b[1] - a[1]);
-
-  return dst;
-}
-
-/**
- * Return max values of two vectors.
- * Given vectors a and b returns
- * [max(a[0], b[0]), max(a[1], b[1]), max(a[2], b[2])].
- * @param {Vec2} a Operand vector.
- * @param {Vec2} b Operand vector.
- * @param {Vec2} [dst] vector to hold result. If not new one is created.
- * @return {Vec2} The max components vector.
- */
-function max$1(a, b, dst) {
-  dst = dst || new VecType$1(2);
-
-  dst[0] = Math.max(a[0], b[0]);
-  dst[1] = Math.max(a[1], b[1]);
-
-  return dst;
-}
-
-/**
- * Return min values of two vectors.
- * Given vectors a and b returns
- * [min(a[0], b[0]), min(a[1], b[1]), min(a[2], b[2])].
- * @param {Vec2} a Operand vector.
- * @param {Vec2} b Operand vector.
- * @param {Vec2} [dst] vector to hold result. If not new one is created.
- * @return {Vec2} The min components vector.
- */
-function min$1(a, b, dst) {
-  dst = dst || new VecType$1(2);
-
-  dst[0] = Math.min(a[0], b[0]);
-  dst[1] = Math.min(a[1], b[1]);
-
-  return dst;
-}
-
-/**
- * Multiplies a vector by a scalar.
- * @param {Vec2} v The vector.
- * @param {number} k The scalar.
- * @param {Vec2} [dst] vector to hold result. If not new one is created.
- * @return {Vec2} The scaled vector.
- */
-function mulScalar$1(v, k, dst) {
-  dst = dst || new VecType$1(2);
-
-  dst[0] = v[0] * k;
-  dst[1] = v[1] * k;
-
-  return dst;
-}
-
-/**
- * Multiplies a vector by a scalar. (same as mulScalar)
- * @function
- * @param {Vec2} v The vector.
- * @param {number} k The scalar.
- * @param {Vec2} [dst] vector to hold result. If not new one is created.
- * @return {Vec2} The scaled vector.
- */
-const scale$1 = mulScalar$1;
-
-/**
- * Divides a vector by a scalar.
- * @param {Vec2} v The vector.
- * @param {number} k The scalar.
- * @param {Vec2} [dst] vector to hold result. If not new one is created.
- * @return {Vec2} The scaled vector.
- */
-function divScalar$1(v, k, dst) {
-  dst = dst || new VecType$1(2);
-
-  dst[0] = v[0] / k;
-  dst[1] = v[1] / k;
-
-  return dst;
-}
-
-/**
- * Inverse a vector.
- * @param {Vec2} v The vector.
- * @param {Vec2} [dst] vector to hold result. If not new one is created.
- * @return {Vec2} The inverted vector.
- */
-function inverse$1(v, dst) {
-  dst = dst || new VecType$1(2);
-
-  dst[0] = 1 / v[0];
-  dst[1] = 1 / v[1];
-
-  return dst;
-}
-
-/**
- * Invert a vector. (same as inverse)
- * @function
- * @param {Vec2} v The vector.
- * @param {Vec2} [dst] vector to hold result. If not new one is created.
- * @return {Vec2} The inverted vector.
- */
-const invert$1 = inverse$1;
-
-/**
- * Computes the cross product of two vectors; assumes both vectors have
- * three entries.
- * @param {Vec2} a Operand vector.
- * @param {Vec2} b Operand vector.
- * @param {Vec3} [dst] vector to hold result. If not new one is created.
- * @return {Vec3} The vector of a cross b.
- */
-function cross(a, b, dst) {
-  dst = dst || new VecType$1(3);
-  const z = a[0] * b[1] - a[1] * b[0];
-  dst[0] = 0;
-  dst[1] = 0;
-  dst[2] = z;
-
-  return dst;
-}
-
-/**
- * Computes the dot product of two vectors; assumes both vectors have
- * three entries.
- * @param {Vec2} a Operand vector.
- * @param {Vec2} b Operand vector.
- * @return {number} dot product
- */
-function dot$1(a, b) {
-  return a[0] * b[0] + a[1] * b[1];
-}
-
-/**
- * Computes the length of vector
- * @param {Vec2} v vector.
- * @return {number} length of vector.
- */
-function length$1(v) {
-  const v0 = v[0];
-  const v1 = v[1];
-  return Math.sqrt(v0 * v0 + v1 * v1);
-}
-
-/**
- * Computes the length of vector (same as length)
- * @function
- * @param {Vec2} v vector.
- * @return {number} length of vector.
- */
-const len$1 = length$1;
-
-/**
- * Computes the square of the length of vector
- * @param {Vec2} v vector.
- * @return {number} square of the length of vector.
- */
-function lengthSq$1(v) {
-  const v0 = v[0];
-  const v1 = v[1];
-  return v0 * v0 + v1 * v1;
-}
-
-/**
- * Computes the square of the length of vector (same as lengthSq)
- * @function
- * @param {Vec2} v vector.
- * @return {number} square of the length of vector.
- */
-const lenSq$1 = lengthSq$1;
-
-/**
- * Computes the distance between 2 points
- * @param {Vec2} a vector.
- * @param {Vec2} b vector.
- * @return {number} distance between a and b
- */
-function distance$1(a, b) {
-  const dx = a[0] - b[0];
-  const dy = a[1] - b[1];
-  return Math.sqrt(dx * dx + dy * dy);
-}
-
-/**
- * Computes the distance between 2 points (same as distance)
- * @function
- * @param {Vec2} a vector.
- * @param {Vec2} b vector.
- * @return {number} distance between a and b
- */
-const dist$1 = distance$1;
-
-/**
- * Computes the square of the distance between 2 points
- * @param {Vec2} a vector.
- * @param {Vec2} b vector.
- * @return {number} square of the distance between a and b
- */
-function distanceSq$1(a, b) {
-  const dx = a[0] - b[0];
-  const dy = a[1] - b[1];
-  return dx * dx + dy * dy;
-}
-
-/**
- * Computes the square of the distance between 2 points (same as distanceSq)
- * @function
- * @param {Vec2} a vector.
- * @param {Vec2} b vector.
- * @return {number} square of the distance between a and b
- */
-const distSq$1 = distanceSq$1;
-
-/**
- * Divides a vector by its Euclidean length and returns the quotient.
- * @param {Vec2} v The vector.
- * @param {Vec2} [dst] vector to hold result. If not new one is created.
- * @return {Vec2} The normalized vector.
- */
-function normalize$1(v, dst) {
-  dst = dst || new VecType$1(2);
-
-  const v0 = v[0];
-  const v1 = v[1];
-  const len = Math.sqrt(v0 * v0 + v1 * v1);
-
-  if (len > 0.00001) {
-    dst[0] = v0 / len;
-    dst[1] = v1 / len;
-  } else {
-    dst[0] = 0;
-    dst[1] = 0;
-  }
-
-  return dst;
-}
-
-/**
- * Negates a vector.
- * @param {Vec2} v The vector.
- * @param {Vec2} [dst] vector to hold result. If not new one is created.
- * @return {Vec2} -v.
- */
-function negate$1(v, dst) {
-  dst = dst || new VecType$1(2);
-
-  dst[0] = -v[0];
-  dst[1] = -v[1];
-
-  return dst;
-}
-
-/**
- * Copies a vector. (same as clone)
- * @param {Vec2} v The vector.
- * @param {Vec2} [dst] vector to hold result. If not new one is created.
- * @return {Vec2} A copy of v.
- */
-function copy$1(v, dst) {
-  dst = dst || new VecType$1(2);
-
-  dst[0] = v[0];
-  dst[1] = v[1];
-
-  return dst;
-}
-
-/**
- * Clones a vector. (same as copy)
- * @param {Vec2} v The vector.
- * @param {Vec2} [dst] vector to hold result. If not new one is created.
- * @return {Vec2} A copy of v.
- * @function
- */
-const clone$1 = copy$1;
-
-/**
- * Multiplies a vector by another vector (component-wise); assumes a and
- * b have the same length.
- * @param {Vec2} a Operand vector.
- * @param {Vec2} b Operand vector.
- * @param {Vec2} [dst] vector to hold result. If not new one is created.
- * @return {Vec2} The vector of products of entries of a and b.
- */
-function multiply$1(a, b, dst) {
-  dst = dst || new VecType$1(2);
-
-  dst[0] = a[0] * b[0];
-  dst[1] = a[1] * b[1];
-
-  return dst;
-}
-
-/**
- * Multiplies a vector by another vector (component-wise); assumes a and
- * b have the same length. (same as mul)
- * @param {Vec2} a Operand vector.
- * @param {Vec2} b Operand vector.
- * @param {Vec2} [dst] vector to hold result. If not new one is created.
- * @return {Vec2} The vector of products of entries of a and b.
- * @function
- */
-const mul$1 = multiply$1;
-
-/**
- * Divides a vector by another vector (component-wise); assumes a and
- * b have the same length.
- * @param {Vec2} a Operand vector.
- * @param {Vec2} b Operand vector.
- * @param {Vec2} [dst] vector to hold result. If not new one is created.
- * @return {Vec2} The vector of quotients of entries of a and b.
- */
-function divide$1(a, b, dst) {
-  dst = dst || new VecType$1(2);
-
-  dst[0] = a[0] / b[0];
-  dst[1] = a[1] / b[1];
-
-  return dst;
-}
-
-/**
- * Divides a vector by another vector (component-wise); assumes a and
- * b have the same length. (same as divide)
- * @function
- * @param {Vec2} a Operand vector.
- * @param {Vec2} b Operand vector.
- * @param {Vec2} [dst] vector to hold result. If not new one is created.
- * @return {Vec2} The vector of quotients of entries of a and b.
- */
-const div$1 = divide$1;
-
-/**
- * Creates a random unit vector * scale
- * @param {number} scale Default 1
- * @param {Vec2} [dst] vector to hold result. If not new one is created.
- * @return {Vec2} The random vector.
- */
-function random(scale = 1, dst) {
-  dst = dst || new VecType$1(2);
-
-  const angle = Math.random() * 2 * Math.PI;
-  dst[0] = Math.cos(angle) * scale;
-  dst[1] = Math.sin(angle) * scale;
-
-  return dst;
-}
-
-/**
- * Zero's a vector
- * @param {Vec2} [dst] vector to hold result. If not new one is created.
- * @return {Vec2} The zeroed vector.
- */
-function zero$1(dst) {
-  dst = dst || new VecType$1(2);
-
-  dst[0] = 0;
-  dst[1] = 0;
-
-  return dst;
-}
-
-
-/**
- * transform Vec2 by 4x4 matrix
- * @param {Vec2} v the vector
- * @param {Mat4} m The matrix.
- * @param {Vec2} [dst] optional Vec2 to store result. If not passed a new one is created.
- * @returns {Vec2} the transformed vector
- */
-function transformMat4$1(v, m, dst) {
-  dst = dst || new VecType$1(2);
-
-  const x = v[0];
-  const y = v[1];
-
-  dst[0] = x * m[0] + y * m[4] + m[12];
-  dst[1] = x * m[1] + y * m[5] + m[13];
-
-  return dst;
-}
-
-/**
- * Transforms vec4 by 3x3 matrix
- *
- * @param {Vec2} v the vector
- * @param {Mat3} m The matrix.
- * @param {Vec2} [dst] optional Vec2 to store result. If not passed a new one is created.
- * @returns {Vec2} the transformed vector
- */
-function transformMat3(v, m, dst) {
-  dst = dst || new VecType$1(2);
-
-  const x = v[0];
-  const y = v[1];
-
-  dst[0] = m[0] * x + m[4] * y + m[8];
-  dst[1] = m[1] * x + m[5] * y + m[9];
-
-  return dst;
-}
-
-/**
- * Transforms vec4 by 3x3 matrix
- *
- * @param {Vec2} v the vector
- * @param {Mat2} m The matrix.
- * @param {Vec2} [dst] optional Vec2 to store result. If not passed a new one is created.
- * @returns {Vec2} the transformed vector
- */
-function transformMat2(v, m, dst) {
-  dst = dst || new VecType$1(2);
-
-  const x = v[0];
-  const y = v[1];
-
-  dst[0] = m[0] * x + m[2] * y;
-  dst[1] = m[1] * x + m[3] * y;
-
-  return dst;
-}
-
-var vec2 = /*#__PURE__*/Object.freeze({
-  __proto__: null,
-  setDefaultType: setDefaultType$2,
-  create: create$1,
-  fromValues: fromValues$1,
-  ceil: ceil$1,
-  floor: floor$1,
-  round: round$1,
-  clamp: clamp$1,
-  add: add$1,
-  addScaled: addScaled$1,
-  angle: angle,
-  subtract: subtract$1,
-  sub: sub$1,
-  equalsApproximately: equalsApproximately$1,
-  equals: equals$1,
-  lerp: lerp$1,
-  lerpV: lerpV$1,
-  max: max$1,
-  min: min$1,
-  mulScalar: mulScalar$1,
-  scale: scale$1,
-  divScalar: divScalar$1,
-  inverse: inverse$1,
-  invert: invert$1,
-  cross: cross,
-  dot: dot$1,
-  length: length$1,
-  len: len$1,
-  lengthSq: lengthSq$1,
-  lenSq: lenSq$1,
-  distance: distance$1,
-  dist: dist$1,
-  distanceSq: distanceSq$1,
-  distSq: distSq$1,
-  normalize: normalize$1,
-  negate: negate$1,
-  copy: copy$1,
-  clone: clone$1,
-  multiply: multiply$1,
-  mul: mul$1,
-  divide: divide$1,
-  div: div$1,
-  random: random,
-  zero: zero$1,
-  transformMat4: transformMat4$1,
-  transformMat3: transformMat3,
-  transformMat2: transformMat2
 });
 
 /*
@@ -3882,10 +4721,11 @@ var vec4 = /*#__PURE__*/Object.freeze({
  * @param {constructor} ctor the constructor for the type. Either `Float32Array`, 'Float64Array', or `Array`
  */
 function setDefaultType(ctor) {
-  setDefaultType$3(ctor);
-  setDefaultType$2(ctor);
   setDefaultType$4(ctor);
+  setDefaultType$2(ctor);
+  setDefaultType$5(ctor);
+  setDefaultType$3(ctor);
   setDefaultType$1(ctor);
 }
 
-export { mat4, setDefaultType, vec2, vec3, vec4 };
+export { mat3, mat4, setDefaultType, utils, vec2, vec3, vec4 };
