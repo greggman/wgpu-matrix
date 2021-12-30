@@ -1,5 +1,6 @@
-import * as mat3 from '../../src/mat3.js';
-import * as utils from '../../src/utils.js';
+//import * as mat3 from '../../src/mat3.js';
+//import * as utils from '../../src/utils.js';
+/* global mat3 utils */
 
 import {
   assertEqual,
