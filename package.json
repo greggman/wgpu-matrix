@@ -12,11 +12,11 @@
     "test": "node test/puppeteer.js",
     "check-ci": "npm run lint && npm run build && npm test",
     "testts": "tsc --project test/src/ts/",
-    "pre-push": "grunt eslint",
-    "lint": "grunt eslint",
-    "build": "grunt build",
-    "buildts": "grunt buildts",
-    "builddocs": "grunt docs"
+    "pre-push": "grunt --gruntfile Gruntfile.cjs eslint",
+    "lint": "grunt --gruntfile Gruntfile.cjs eslint",
+    "build": "grunt --gruntfile Gruntfile.cjs build",
+    "buildts": "grunt --gruntfile Gruntfile.cjs buildts",
+    "builddocs": "grunt --gruntfile Gruntfile.cjs docs"
   },
   "repository": {
     "type": "git",
