@@ -1,7 +1,7 @@
 {
   "name": "wgpu-matrix",
   "version": "0.0.1",
-  "description": "matrix math library for WebGPU",
+  "description": "fast matrix math library for WebGPU",
   "main": "dist/0.x/wgpu-matrix.module.js",
   "module": "dist/0.x/wgpu-matrix.module.js",
   "type": "module",
@@ -13,7 +13,7 @@
     "test": "node test/puppeteer.js",
     "check-ci": "npm run lint && npm run build && npm test",
     "testts": "tsc --project test/src/ts/",
-    "pre-push": "grunt --gruntfile Gruntfile.cjs eslint",
+    "pre-push": "npm run lint && npm test",
     "lint": "grunt --gruntfile Gruntfile.cjs eslint",
     "build": "grunt --gruntfile Gruntfile.cjs build",
     "buildts": "grunt --gruntfile Gruntfile.cjs buildts",
