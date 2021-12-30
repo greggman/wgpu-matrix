@@ -55,16 +55,16 @@ mat4.scale(m, [1, 2, 3], m);        // m = m * scaling([1, 2, 3])
 
 or via npm
 
-```
+```sh
 npm install --save wgpu-matrix
 ```
 
 then using a build process
 
-```
+```js
 import {vec3, mat3} from 'wgpu-matrix';
 
-... etc ...
+// ... etc ...
 ```
 
 [Example](https://codesandbox.io/s/cocky-bogdan-bwq5x?file=/src/index.js)
