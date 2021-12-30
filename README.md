@@ -32,25 +32,25 @@ of each function. One generates a translation, rotation, or scaling matrix.
 The other translates, rotates, or scales a matrix.
 
 ```js
-const t = mat4.translation([1, 2, 3]);    // generates a translation matrix
-const r = mat4.rotationX(Math.PI * 0.5);  // generates a rotation matrix
-const s = mat4.scaling([1, 2, 3]);        // generates a scaling matrix
+const t = mat4.translation([1, 2, 3]);    // a translation matrix
+const r = mat4.rotationX(Math.PI * 0.5);  // a rotation matrix
+const s = mat4.scaling([1, 2, 3]);        // a scaling matrix
 ```
 
 ```js
-const m = mat4.create();
-const t = mat4.translate(m, [1, 2, 3]);    // generates m translated
-const r = mat4.rotateX(m, Math.PI * 0.5);  // generates m rotated
-const s = mat4.scale(m, [1, 2, 3]);        // generates m scaled
+const m = mat4.identity();
+const t = mat4.translate(m, [1, 2, 3]);    // m * translation([1, 2, 3])
+const r = mat4.rotateX(m, Math.PI * 0.5);  // m * rotationX(Math.PI * 0.5)
+const s = mat4.scale(m, [1, 2, 3]);        // m * scaling([1, 2, 3])
 ```
 
 Functions take an optional destination to hold the result.
 
 ```js
-const m = mat4.create();
-mat4.translate(m, [1, 2, 3], m);    // translates m
-mat4.rotateX(m, Math.PI * 0.5, m);  // rotates m
-mat4.scale(m, [1, 2, 3], m);        // scales m
+const m = mat4.identity();
+mat4.translate(m, [1, 2, 3], m);    // m = m * translation([1, 2, 3])
+mat4.rotateX(m, Math.PI * 0.5, m);  // m = m * rotationX(Math.PI * 0.5)
+mat4.scale(m, [1, 2, 3], m);        // m = m * scaling([1, 2, 3])
 ```
 
 ## Download
