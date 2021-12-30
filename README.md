@@ -1,9 +1,12 @@
 # wgpu-matrix
 
+[![NPM Package][npm]][npm-url]
+
 Fast 3d math library for webgpu
 
 * [Docs](https://wgpu-matrix.org/docs)
 * [Repo](https://github.com/greggman/wgpu-matrix)
+* [Tests](https://wgpu-matrix.org/test/)
 
 ## Usage
 
@@ -51,6 +54,17 @@ const m = mat4.identity();
 mat4.translate(m, [1, 2, 3], m);    // m = m * translation([1, 2, 3])
 mat4.rotateX(m, Math.PI * 0.5, m);  // m = m * rotationX(Math.PI * 0.5)
 mat4.scale(m, [1, 2, 3], m);        // m = m * scaling([1, 2, 3])
+```
+
+There is also the minified version
+
+```js
+import {
+  vec3,
+  mat4,
+} from 'https://wgpu-matrix.org/dist/0.x/wgpu-matrix.module.min.js';
+
+// ... etc ...
 ```
 
 or via npm
@@ -177,3 +191,36 @@ might bother to switch to the performant style.
 
 As the saying goes [*premature optimization is the root of all evil.*](https://softwareengineering.stackexchange.com/questions/80084/is-premature-optimization-really-the-root-of-all-evil) 😉
 
+## Development
+
+```sh
+git clone https://github.com/greggman/wgpu-matrix.git
+cd wgpu-matrix
+npm i
+npm run build
+npm test
+```
+
+You can run tests in the browser by starting a local server
+
+```sh
+npx servez
+```
+
+Now go to wherever your server serves pages. In the case of `servez` that's
+probably [http://localhost:8080/test/](http://localhost:8080/test/).
+
+By default the tests test the minified version. To test the source use `src=true`
+as in [http://localhost:8080/test/?src=true](http://localhost:8080/test/src=true).
+
+To limit which tests are run use `grep=<regex>`. For example
+[http://localhost:8080/test/?src=true&grep=mat3.*?translate](http://localhost:8080/test/src=true&grep=mat3.*?translate)
+runs only tests with `mat3` followed by `translate` in the name of test.
+
+## License
+
+[MIT](LICENSE.md)
+
+
+[npm]: https://img.shields.io/npm/v/wgpu-matrix
+[npm-url]: https://www.npmjs.com/package/wgpu-matrix
