@@ -4,6 +4,7 @@
 
 const path   = require('path');
 const fs     = require('fs');
+const {terser} = require('rollup-plugin-terser');
 
 const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), {encoding: 'utf8'}));
 const verDir  = /^(\d+\.)/.exec(pkg.version)[1] + 'x';
@@ -52,16 +53,28 @@ module.exports = function(grunt) {
       },
     },
     rollup: {
-      options: {
-        plugins: [
-        ],
-        format: 'es',
-        indent: '  ',
-        banner: () => `/* ${getLicense(pkg)} */`,
-      },
-      files: {
+      main: {
+        options: {
+          plugins: [
+          ],
+          format: 'es',
+          indent: '  ',
+          banner: () => `/* ${getLicense(pkg)} */`,
+        },
         src: 'src/wgpu-matrix.js',
         dest: `dist/${verDir}/wgpu-matrix.module.js`,
+      },
+      min: {
+        options: {
+          plugins: [
+            terser({mangle: false}),
+          ],
+          format: 'es',
+          indent: '  ',
+          banner: () => `/* ${getLicense(pkg)} */`,
+        },
+        src: 'src/wgpu-matrix.js',
+        dest: `dist/${verDir}/wgpu-matrix.module.min.js`,
       },
     },
     eslint: {
