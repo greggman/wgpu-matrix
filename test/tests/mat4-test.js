@@ -1,5 +1,4 @@
-import * as mat4 from '../../src/mat4.js';
-import * as utils from '../../src/utils.js';
+/* global mat4 utils */
 
 import {
   assertEqual,

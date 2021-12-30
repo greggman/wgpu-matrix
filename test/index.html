@@ -20,7 +20,6 @@
 
       window.testsPromiseInfo = makePromise();
     </script>
-    <!--<script src="../node_modules/chai/chai.js"></script>-->
     <script src="mocha.js"></script>
     <script>
     /* global mocha */
@@ -32,9 +31,11 @@
       if (query.timeout !== undefined) {
         mocha.timeout(query.timeout);
       }
-      //if (typeof chai === 'undefined') {
-      //  await loadScript('https://cdnjs.cloudflare.com/ajax/libs/chai/4.2.0/chai.min.js');
-      //}
+
+      const libPath = query.src ? '../src/wgpu-matrix.js' : '../dist/0.x/wgpu-matrix.module.js';
+      const wgpuMatrix = await import(libPath);
+      Object.assign(window, wgpuMatrix);
+
       loadScript('index.js', 'module');
     }
 

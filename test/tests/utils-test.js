@@ -1,4 +1,4 @@
-import * as utils from '../../src/utils.js';
+/* global utils */
 
 import {
   assertEqual,

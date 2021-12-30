@@ -1,5 +1,4 @@
-import * as vec4 from '../../src/vec4.js';
-import * as utils from '../../src/utils.js';
+/* global vec4 utils */
 
 import {
   assertEqual,
