@@ -57,7 +57,7 @@ function check(Type) {
       // correct result
       d = vec4.clone(v);
       // clone args to make sure we don't overwrite first arg
-      const bOrig = args.map(b => vec4.clone(b));
+      const bOrig = args.map(b => b.slice());
       c = func(d, ...args, d);
       assertStrictEqual(c, d);
       elementsEqual(c, expected);
@@ -346,15 +346,15 @@ function check(Type) {
 
     it('should transform by 4x4', () => {
       const expected = [17, 24, 33, 4];
-      testV4WithAndWithoutDest((a, dst) => {
-        const m = [
-          1, 0, 0, 0,
-          0, 2, 0, 0,
-          0, 0, 3, 0,
-          4, 5, 6, 1,
-        ];
-        return vec4.transformMat4(a, m, dst);
-      }, expected, [1, 2, 3, 4]);
+      const m = [
+        1, 0, 0, 0,
+        0, 2, 0, 0,
+        0, 0, 3, 0,
+        4, 5, 6, 1,
+      ];
+      testV4WithAndWithoutDest((v, mat, dst) => {
+        return vec4.transformMat4(v, mat, dst);
+      }, expected, [1, 2, 3, 4], m);
     });
 
     it('should zero', () => {

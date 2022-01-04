@@ -1,4 +1,4 @@
-/* global mat4 utils */
+/* global mat4 utils vec3 */
 
 import {
   assertEqual,
@@ -404,8 +404,8 @@ function check(Type) {
       const zNear = 0.1;
       const zFar = 10.0;
       const m = mat4.perspective(fov, aspect, zNear, zFar);
-      shouldBeCloseArray(mat4.transformPoint(m, [0, 0, -zNear]), [0, 0, 0], 0.000001);
-      shouldBeCloseArray(mat4.transformPoint(m, [0, 0, -zFar]), [0, 0, 1], 0.000001);
+      shouldBeCloseArray(vec3.transformMat4([0, 0, -zNear], m), [0, 0, 0], 0.000001);
+      shouldBeCloseArray(vec3.transformMat4([0, 0, -zFar], m), [0, 0, 1], 0.000001);
     });
 
     it('should compute ortho', () => {
@@ -449,8 +449,8 @@ function check(Type) {
       const near = 15;
       const far = 25;
       const m = mat4.ortho(left, right, bottom, top, near, far);
-      shouldBeCloseArray(mat4.transformPoint(m, [left, bottom, -near]), [-1, -1, 0], 0.000001);
-      shouldBeCloseArray(mat4.transformPoint(m, [right, top, -far]), [1, 1, 1], 0.000001);
+      shouldBeCloseArray(vec3.transformMat4([left, bottom, -near], m), [-1, -1, 0], 0.000001);
+      shouldBeCloseArray(vec3.transformMat4([right, top, -far], m), [1, 1, 1], 0.000001);
     });
 
     it('should compute frustum', () => {
@@ -496,10 +496,10 @@ function check(Type) {
       const near = 15;
       const far = 25;
       const m = mat4.frustum(left, right, bottom, top, near, far);
-      shouldBeCloseArray(mat4.transformPoint(m, [left, bottom, -near]), [-1, -1, 0], 0.000001);
+      shouldBeCloseArray(vec3.transformMat4([left, bottom, -near], m), [-1, -1, 0], 0.000001);
       const centerX = (left + right) * 0.5;
       const centerY = (top + bottom) * 0.5;
-      const p = mat4.transformPoint(m, [centerX, centerY, -far]);
+      const p = vec3.transformMat4([centerX, centerY, -far], m);
       //shouldBeCloseArray(p, [1, 1, 1], 0.000001);
       assertEqualApproximately(p[2], 1);
     });
@@ -724,51 +724,6 @@ function check(Type) {
       ];
       testM4WithAndWithoutDest((dst) => {
         return mat4.scale(m, [2, 3, 4], dst);
-      }, expected);
-    });
-
-    it('should transform point', () => {
-      const v0 = 2;
-      const v1 = 3;
-      const v2 = 4;
-      const d = v0 * m[0 * 4 + 3] + v1 * m[1 * 4 + 3] + v2 * m[2 * 4 + 3] + m[3 * 4 + 3];
-      const expected = [
-        (v0 * m[0 * 4 + 0] + v1 * m[1 * 4 + 0] + v2 * m[2 * 4 + 0] + m[3 * 4 + 0]) / d,
-        (v0 * m[0 * 4 + 1] + v1 * m[1 * 4 + 1] + v2 * m[2 * 4 + 1] + m[3 * 4 + 1]) / d,
-        (v0 * m[0 * 4 + 2] + v1 * m[1 * 4 + 2] + v2 * m[2 * 4 + 2] + m[3 * 4 + 2]) / d,
-      ];
-      testV3WithAndWithoutDest((dst) => {
-        return mat4.transformPoint(m, [2, 3, 4], dst);
-      }, expected);
-    });
-
-    it('should transform direction', () => {
-      const v0 = 2;
-      const v1 = 3;
-      const v2 = 4;
-      const expected = [
-        v0 * m[0 * 4 + 0] + v1 * m[1 * 4 + 0] + v2 * m[2 * 4 + 0],
-        v0 * m[0 * 4 + 1] + v1 * m[1 * 4 + 1] + v2 * m[2 * 4 + 1],
-        v0 * m[0 * 4 + 2] + v1 * m[1 * 4 + 2] + v2 * m[2 * 4 + 2],
-      ];
-      testV3WithAndWithoutDest((dst) => {
-        return mat4.transformDirection(m, [2, 3, 4], dst);
-      }, expected);
-    });
-
-    it('should transform normal', () => {
-      const m  = mat4.translate(mat4.scaling([0.1, 0.2, 0.3]), [1, 2, 3]);
-      const mi = mat4.inverse(m);
-      const v0 = 2;
-      const v1 = 3;
-      const v2 = 4;
-      const expected = [
-        v0 * mi[0 * 4 + 0] + v1 * mi[0 * 4 + 1] + v2 * mi[0 * 4 + 2],
-        v0 * mi[1 * 4 + 0] + v1 * mi[1 * 4 + 1] + v2 * mi[1 * 4 + 2],
-        v0 * mi[2 * 4 + 0] + v1 * mi[2 * 4 + 1] + v2 * mi[2 * 4 + 2],
-      ];
-      testV3WithAndWithoutDest((dst) => {
-        return mat4.transformNormal(m, [2, 3, 4], dst);
       }, expected);
     });
 

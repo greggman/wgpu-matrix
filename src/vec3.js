@@ -706,12 +706,35 @@ export function transformMat4(v, m, dst) {
   const z = v[2];
   const w = (m[3] * x + m[7] * y + m[11] * z + m[15]) || 1;
 
-  dst[0] = (m[0] * x + m[4] * y + m[8] * z + m[12]) / w;
-  dst[1] = (m[1] * x + m[5] * y + m[9] * z + m[13]) / w;
+  dst[0] = (m[0] * x + m[4] * y + m[ 8] * z + m[12]) / w;
+  dst[1] = (m[1] * x + m[5] * y + m[ 9] * z + m[13]) / w;
   dst[2] = (m[2] * x + m[6] * y + m[10] * z + m[14]) / w;
 
   return dst;
 }
+
+/**
+ * Transform vec4 by upper 3x3 matrix inside 4x4 matrix.
+ * @param {Vec3} v The direction.
+ * @param {Mat4} m The matrix.
+ * @param {Vec3} [dst] optional Vec3 to store result. If not passed a new one is created.
+ * @return {Vec3} The transformed vector.
+ */
+export function transformMat4Upper3x3(v, m, dst) {
+  dst = dst || new VecType(3);
+
+  const v0 = v[0];
+  const v1 = v[1];
+  const v2 = v[2];
+
+  dst[0] = v0 * m[0 * 4 + 0] + v1 * m[1 * 4 + 0] + v2 * m[2 * 4 + 0];
+  dst[1] = v0 * m[0 * 4 + 1] + v1 * m[1 * 4 + 1] + v2 * m[2 * 4 + 1];
+  dst[2] = v0 * m[0 * 4 + 2] + v1 * m[1 * 4 + 2] + v2 * m[2 * 4 + 2];
+
+  return dst;
+}
+
+
 
 /**
  * Transforms vec4 by 3x3 matrix
@@ -728,9 +751,9 @@ export function transformMat3(v, m, dst) {
   const y = v[1];
   const z = v[2];
 
-  dst[0] = x * m[0] + y * m[3] + z * m[6];
-  dst[1] = x * m[1] + y * m[4] + z * m[7];
-  dst[2] = x * m[2] + y * m[5] + z * m[8];
+  dst[0] = x * m[0] + y * m[4] + z * m[8];
+  dst[1] = x * m[1] + y * m[5] + z * m[9];
+  dst[2] = x * m[2] + y * m[6] + z * m[10];
 
   return dst;
 }

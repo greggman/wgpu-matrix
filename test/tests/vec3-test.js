@@ -58,7 +58,7 @@ function check(Type) {
       // correct result
       d = vec3.clone(v);
       // clone args to make sure we don't overwrite first arg
-      const bOrig = args.map(b => vec3.clone(b));
+      const bOrig = args.map(b => b.slice());
       c = func(d, ...args, d);
       assertStrictEqual(c, d);
       elementsEqual(c, expected);
@@ -385,27 +385,40 @@ function check(Type) {
 
     it('should transform by 3x3', () => {
       const expected = [4, 10, 18];
-      testV3WithAndWithoutDest((a, dst) => {
-        const m = [
-          4, 0, 0,
-          0, 5, 0,
-          0, 0, 6,
-        ];
-        return vec3.transformMat3(a, m, dst);
-      }, expected, [1, 2, 3]);
+      const m = [
+        4, 0, 0, 0,
+        0, 5, 0, 0,
+        0, 0, 6, 0,
+      ];
+      testV3WithAndWithoutDest((v, mat, dst) => {
+        return vec3.transformMat3(v, mat, dst);
+      }, expected, [1, 2, 3], m);
     });
 
     it('should transform by 4x4', () => {
       const expected = [5, 9, 15];
-      testV3WithAndWithoutDest((a, dst) => {
-        const m = [
-          1, 0, 0, 0,
-          0, 2, 0, 0,
-          0, 0, 3, 0,
-          4, 5, 6, 1,
-        ];
-        return vec3.transformMat4(a, m, dst);
-      }, expected, [1, 2, 3]);
+      const m = [
+        1, 0, 0, 0,
+        0, 2, 0, 0,
+        0, 0, 3, 0,
+        4, 5, 6, 1,
+      ];
+      testV3WithAndWithoutDest((v, mat, dst) => {
+        return vec3.transformMat4(v, mat, dst);
+      }, expected, [1, 2, 3], m);
+    });
+
+    it('should transform by 4x4Upper3x3', () => {
+      const expected = [2, 6, 12];
+      const m = [
+        1, 0, 0, 0,
+        0, 2, 0, 0,
+        0, 0, 3, 0,
+        4, 5, 6, 1,
+      ];
+      testV3WithAndWithoutDest((v, mat, dst) => {
+        return vec3.transformMat4Upper3x3(v, mat, dst);
+      }, expected, [2, 3, 4], m);
     });
 
     it('should zero', () => {
