@@ -1,6 +1,6 @@
 {
   "name": "wgpu-matrix",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "fast matrix math library for WebGPU",
   "main": "dist/0.x/wgpu-matrix.module.js",
   "module": "dist/0.x/wgpu-matrix.module.js",
