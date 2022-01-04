@@ -1,4 +1,4 @@
-/* @license wgpu-matrix.js 0.0.2 Copyright (c) 2022, Gregg Tavares All Rights Reserved.
+/* @license wgpu-matrix.js 0.1.0 Copyright (c) 2022, Gregg Tavares All Rights Reserved.
 Available via the MIT license.
 see: http://github.com/greggman/wgpu-matrix.js for details */
 /*
@@ -2357,12 +2357,35 @@ function transformMat4$1(v, m, dst) {
   const z = v[2];
   const w = (m[3] * x + m[7] * y + m[11] * z + m[15]) || 1;
 
-  dst[0] = (m[0] * x + m[4] * y + m[8] * z + m[12]) / w;
-  dst[1] = (m[1] * x + m[5] * y + m[9] * z + m[13]) / w;
+  dst[0] = (m[0] * x + m[4] * y + m[ 8] * z + m[12]) / w;
+  dst[1] = (m[1] * x + m[5] * y + m[ 9] * z + m[13]) / w;
   dst[2] = (m[2] * x + m[6] * y + m[10] * z + m[14]) / w;
 
   return dst;
 }
+
+/**
+ * Transform vec4 by upper 3x3 matrix inside 4x4 matrix.
+ * @param {Vec3} v The direction.
+ * @param {Mat4} m The matrix.
+ * @param {Vec3} [dst] optional Vec3 to store result. If not passed a new one is created.
+ * @return {Vec3} The transformed vector.
+ */
+function transformMat4Upper3x3(v, m, dst) {
+  dst = dst || new VecType$1(3);
+
+  const v0 = v[0];
+  const v1 = v[1];
+  const v2 = v[2];
+
+  dst[0] = v0 * m[0 * 4 + 0] + v1 * m[1 * 4 + 0] + v2 * m[2 * 4 + 0];
+  dst[1] = v0 * m[0 * 4 + 1] + v1 * m[1 * 4 + 1] + v2 * m[2 * 4 + 1];
+  dst[2] = v0 * m[0 * 4 + 2] + v1 * m[1 * 4 + 2] + v2 * m[2 * 4 + 2];
+
+  return dst;
+}
+
+
 
 /**
  * Transforms vec4 by 3x3 matrix
@@ -2379,9 +2402,9 @@ function transformMat3(v, m, dst) {
   const y = v[1];
   const z = v[2];
 
-  dst[0] = x * m[0] + y * m[3] + z * m[6];
-  dst[1] = x * m[1] + y * m[4] + z * m[7];
-  dst[2] = x * m[2] + y * m[5] + z * m[8];
+  dst[0] = x * m[0] + y * m[4] + z * m[8];
+  dst[1] = x * m[1] + y * m[5] + z * m[9];
+  dst[2] = x * m[2] + y * m[6] + z * m[10];
 
   return dst;
 }
@@ -2432,6 +2455,7 @@ var vec3 = /*#__PURE__*/Object.freeze({
   random: random,
   zero: zero$1,
   transformMat4: transformMat4$1,
+  transformMat4Upper3x3: transformMat4Upper3x3,
   transformMat3: transformMat3
 });
 
@@ -3863,83 +3887,6 @@ function scale$1(m, v, dst) {
   return dst;
 }
 
-/**
- * Takes a 4-by-4 matrix and a vector with 3 entries,
- * interprets the vector as a point, transforms that point by the matrix, and
- * returns the result as a vector with 3 entries.
- * @param {Mat4} m The matrix.
- * @param {Vec3} v The point.
- * @param {Vec3} [dst] optional vec3 to store result. If not passed a new one is created.
- * @return {Vec3} The transformed point.
- */
-function transformPoint(m, v, dst) {
-  dst = dst || create$2();
-  const v0 = v[0];
-  const v1 = v[1];
-  const v2 = v[2];
-  const d = v0 * m[0 * 4 + 3] + v1 * m[1 * 4 + 3] + v2 * m[2 * 4 + 3] + m[3 * 4 + 3];
-
-  dst[0] = (v0 * m[0 * 4 + 0] + v1 * m[1 * 4 + 0] + v2 * m[2 * 4 + 0] + m[3 * 4 + 0]) / d;
-  dst[1] = (v0 * m[0 * 4 + 1] + v1 * m[1 * 4 + 1] + v2 * m[2 * 4 + 1] + m[3 * 4 + 1]) / d;
-  dst[2] = (v0 * m[0 * 4 + 2] + v1 * m[1 * 4 + 2] + v2 * m[2 * 4 + 2] + m[3 * 4 + 2]) / d;
-
-  return dst;
-}
-
-/**
- * Takes a 4-by-4 matrix and a vector with 3 entries, interprets the vector as a
- * direction, transforms that direction by the matrix, and returns the result;
- * assumes the transformation of 3-dimensional space represented by the matrix
- * is parallel-preserving, i.e. any combination of rotation, scaling and
- * translation, but not a perspective distortion. Returns a vector with 3
- * entries.
- * @param {Mat4} m The matrix.
- * @param {Vec3} v The direction.
- * @param {Vec3} [dst] optional Vec3 to store result. If not passed a new one is created.
- * @return {Vec3} The transformed direction.
- */
-function transformDirection(m, v, dst) {
-  dst = dst || create$2();
-
-  const v0 = v[0];
-  const v1 = v[1];
-  const v2 = v[2];
-
-  dst[0] = v0 * m[0 * 4 + 0] + v1 * m[1 * 4 + 0] + v2 * m[2 * 4 + 0];
-  dst[1] = v0 * m[0 * 4 + 1] + v1 * m[1 * 4 + 1] + v2 * m[2 * 4 + 1];
-  dst[2] = v0 * m[0 * 4 + 2] + v1 * m[1 * 4 + 2] + v2 * m[2 * 4 + 2];
-
-  return dst;
-}
-
-/**
- * Takes a 4-by-4 matrix m and a vector v with 3 entries, interprets the vector
- * as a normal to a surface, and computes a vector which is normal upon
- * transforming that surface by the matrix. The effect of this function is the
- * same as transforming v (as a direction) by the inverse-transpose of m.  This
- * function assumes the transformation of 3-dimensional space represented by the
- * matrix is parallel-preserving, i.e. any combination of rotation, scaling and
- * translation, but not a perspective distortion.  Returns a vector with 3
- * entries.
- * @param {Mat4} m The matrix.
- * @param {Vec3} v The normal.
- * @param {Vec3} [dst] The direction. If not passed a new one is created.
- * @return {Vec3} The transformed normal.
- */
-function transformNormal(m, v, dst) {
-  dst = dst || create$2();
-  const mi = inverse$1(m);
-  const v0 = v[0];
-  const v1 = v[1];
-  const v2 = v[2];
-
-  dst[0] = v0 * mi[0 * 4 + 0] + v1 * mi[0 * 4 + 1] + v2 * mi[0 * 4 + 2];
-  dst[1] = v0 * mi[1 * 4 + 0] + v1 * mi[1 * 4 + 1] + v2 * mi[1 * 4 + 2];
-  dst[2] = v0 * mi[2 * 4 + 0] + v1 * mi[2 * 4 + 1] + v2 * mi[2 * 4 + 2];
-
-  return dst;
-}
-
 var mat4 = /*#__PURE__*/Object.freeze({
   __proto__: null,
   setDefaultType: setDefaultType$2,
@@ -3978,10 +3925,7 @@ var mat4 = /*#__PURE__*/Object.freeze({
   axisRotate: axisRotate,
   rotate: rotate,
   scaling: scaling,
-  scale: scale$1,
-  transformPoint: transformPoint,
-  transformDirection: transformDirection,
-  transformNormal: transformNormal
+  scale: scale$1
 });
 
 /*

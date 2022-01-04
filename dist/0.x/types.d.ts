@@ -626,44 +626,6 @@ declare module "mat4" {
      * @returns <p>The scaled matrix.</p>
      */
     function scale(m: Mat4, v: Vec3, dst?: Mat4): Mat4;
-    /**
-     * <p>Takes a 4-by-4 matrix and a vector with 3 entries,<br>
-     * interprets the vector as a point, transforms that point by the matrix, and<br>
-     * returns the result as a vector with 3 entries.</p>
-     * @param m - <p>The matrix.</p>
-     * @param v - <p>The point.</p>
-     * @param [dst] - <p>optional vec3 to store result. If not passed a new one is created.</p>
-     * @returns <p>The transformed point.</p>
-     */
-    function transformPoint(m: Mat4, v: Vec3, dst?: Vec3): Vec3;
-    /**
-     * <p>Takes a 4-by-4 matrix and a vector with 3 entries, interprets the vector as a<br>
-     * direction, transforms that direction by the matrix, and returns the result;<br>
-     * assumes the transformation of 3-dimensional space represented by the matrix<br>
-     * is parallel-preserving, i.e. any combination of rotation, scaling and<br>
-     * translation, but not a perspective distortion. Returns a vector with 3<br>
-     * entries.</p>
-     * @param m - <p>The matrix.</p>
-     * @param v - <p>The direction.</p>
-     * @param [dst] - <p>optional Vec3 to store result. If not passed a new one is created.</p>
-     * @returns <p>The transformed direction.</p>
-     */
-    function transformDirection(m: Mat4, v: Vec3, dst?: Vec3): Vec3;
-    /**
-     * <p>Takes a 4-by-4 matrix m and a vector v with 3 entries, interprets the vector<br>
-     * as a normal to a surface, and computes a vector which is normal upon<br>
-     * transforming that surface by the matrix. The effect of this function is the<br>
-     * same as transforming v (as a direction) by the inverse-transpose of m.  This<br>
-     * function assumes the transformation of 3-dimensional space represented by the<br>
-     * matrix is parallel-preserving, i.e. any combination of rotation, scaling and<br>
-     * translation, but not a perspective distortion.  Returns a vector with 3<br>
-     * entries.</p>
-     * @param m - <p>The matrix.</p>
-     * @param v - <p>The normal.</p>
-     * @param [dst] - <p>The direction. If not passed a new one is created.</p>
-     * @returns <p>The transformed normal.</p>
-     */
-    function transformNormal(m: Mat4, v: Vec3, dst?: Vec3): Vec3;
 }
 
 declare module "utils" {
@@ -1472,6 +1434,14 @@ declare module "vec3" {
      * @returns <p>the transformed vector</p>
      */
     function transformMat4(v: Vec3, m: Mat4, dst?: Vec3): Vec3;
+    /**
+     * <p>Transform vec4 by upper 3x3 matrix inside 4x4 matrix.</p>
+     * @param v - <p>The direction.</p>
+     * @param m - <p>The matrix.</p>
+     * @param [dst] - <p>optional Vec3 to store result. If not passed a new one is created.</p>
+     * @returns <p>The transformed vector.</p>
+     */
+    function transformMat4Upper3x3(v: Vec3, m: Mat4, dst?: Vec3): Vec3;
     /**
      * <p>Transforms vec4 by 3x3 matrix</p>
      * @param v - <p>the vector</p>
