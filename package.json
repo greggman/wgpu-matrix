@@ -13,7 +13,7 @@
     "build": "rollup -c",
     "check": "npm run lint",
     "check-ci": "npm run pre-push",
-    "docs": "typedoc src/wgpu-matrix.ts",
+    "docs": "typedoc --disableSources src/wgpu-matrix.ts",
     "lint": "eslint \"src/**/*.{js,ts,tsx}\"",
     "pre-push": "npm run lint && npm run test && npm run build && npm run docs",
     "rollup-watch": "rollup -c -w",
