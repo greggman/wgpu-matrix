@@ -20,19 +20,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-/**
- * @module utils
- */
-
-
 export let EPSILON = 0.000001;
 
 /**
  * Set the value for EPSILON for various checks
- * @param {number} v Value to use for EPSILON.
- * @returns {number} previous value of EPSILON;
+ * @param v - Value to use for EPSILON.
+ * @returns previous value of EPSILON;
  */
-export function setEpsilon(v) {
+export function setEpsilon(v: number): number {
   const old = EPSILON;
   EPSILON = v;
   return old;
@@ -40,30 +35,30 @@ export function setEpsilon(v) {
 
 /**
  * Convert degrees to radians
- * @param {number} degrees Angle in degrees
- * @returns {number} angle converted to radians
+ * @param degrees - Angle in degrees
+ * @returns angle converted to radians
  */
-export function degToRad(degrees) {
+export function degToRad(degrees: number): number {
   return degrees * Math.PI / 180;
 }
 
 /**
  * Convert radians to degrees
- * @param {number} radians Angle in radians
- * @returns {number} angle converted to degrees
+ * @param radians - Angle in radians
+ * @returns angle converted to degrees
  */
-export function radToDeg(radians) {
+export function radToDeg(radians: number): number {
   return radians * 180 / Math.PI;
 }
 
 /**
  * Lerps between a and b via t
- * @param {number} a starting value
- * @param {number} b ending value
- * @param {number} t value where 0 = a and 1 = b
- * @returns {number} a + (b - a) * t
+ * @param a - starting value
+ * @param b - ending value
+ * @param t - value where 0 = a and 1 = b
+ * @returns a + (b - a) * t
  */
-export function lerp(a, b, t) {
+export function lerp(a: number, b: number, t: number): number {
   return a + (b - a) * t;
 }
 
@@ -71,12 +66,12 @@ export function lerp(a, b, t) {
  * Compute the opposite of lerp. Given a and b and a value between
  * a and b returns a value between 0 and 1. 0 if a, 1 if b.
  * Note: no clamping is done.
- * @param {number} a start value
- * @param {number} b end value
- * @param {number} v value between a and b
- * @returns {number} (v - a) / (b - a)
+ * @param a - start value
+ * @param b - end value
+ * @param v - value between a and b
+ * @returns (v - a) / (b - a)
  */
-export function inverseLerp(a, b, v) {
+export function inverseLerp(a: number, b: number, v: number): number {
   const d = b - a;
   return (Math.abs(b - a) < EPSILON)
      ? a
@@ -94,10 +89,10 @@ export function inverseLerp(a, b, v) {
  *  1   2   0   1   2   0,  1,  2,  0,  1,  2   <- euclideanModule(n, 3)
  * ```
  *
- * @param {number} n dividend
- * @param {number} m divisor
- * @returns {number} the euclidean modulo of n / m
+ * @param n - dividend
+ * @param m - divisor
+ * @returns the euclidean modulo of n / m
  */
-export function euclideanModulo(n, m) {
+export function euclideanModulo(n: number, m: number) {
   return ((n % m) + m) % m;
 }

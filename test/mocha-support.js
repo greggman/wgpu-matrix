@@ -1,7 +1,8 @@
-export const describe = window.describe;
-export const it = window.it;
-export const before = window.before;
-export const after = window.after;
-export const beforeEach = window.beforeEach;
-export const afterEach = window.afterEach;
+/* global globalThis */
+export const describe = globalThis.describe;
+export const it = globalThis.it;
+export const before = globalThis.before;
+export const after = globalThis.after;
+export const beforeEach = globalThis.beforeEach;
+export const afterEach = globalThis.afterEach;
 

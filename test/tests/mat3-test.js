@@ -1,6 +1,4 @@
-//import * as mat3 from '../../src/mat3.js';
-//import * as utils from '../../src/utils.js';
-/* global mat3 utils */
+import {mat3, utils} from '../../dist/1.x/wgpu-matrix.module.js';
 
 import {
   assertEqual,
@@ -27,7 +25,7 @@ function check(Type) {
        8,  9, 10,  0,
     ];
 
-    before(function() {
+    before(function () {
       mat3.setDefaultType(Type);
     });
 

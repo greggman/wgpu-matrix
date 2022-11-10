@@ -1,4 +1,4 @@
-/* global vec2 utils */
+import {vec2, utils} from '../../dist/1.x/wgpu-matrix.module.js';
 
 import {
   assertEqual,
@@ -386,6 +386,7 @@ function check(Type) {
       }
     });
 
+    /*
     it('should transform by 2x2', () => {
       const expected = [14, 21];
       testV2WithAndWithoutDest((a, dst) => {
@@ -396,6 +397,7 @@ function check(Type) {
         return vec2.transformMat2(a, m, dst);
       }, expected, [2, 3]);
     });
+    */
 
     it('should transform by 3x3', () => {
       const expected = [16, 17];

@@ -20,8 +20,12 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-import * as vec2 from './vec2.js';
+import { ArrayLikeCtor } from './array-like';
 import * as utils from './utils.js';
+import { Mat3 } from './mat3';
+import Vec2, * as vec2 from './vec2-impl';
+
+export default Mat3;
 
 /**
  * 3x3 Matrix math math functions.
@@ -45,48 +49,28 @@ import * as utils from './utils.js';
  *     const trans = mat3.translation([1, 2, 3]);
  *     mat3.multiply(mat, trans, mat);  // Multiplies mat * trans and puts result in mat.
  *
- * @module mat3
  */
-let MatType = Float32Array;
-
-/**
- * A JavaScript array with 12 values, a Float32Array with 12 values, or a Float64Array with 12 values.
- * When created by the library will create the default type which is `Float32Array`
- * but can be set by calling {@link mat3.setDefaultType}.
- *
- * `mat3` uses the space of 12 elements
- *
- * ```js
- * // a mat3
- * [
- *   xx, xy, xz, ?
- *   yx, yy, yz, ?
- *   zx, zy, zz, ?
- * ]
- * ```
- *
- * @typedef {(number[]|Float32Array|Float64Array)} Mat3
- */
+let MatType: ArrayLikeCtor = Float32Array;
 
 // This mess is because with Mat3 we have 3 unused elements.
 // For Float32Array and Float64Array that's not an issue
 // but for Array it's troublesome
-const ctorMap = new Map([
+const ctorMap = new Map<ArrayLikeCtor,() => Mat3>([
   [Float32Array, () => new Float32Array(12)],
   [Float64Array, () => new Float64Array(12)],
   [Array, () => new Array(12).fill(0)],
 ]);
-let newMat3 = ctorMap.get(Float32Array);
+let newMat3: () => Mat3 = ctorMap.get(Float32Array)!;
 
 /**
  * Sets the type this library creates for a Mat3
- * @param {constructor} ctor the constructor for the type. Either `Float32Array`, 'Float64Array', or `Array`
- * @return {constructor} previous constructor for Mat3
+ * @param ctor - the constructor for the type. Either `Float32Array`, 'Float64Array', or `Array`
+ * @returns previous constructor for Mat3
  */
-export function setDefaultType(ctor) {
+export function setDefaultType(ctor: new (n: number) => Mat3) {
   const oldType = MatType;
   MatType = ctor;
-  newMat3 = ctorMap.get(ctor);
+  newMat3 = ctorMap.get(ctor)!;
   return oldType;
 }
 
@@ -113,26 +97,27 @@ export function setDefaultType(ctor) {
  * mat3.perspective(fov, aspect, near, far, m);
  * ```
  *
- * @param {number} [v0] value for element 0
- * @param {number} [v1] value for element 1
- * @param {number} [v2] value for element 2
- * @param {number} [v3] value for element 3
- * @param {number} [v4] value for element 4
- * @param {number} [v5] value for element 5
- * @param {number} [v6] value for element 6
- * @param {number} [v7] value for element 7
- * @param {number} [v8] value for element 8
- * @returns {Mat3} created from values.
+ * @param v0 - value for element 0
+ * @param v1 - value for element 1
+ * @param v2 - value for element 2
+ * @param v3 - value for element 3
+ * @param v4 - value for element 4
+ * @param v5 - value for element 5
+ * @param v6 - value for element 6
+ * @param v7 - value for element 7
+ * @param v8 - value for element 8
+ * @returns matrix created from values.
  */
 export function create(
-    v0, v1, v2,
-    v3, v4, v5,
-    v6, v7, v8) {
+    v0?: number, v1?: number, v2?: number,
+    v3?: number, v4?: number, v5?: number,
+    v6?: number, v7?: number, v8?: number): Mat3 {
   const dst = newMat3();
   // to make the array homogenous
   dst[3] = 0;
   dst[7] = 0;
   dst[11] = 0;
+
   if (v0 !== undefined) {
     dst[0] = v0;
     if (v1 !== undefined) {
@@ -160,16 +145,17 @@ export function create(
       }
     }
   }
+
   return dst;
 }
 
 /**
  * Negates a matrix.
- * @param {Mat3} m The matrix.
- * @param {Mat3} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat3} -m.
+ * @param m - The matrix.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns -m.
  */
-export function negate(m, dst) {
+export function negate(m: Mat3, dst?: Mat3): Mat3 {
   dst = dst || newMat3();
 
   dst[ 0] = -m[ 0];
@@ -187,11 +173,11 @@ export function negate(m, dst) {
 
 /**
  * Copies a matrix.
- * @param {Mat3} m The matrix.
- * @param {Mat3} [dst] The matrix. If not passed a new one is created.
- * @return {Mat3} A copy of m.
+ * @param m - The matrix.
+ * @param dst - The matrix. If not passed a new one is created.
+ * @returns A copy of m.
  */
-export function copy(m, dst) {
+export function copy(m: Mat3, dst?: Mat3): Mat3 {
   dst = dst || newMat3();
 
   dst[ 0] = m[ 0];
@@ -211,20 +197,19 @@ export function copy(m, dst) {
 
 /**
  * Copies a matrix (same as copy)
- * @function
- * @param {Mat3} m The matrix.
- * @param {Mat3} [dst] The matrix. If not passed a new one is created.
- * @return {Mat3} A copy of m.
+ * @param m - The matrix.
+ * @param dst - The matrix. If not passed a new one is created.
+ * @returns A copy of m.
  */
 export const clone = copy;
 
 /**
  * Check if 2 matrices are approximately equal
- * @param {Mat3} a Operand matrix.
- * @param {Mat3} b Operand matrix.
- * @returns {bool} true if matrices are approximately equal
+ * @param a Operand matrix.
+ * @param b Operand matrix.
+ * @returns true if matrices are approximately equal
  */
-export function equalsApproximately(a, b) {
+export function equalsApproximately(a: Mat3, b: Mat3): boolean {
   return Math.abs(a[ 0] - b[ 0]) < utils.EPSILON &&
          Math.abs(a[ 1] - b[ 1]) < utils.EPSILON &&
          Math.abs(a[ 2] - b[ 2]) < utils.EPSILON &&
@@ -238,11 +223,11 @@ export function equalsApproximately(a, b) {
 
 /**
  * Check if 2 matrices are exactly equal
- * @param {Mat3} a Operand matrix.
- * @param {Mat3} b Operand matrix.
- * @returns {bool} true if matrices are exactly equal
+ * @param a Operand matrix.
+ * @param b Operand matrix.
+ * @returns true if matrices are exactly equal
  */
-export function equals(a, b) {
+export function equals(a: Mat3, b: Mat3): boolean {
   return a[ 0] === b[ 0] &&
          a[ 1] === b[ 1] &&
          a[ 2] === b[ 2] &&
@@ -255,12 +240,12 @@ export function equals(a, b) {
 }
 
 /**
- * Creates an n-by-n identity matrix.
+ * Creates a 3-by-3 identity matrix.
  *
- * @param {Mat3} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat3} An n-by-n identity matrix.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns A 3-by-3 identity matrix.
  */
-export function identity(dst) {
+export function identity(dst?: Mat3): Mat3 {
   dst = dst || newMat3();
 
   dst[ 0] = 1;
@@ -278,14 +263,14 @@ export function identity(dst) {
 
 /**
  * Takes the transpose of a matrix.
- * @param {Mat3} m The matrix.
- * @param {Mat3} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat3} The transpose of m.
+ * @param m - The matrix.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The transpose of m.
  */
-export function transpose(m, dst) {
+export function transpose(m: Mat3, dst?: Mat3): Mat3 {
   dst = dst || newMat3();
   if (dst === m) {
-    let t;
+    let t: number;
 
     // 0 1 2
     // 4 5 6
@@ -331,11 +316,11 @@ export function transpose(m, dst) {
 
 /**
  * Computes the inverse of a 3-by-3 matrix.
- * @param {Mat3} m The matrix.
- * @param {Mat3} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat3} The inverse of m.
+ * @param m - The matrix.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The inverse of m.
  */
-export function inverse(m, dst) {
+export function inverse(m: Mat3, dst?: Mat3): Mat3 {
   dst = dst || newMat3();
 
   const m00 = m[0 * 4 + 0];
@@ -375,10 +360,10 @@ export function inverse(m, dst) {
 
 /**
  * Compute the determinant of a matrix
- * @param {Mat3} m the matrix
- * @returns {number} the determinant
+ * @param m - the matrix
+ * @returns the determinant
  */
-export function determinant(m) {
+export function determinant(m: Mat3): number {
   const m00 = m[0 * 4 + 0];
   const m01 = m[0 * 4 + 1];
   const m02 = m[0 * 4 + 2];
@@ -396,21 +381,20 @@ export function determinant(m) {
 
 /**
  * Computes the inverse of a 3-by-3 matrix. (same as inverse)
- * @function
- * @param {Mat3} m The matrix.
- * @param {Mat3} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat3} The inverse of m.
+ * @param m - The matrix.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The inverse of m.
  */
 export const invert = inverse;
 
 /**
  * Multiplies two 3-by-3 matrices with a on the left and b on the right
- * @param {Mat3} a The matrix on the left.
- * @param {Mat3} b The matrix on the right.
- * @param {Mat3} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat3} The matrix product of a and b.
+ * @param a - The matrix on the left.
+ * @param b - The matrix on the right.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The matrix product of a and b.
  */
-export function multiply(a, b, dst) {
+export function multiply(a: Mat3, b: Mat3, dst?: Mat3): Mat3 {
   dst = dst || newMat3();
 
   const a00 = a[0];
@@ -447,23 +431,22 @@ export function multiply(a, b, dst) {
 
 /**
  * Multiplies two 3-by-3 matrices with a on the left and b on the right (same as multiply)
- * @function
- * @param {Mat3} a The matrix on the left.
- * @param {Mat3} b The matrix on the right.
- * @param {Mat3} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat3} The matrix product of a and b.
+ * @param a - The matrix on the left.
+ * @param b - The matrix on the right.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The matrix product of a and b.
  */
 export const mul = multiply;
 
 /**
  * Sets the translation component of a 3-by-3 matrix to the given
  * vector.
- * @param {Mat3} a The matrix.
- * @param {Vec2} v The vector.
- * @param {Mat3} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat3} The matrix with translation set.
+ * @param a - The matrix.
+ * @param v - The vector.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The matrix with translation set.
  */
-export function setTranslation(a, v, dst) {
+export function setTranslation(a: Mat3, v: Vec2, dst?: Mat3): Mat3 {
   dst = dst || identity();
   if (a !== dst) {
     dst[ 0] = a[ 0];
@@ -482,11 +465,11 @@ export function setTranslation(a, v, dst) {
 /**
  * Returns the translation component of a 3-by-3 matrix as a vector with 3
  * entries.
- * @param {Mat3} m The matrix.
- * @param {Vec2} [dst] vector to hold result. If not passed a new one is created.
- * @return {Vec2} The translation component of m.
+ * @param m - The matrix.
+ * @param dst - vector to hold result. If not passed a new one is created.
+ * @returns The translation component of m.
  */
-export function getTranslation(m, dst) {
+export function getTranslation(m: Mat3, dst?: Vec2): Vec2 {
   dst = dst || vec2.create();
   dst[0] = m[8];
   dst[1] = m[9];
@@ -495,11 +478,11 @@ export function getTranslation(m, dst) {
 
 /**
  * Returns an axis of a 3x3 matrix as a vector with 2 entries
- * @param {Mat3} m The matrix.
- * @param {number} axis The axis 0 = x, 1 = y,
- * @return {Vec2} The axis component of m.
+ * @param m - The matrix.
+ * @param axis - The axis 0 = x, 1 = y,
+ * @returns The axis component of m.
  */
-export function getAxis(m, axis, dst) {
+export function getAxis(m: Mat3, axis: number, dst?: Vec2): Vec2 {
   dst = dst || vec2.create();
   const off = axis * 4;
   dst[0] = m[off + 0];
@@ -509,15 +492,15 @@ export function getAxis(m, axis, dst) {
 
 /**
  * Sets an axis of a 3x3 matrix as a vector with 2 entries
- * @param {Mat3} m The matrix.
- * @param {Vec2} v the axis vector
- * @param {number} axis The axis  0 = x, 1 = y;
- * @param {Mat3} [dst] The matrix to set. If not passed a new one is created.
- * @return {Mat3} The matrix with axis set.
+ * @param m - The matrix.
+ * @param v - the axis vector
+ * @param axis - The axis  0 = x, 1 = y;
+ * @param dst - The matrix to set. If not passed a new one is created.
+ * @returns The matrix with axis set.
  */
-export function setAxis(a, v, axis, dst) {
-  if (dst !== a) {
-    dst = copy(a, dst);
+export function setAxis(m: Mat3, v: Vec2, axis: number, dst?: Mat3): Mat3 {
+  if (dst !== m) {
+    dst = copy(m, dst);
   }
   const off = axis * 4;
   dst[off + 0] = v[0];
@@ -527,10 +510,10 @@ export function setAxis(a, v, axis, dst) {
 
 /**
  * Returns the scaling component of the matrix
- * @param {Mat3} m The Matrix
- * @param {Vec2} [dst] The vector to set. If not passed a new one is created.
+ * @param m - The Matrix
+ * @param dst - The vector to set. If not passed a new one is created.
  */
-export function getScaling(m, dst) {
+export function getScaling(m: Mat3, dst?: Vec2): Vec2 {
   dst = dst || vec2.create();
 
   const xx = m[0];
@@ -546,11 +529,11 @@ export function getScaling(m, dst) {
 
 /**
  * Creates a 3-by-3 matrix which translates by the given vector v.
- * @param {Vec2} v The vector by which to translate.
- * @param {Mat3} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat3} The translation matrix.
+ * @param v - The vector by which to translate.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The translation matrix.
  */
-export function translation(v, dst) {
+export function translation(v: Vec2, dst?: Mat3): Mat3 {
   dst = dst || newMat3();
 
   dst[ 0] = 1;
@@ -567,12 +550,12 @@ export function translation(v, dst) {
 
 /**
  * Translates the given 3-by-3 matrix by the given vector v.
- * @param {Mat3} m The matrix.
- * @param {Vec2} v The vector by which to translate.
- * @param {Mat3} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat3} The translated matrix.
+ * @param m - The matrix.
+ * @param v - The vector by which to translate.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The translated matrix.
  */
-export function translate(m, v, dst) {
+export function translate(m: Mat3, v: Vec2, dst?: Mat3): Mat3 {
   dst = dst || newMat3();
 
   const v0 = v[0];
@@ -606,11 +589,11 @@ export function translate(m, v, dst) {
 
 /**
  * Creates a 3-by-3 matrix which rotates  by the given angle.
- * @param {number} angleInRadians The angle by which to rotate (in radians).
- * @param {Mat3} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat3} The rotation matrix.
+ * @param angleInRadians - The angle by which to rotate (in radians).
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The rotation matrix.
  */
-export function rotation(angleInRadians, dst) {
+export function rotation(angleInRadians: number, dst?: Mat3): Mat3 {
   dst = dst || newMat3();
 
   const c = Math.cos(angleInRadians);
@@ -631,12 +614,12 @@ export function rotation(angleInRadians, dst) {
 
 /**
  * Rotates the given 3-by-3 matrix  by the given angle.
- * @param {Mat3} m The matrix.
- * @param {number} angleInRadians The angle by which to rotate (in radians).
- * @param {Mat3} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat3} The rotated matrix.
+ * @param m - The matrix.
+ * @param angleInRadians - The angle by which to rotate (in radians).
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The rotated matrix.
  */
-export function rotate(m, angleInRadians, dst) {
+export function rotate(m: Mat3, angleInRadians: number, dst?: Mat3): Mat3 {
   dst = dst || newMat3();
 
   const m00 = m[0 * 4 + 0];
@@ -670,12 +653,12 @@ export function rotate(m, angleInRadians, dst) {
  * Creates a 3-by-3 matrix which scales in each dimension by an amount given by
  * the corresponding entry in the given vector; assumes the vector has three
  * entries.
- * @param {Vec2} v A vector of
+ * @param v - A vector of
  *     2 entries specifying the factor by which to scale in each dimension.
- * @param {Mat3} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat3} The scaling matrix.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The scaling matrix.
  */
-export function scaling(v, dst) {
+export function scaling(v: Vec2, dst?: Mat3): Mat3 {
   dst = dst || newMat3();
 
   dst[ 0] = v[0];
@@ -695,13 +678,13 @@ export function scaling(v, dst) {
  * Scales the given 3-by-3 matrix in each dimension by an amount
  * given by the corresponding entry in the given vector; assumes the vector has
  * three entries.
- * @param {Mat3} m The matrix to be modified.
- * @param {Vec2} v A vector of 2 entries specifying the
+ * @param m - The matrix to be modified.
+ * @param v - A vector of 2 entries specifying the
  *     factor by which to scale in each dimension.
- * @param {Mat3} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat3} The scaled matrix.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The scaled matrix.
  */
-export function scale(m, v, dst) {
+export function scale(m: Mat3, v: Vec2, dst?: Mat3): Mat3 {
   dst = dst || newMat3();
 
   const v0 = v[0];

@@ -1,4 +1,4 @@
-/* global utils */
+import {utils} from '../../dist/1.x/wgpu-matrix.module.js';
 
 import {
   assertEqual,

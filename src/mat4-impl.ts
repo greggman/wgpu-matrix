@@ -1,27 +1,10 @@
-/*
- * Copyright 2022 Gregg Tavares
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
- * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- */
 
-import * as vec3 from './vec3.js';
-import * as utils from './utils.js';
+import { ArrayLikeCtor } from './array-like';
+import { Mat4 } from './mat4';
+import Vec3, * as vec3 from './vec3-impl';
+import * as utils from './utils';
+
+export default Mat4;
 
 /**
  * 4x4 Matrix math math functions.
@@ -45,23 +28,15 @@ import * as utils from './utils.js';
  *     const trans = mat4.translation([1, 2, 3]);
  *     mat4.multiply(mat, trans, mat);  // Multiplies mat * trans and puts result in mat.
  *
- * @module mat4
  */
-let MatType = Float32Array;
-
-/**
- * A JavaScript array with 16 values, a Float32Array with 16 values, or a Float64Array with 16 values.
- * When created by the library will create the default type which is `Float32Array`
- * but can be set by calling {@link mat4.setDefaultType}.
- * @typedef {(number[]|Float32Array|Float64Array)} Mat4
- */
+let MatType: ArrayLikeCtor = Float32Array;
 
 /**
  * Sets the type this library creates for a Mat4
- * @param {constructor} ctor the constructor for the type. Either `Float32Array`, 'Float64Array', or `Array`
- * @return {constructor} previous constructor for Mat4
+ * @param ctor - the constructor for the type. Either `Float32Array`, 'Float64Array', or `Array`
+ * @returns previous constructor for Mat4
  */
-export function setDefaultType(ctor) {
+export function setDefaultType(ctor: new (n: number) => Mat4) {
   const oldType = MatType;
   MatType = ctor;
   return oldType;
@@ -90,29 +65,29 @@ export function setDefaultType(ctor) {
  * mat4.perspective(fov, aspect, near, far, m);
  * ```
  *
- * @param {number} [v0] value for element 0
- * @param {number} [v1] value for element 1
- * @param {number} [v2] value for element 2
- * @param {number} [v3] value for element 3
- * @param {number} [v4] value for element 4
- * @param {number} [v5] value for element 5
- * @param {number} [v6] value for element 6
- * @param {number} [v7] value for element 7
- * @param {number} [v8] value for element 8
- * @param {number} [v9] value for element 9
- * @param {number} [v10] value for element 10
- * @param {number} [v11] value for element 11
- * @param {number} [v12] value for element 12
- * @param {number} [v13] value for element 13
- * @param {number} [v14] value for element 14
- * @param {number} [v15] value for element 15
- * @returns {Mat4} created from values.
+ * @param v0 - value for element 0
+ * @param v1 - value for element 1
+ * @param v2 - value for element 2
+ * @param v3 - value for element 3
+ * @param v4 - value for element 4
+ * @param v5 - value for element 5
+ * @param v6 - value for element 6
+ * @param v7 - value for element 7
+ * @param v8 - value for element 8
+ * @param v9 - value for element 9
+ * @param v10 - value for element 10
+ * @param v11 - value for element 11
+ * @param v12 - value for element 12
+ * @param v13 - value for element 13
+ * @param v14 - value for element 14
+ * @param v15 - value for element 15
+ * @returns created from values.
  */
 export function create(
-    v0, v1, v2, v3,
-    v4, v5, v6, v7,
-    v8, v9, v10, v11,
-    v12, v13, v14, v15) {
+    v0?: number, v1?: number, v2?: number, v3?: number,
+    v4?: number, v5?: number, v6?: number, v7?: number,
+    v8?: number, v9?: number, v10?: number, v11?: number,
+    v12?: number, v13?: number, v14?: number, v15?: number): Mat4 {
   const dst = new MatType(16);
   if (v0 !== undefined) {
     dst[0] = v0;
@@ -167,11 +142,11 @@ export function create(
 
 /**
  * Negates a matrix.
- * @param {Mat4} m The matrix.
- * @param {Mat4} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat4} -m.
+ * @param m - The matrix.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns -m.
  */
-export function negate(m, dst) {
+export function negate(m: Mat4, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
 
   dst[ 0] = -m[ 0];
@@ -196,11 +171,11 @@ export function negate(m, dst) {
 
 /**
  * Copies a matrix.
- * @param {Mat4} m The matrix.
- * @param {Mat4} [dst] The matrix. If not passed a new one is created.
- * @return {Mat4} A copy of m.
+ * @param m - The matrix.
+ * @param dst - The matrix. If not passed a new one is created.
+ * @returns A copy of m.
  */
-export function copy(m, dst) {
+export function copy(m: Mat4, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
 
   dst[ 0] = m[ 0];
@@ -225,20 +200,19 @@ export function copy(m, dst) {
 
 /**
  * Copies a matrix (same as copy)
- * @function
- * @param {Mat4} m The matrix.
- * @param {Mat4} [dst] The matrix. If not passed a new one is created.
- * @return {Mat4} A copy of m.
+ * @param m - The matrix.
+ * @param dst - The matrix. If not passed a new one is created.
+ * @returns A copy of m.
  */
 export const clone = copy;
 
 /**
  * Check if 2 matrices are approximately equal
- * @param {Mat4} a Operand matrix.
- * @param {Mat4} b Operand matrix.
- * @returns {bool} true if matrices are approximately equal
+ * @param a - Operand matrix.
+ * @param b - Operand matrix.
+ * @returns true if matrices are approximately equal
  */
-export function equalsApproximately(a, b) {
+export function equalsApproximately(a: Mat4, b: Mat4): boolean {
   return Math.abs(a[ 0] - b[ 0]) < utils.EPSILON &&
          Math.abs(a[ 1] - b[ 1]) < utils.EPSILON &&
          Math.abs(a[ 2] - b[ 2]) < utils.EPSILON &&
@@ -259,11 +233,11 @@ export function equalsApproximately(a, b) {
 
 /**
  * Check if 2 matrices are exactly equal
- * @param {Mat4} a Operand matrix.
- * @param {Mat4} b Operand matrix.
- * @returns {bool} true if matrices are exactly equal
+ * @param a - Operand matrix.
+ * @param b - Operand matrix.
+ * @returns true if matrices are exactly equal
  */
-export function equals(a, b) {
+export function equals(a: Mat4, b: Mat4): boolean {
   return a[ 0] === b[ 0] &&
          a[ 1] === b[ 1] &&
          a[ 2] === b[ 2] &&
@@ -283,12 +257,12 @@ export function equals(a, b) {
 }
 
 /**
- * Creates an n-by-n identity matrix.
+ * Creates a 4-by-4 identity matrix.
  *
- * @param {Mat4} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat4} An n-by-n identity matrix.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns A 4-by-4 identity matrix.
  */
-export function identity(dst) {
+export function identity(dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
 
   dst[ 0] = 1;
@@ -313,11 +287,11 @@ export function identity(dst) {
 
 /**
  * Takes the transpose of a matrix.
- * @param {Mat4} m The matrix.
- * @param {Mat4} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat4} The transpose of m.
+ * @param m - The matrix.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The transpose of m.
  */
-export function transpose(m, dst) {
+export function transpose(m: Mat4, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
   if (dst === m) {
     let t;
@@ -387,11 +361,11 @@ export function transpose(m, dst) {
 
 /**
  * Computes the inverse of a 4-by-4 matrix.
- * @param {Mat4} m The matrix.
- * @param {Mat4} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat4} The inverse of m.
+ * @param m - The matrix.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The inverse of m.
  */
-export function inverse(m, dst) {
+export function inverse(m: Mat4, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
 
   const m00 = m[0 * 4 + 0];
@@ -480,10 +454,10 @@ export function inverse(m, dst) {
 
 /**
  * Compute the determinant of a matrix
- * @param {Mat4} m the matrix
- * @returns {number} the determinant
+ * @param m - the matrix
+ * @returns the determinant
  */
-export function determinant(m) {
+export function determinant(m: Mat4): number {
   const m00 = m[0 * 4 + 0];
   const m01 = m[0 * 4 + 1];
   const m02 = m[0 * 4 + 2];
@@ -528,21 +502,20 @@ export function determinant(m) {
 
 /**
  * Computes the inverse of a 4-by-4 matrix. (same as inverse)
- * @function
- * @param {Mat4} m The matrix.
- * @param {Mat4} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat4} The inverse of m.
+ * @param m - The matrix.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The inverse of m.
  */
 export const invert = inverse;
 
 /**
  * Multiplies two 4-by-4 matrices with a on the left and b on the right
- * @param {Mat4} a The matrix on the left.
- * @param {Mat4} b The matrix on the right.
- * @param {Mat4} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat4} The matrix product of a and b.
+ * @param a - The matrix on the left.
+ * @param b - The matrix on the right.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The matrix product of a and b.
  */
-export function multiply(a, b, dst) {
+export function multiply(a: Mat4, b: Mat4, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
 
   const a00 = a[0];
@@ -600,23 +573,22 @@ export function multiply(a, b, dst) {
 
 /**
  * Multiplies two 4-by-4 matrices with a on the left and b on the right (same as multiply)
- * @function
- * @param {Mat4} a The matrix on the left.
- * @param {Mat4} b The matrix on the right.
- * @param {Mat4} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat4} The matrix product of a and b.
+ * @param a - The matrix on the left.
+ * @param b - The matrix on the right.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The matrix product of a and b.
  */
 export const mul = multiply;
 
 /**
  * Sets the translation component of a 4-by-4 matrix to the given
  * vector.
- * @param {Mat4} a The matrix.
- * @param {Vec3} v The vector.
- * @param {Mat4} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat4} The matrix with translation set.
+ * @param a - The matrix.
+ * @param v - The vector.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The matrix with translation set.
  */
-export function setTranslation(a, v, dst) {
+export function setTranslation(a: Mat4, v: Vec3, dst?: Mat4): Mat4 {
   dst = dst || identity();
   if (a !== dst) {
     dst[ 0] = a[ 0];
@@ -642,11 +614,11 @@ export function setTranslation(a, v, dst) {
 /**
  * Returns the translation component of a 4-by-4 matrix as a vector with 3
  * entries.
- * @param {Mat4} m The matrix.
- * @param {Vec3} [dst] vector to hold result. If not passed a new one is created.
- * @return {Vec3} The translation component of m.
+ * @param m - The matrix.
+ * @param dst - vector to hold result. If not passed a new one is created.
+ * @returns The translation component of m.
  */
-export function getTranslation(m, dst) {
+export function getTranslation(m: Mat4, dst?: Vec3): Vec3 {
   dst = dst || vec3.create();
   dst[0] = m[12];
   dst[1] = m[13];
@@ -656,11 +628,11 @@ export function getTranslation(m, dst) {
 
 /**
  * Returns an axis of a 4x4 matrix as a vector with 3 entries
- * @param {Mat4} m The matrix.
- * @param {number} axis The axis 0 = x, 1 = y, 2 = z;
- * @return {Vec3} The axis component of m.
+ * @param m - The matrix.
+ * @param axis - The axis 0 = x, 1 = y, 2 = z;
+ * @returns The axis component of m.
  */
-export function getAxis(m, axis, dst) {
+export function getAxis(m: Mat4, axis: number, dst?: Vec3): Vec3 {
   dst = dst || vec3.create();
   const off = axis * 4;
   dst[0] = m[off + 0];
@@ -671,13 +643,13 @@ export function getAxis(m, axis, dst) {
 
 /**
  * Sets an axis of a 4x4 matrix as a vector with 3 entries
- * @param {Mat4} m The matrix.
- * @param {Vec3} v the axis vector
- * @param {number} axis The axis  0 = x, 1 = y, 2 = z;
- * @param {Mat4} [dst] The matrix to set. If not passed a new one is created.
- * @return {Mat4} The matrix with axis set.
+ * @param m - The matrix.
+ * @param v - the axis vector
+ * @param axis - The axis  0 = x, 1 = y, 2 = z;
+ * @param dst - The matrix to set. If not passed a new one is created.
+ * @returns The matrix with axis set.
  */
-export function setAxis(a, v, axis, dst) {
+export function setAxis(a: Mat4, v: Vec3, axis: number, dst: Mat4): Mat4 {
   if (dst !== a) {
     dst = copy(a, dst);
   }
@@ -690,10 +662,10 @@ export function setAxis(a, v, axis, dst) {
 
 /**
  * Returns the scaling component of the matrix
- * @param {Mat4} m The Matrix
- * @param {Vec3} [dst] The vector to set. If not passed a new one is created.
+ * @param m - The Matrix
+ * @param dst - The vector to set. If not passed a new one is created.
  */
-export function getScaling(m, dst) {
+export function getScaling(m: Mat4, dst?: Vec3): Vec3 {
   dst = dst || vec3.create();
 
   const xx = m[0];
@@ -724,16 +696,16 @@ export function getScaling(m, dst) {
  * z-axis.  The matrix generated sends the viewing frustum to the unit box.
  * We assume a unit box extending from -1 to 1 in the x and y dimensions and
  * from 0 to 1 in the z dimension.
- * @param {number} fieldOfViewYInRadians The camera angle from top to bottom (in radians).
- * @param {number} aspect The aspect ratio width / height.
- * @param {number} zNear The depth (negative z coordinate)
+ * @param fieldOfViewYInRadians - The camera angle from top to bottom (in radians).
+ * @param aspect - The aspect ratio width / height.
+ * @param zNear - The depth (negative z coordinate)
  *     of the near clipping plane.
- * @param {number} zFar The depth (negative z coordinate)
+ * @param zFar - The depth (negative z coordinate)
  *     of the far clipping plane.
- * @param {Mat4} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat4} The perspective matrix.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The perspective matrix.
  */
-export function perspective(fieldOfViewYInRadians, aspect, zNear, zFar, dst) {
+export function perspective(fieldOfViewYInRadians: number, aspect: number, zNear: number, zFar: number, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
 
   const f = Math.tan(Math.PI * 0.5 - 0.5 * fieldOfViewYInRadians);
@@ -766,18 +738,18 @@ export function perspective(fieldOfViewYInRadians, aspect, zNear, zFar, dst) {
  * Computes a 4-by-4 orthogonal transformation matrix that transforms from
  * the given the left, right, bottom, and top dimensions to -1 +1 in x, and y
  * and 0 to +1 in z.
- * @param {number} left Left side of the near clipping plane viewport.
- * @param {number} right Right side of the near clipping plane viewport.
- * @param {number} bottom Bottom of the near clipping plane viewport.
- * @param {number} top Top of the near clipping plane viewport.
- * @param {number} near The depth (negative z coordinate)
+ * @param left - Left side of the near clipping plane viewport.
+ * @param right - Right side of the near clipping plane viewport.
+ * @param bottom - Bottom of the near clipping plane viewport.
+ * @param top - Top of the near clipping plane viewport.
+ * @param near - The depth (negative z coordinate)
  *     of the near clipping plane.
- * @param {number} far The depth (negative z coordinate)
+ * @param far - The depth (negative z coordinate)
  *     of the far clipping plane.
- * @param {Mat4} [dst] Output matrix. If not passed a new one is created.
- * @return {Mat4} The perspective matrix.
+ * @param dst - Output matrix. If not passed a new one is created.
+ * @returns The perspective matrix.
  */
-export function ortho(left, right, bottom, top, near, far, dst) {
+export function ortho(left: number, right: number, bottom: number, top: number, near: number, far: number, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
 
   dst[0]  = 2 / (right - left);
@@ -812,16 +784,16 @@ export function ortho(left, right, bottom, top, near, far, dst) {
  * matrix generated sends the viewing frustum to the unit box. We assume a unit
  * box extending from -1 to 1 in the x and y dimensions and from 0 to 1 in the z
  * dimension.
- * @param {number} left The x coordinate of the left plane of the box.
- * @param {number} right The x coordinate of the right plane of the box.
- * @param {number} bottom The y coordinate of the bottom plane of the box.
- * @param {number} top The y coordinate of the right plane of the box.
- * @param {number} near The negative z coordinate of the near plane of the box.
- * @param {number} far The negative z coordinate of the far plane of the box.
- * @param {Mat4} [dst] Output matrix. If not passed a new one is created.
- * @return {Mat4} The perspective projection matrix.
+ * @param left - The x coordinate of the left plane of the box.
+ * @param right - The x coordinate of the right plane of the box.
+ * @param bottom - The y coordinate of the bottom plane of the box.
+ * @param top - The y coordinate of the right plane of the box.
+ * @param near - The negative z coordinate of the near plane of the box.
+ * @param far - The negative z coordinate of the far plane of the box.
+ * @param dst - Output matrix. If not passed a new one is created.
+ * @returns The perspective projection matrix.
  */
-export function frustum(left, right, bottom, top, near, far, dst) {
+export function frustum(left: number, right: number, bottom: number, top: number, near: number, far: number, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
 
   const dx = (right - left);
@@ -848,9 +820,9 @@ export function frustum(left, right, bottom, top, near, far, dst) {
   return dst;
 }
 
-let xAxis;
-let yAxis;
-let zAxis;
+let xAxis: Vec3;
+let yAxis: Vec3;
+let zAxis: Vec3;
 
 /**
  * Computes a 4-by-4 look-at transformation.
@@ -859,13 +831,13 @@ let zAxis;
  * a view matrix (a matrix which moves things in front of the camera)
  * take the inverse of this.
  *
- * @param {Vec3} eye The position of the eye.
- * @param {Vec3} target The position meant to be viewed.
- * @param {Vec3} up A vector pointing up.
- * @param {Mat4} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat4} The look-at matrix.
+ * @param eye - The position of the eye.
+ * @param target - The position meant to be viewed.
+ * @param up - A vector pointing up.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The look-at matrix.
  */
-export function lookAt(eye, target, up, dst) {
+export function lookAt(eye: Vec3, target: Vec3, up: Vec3, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
 
   xAxis = xAxis || vec3.create();
@@ -899,12 +871,12 @@ export function lookAt(eye, target, up, dst) {
 
 /**
  * Creates a 4-by-4 matrix which translates by the given vector v.
- * @param {Vec3} v The vector by
+ * @param v - The vector by
  *     which to translate.
- * @param {Mat4} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat4} The translation matrix.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The translation matrix.
  */
-export function translation(v, dst) {
+export function translation(v: Vec3, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
 
   dst[ 0] = 1;
@@ -928,13 +900,13 @@ export function translation(v, dst) {
 
 /**
  * Translates the given 4-by-4 matrix by the given vector v.
- * @param {Mat4} m The matrix.
- * @param {Vec3} v The vector by
+ * @param m - The matrix.
+ * @param v - The vector by
  *     which to translate.
- * @param {Mat4} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat4} The translated matrix.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The translated matrix.
  */
-export function translate(m, v, dst) {
+export function translate(m: Mat4, v: Vec3, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
 
   const v0 = v[0];
@@ -982,11 +954,11 @@ export function translate(m, v, dst) {
 
 /**
  * Creates a 4-by-4 matrix which rotates around the x-axis by the given angle.
- * @param {number} angleInRadians The angle by which to rotate (in radians).
- * @param {Mat4} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat4} The rotation matrix.
+ * @param angleInRadians - The angle by which to rotate (in radians).
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The rotation matrix.
  */
-export function rotationX(angleInRadians, dst) {
+export function rotationX(angleInRadians: number, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
 
   const c = Math.cos(angleInRadians);
@@ -1015,12 +987,12 @@ export function rotationX(angleInRadians, dst) {
 /**
  * Rotates the given 4-by-4 matrix around the x-axis by the given
  * angle.
- * @param {Mat4} m The matrix.
- * @param {number} angleInRadians The angle by which to rotate (in radians).
- * @param {Mat4} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat4} The rotated matrix.
+ * @param m - The matrix.
+ * @param angleInRadians - The angle by which to rotate (in radians).
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The rotated matrix.
  */
-export function rotateX(m, angleInRadians, dst) {
+export function rotateX(m: Mat4, angleInRadians: number, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
 
   const m10 = m[4];
@@ -1059,11 +1031,11 @@ export function rotateX(m, angleInRadians, dst) {
 
 /**
  * Creates a 4-by-4 matrix which rotates around the y-axis by the given angle.
- * @param {number} angleInRadians The angle by which to rotate (in radians).
- * @param {Mat4} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat4} The rotation matrix.
+ * @param angleInRadians - The angle by which to rotate (in radians).
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The rotation matrix.
  */
-export function rotationY(angleInRadians, dst) {
+export function rotationY(angleInRadians: number, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
 
   const c = Math.cos(angleInRadians);
@@ -1092,12 +1064,12 @@ export function rotationY(angleInRadians, dst) {
 /**
  * Rotates the given 4-by-4 matrix around the y-axis by the given
  * angle.
- * @param {Mat4} m The matrix.
- * @param {number} angleInRadians The angle by which to rotate (in radians).
- * @param {Mat4} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat4} The rotated matrix.
+ * @param m - The matrix.
+ * @param angleInRadians - The angle by which to rotate (in radians).
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The rotated matrix.
  */
-export function rotateY(m, angleInRadians, dst) {
+export function rotateY(m: Mat4, angleInRadians: number, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
 
   const m00 = m[0 * 4 + 0];
@@ -1136,11 +1108,11 @@ export function rotateY(m, angleInRadians, dst) {
 
 /**
  * Creates a 4-by-4 matrix which rotates around the z-axis by the given angle.
- * @param {number} angleInRadians The angle by which to rotate (in radians).
- * @param {Mat4} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat4} The rotation matrix.
+ * @param angleInRadians - The angle by which to rotate (in radians).
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The rotation matrix.
  */
-export function rotationZ(angleInRadians, dst) {
+export function rotationZ(angleInRadians: number, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
 
   const c = Math.cos(angleInRadians);
@@ -1169,12 +1141,12 @@ export function rotationZ(angleInRadians, dst) {
 /**
  * Rotates the given 4-by-4 matrix around the z-axis by the given
  * angle.
- * @param {Mat4} m The matrix.
- * @param {number} angleInRadians The angle by which to rotate (in radians).
- * @param {Mat4} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat4} The rotated matrix.
+ * @param m - The matrix.
+ * @param angleInRadians - The angle by which to rotate (in radians).
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The rotated matrix.
  */
-export function rotateZ(m, angleInRadians, dst) {
+export function rotateZ(m: Mat4, angleInRadians: number, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
 
   const m00 = m[0 * 4 + 0];
@@ -1214,14 +1186,14 @@ export function rotateZ(m, angleInRadians, dst) {
 /**
  * Creates a 4-by-4 matrix which rotates around the given axis by the given
  * angle.
- * @param {Vec3} axis The axis
+ * @param axis - The axis
  *     about which to rotate.
- * @param {number} angleInRadians The angle by which to rotate (in radians).
- * @param {Mat4} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat4} A matrix which rotates angle radians
+ * @param angleInRadians - The angle by which to rotate (in radians).
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns A matrix which rotates angle radians
  *     around the axis.
  */
-export function axisRotation(axis, angleInRadians, dst) {
+export function axisRotation(axis: Vec3, angleInRadians: number, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
 
   let x = axis[0];
@@ -1261,12 +1233,11 @@ export function axisRotation(axis, angleInRadians, dst) {
 /**
  * Creates a 4-by-4 matrix which rotates around the given axis by the given
  * angle. (same as axisRotation)
- * @function
- * @param {Vec3} axis The axis
+ * @param axis - The axis
  *     about which to rotate.
- * @param {number} angleInRadians The angle by which to rotate (in radians).
- * @param {Mat4} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat4} A matrix which rotates angle radians
+ * @param angleInRadians - The angle by which to rotate (in radians).
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns A matrix which rotates angle radians
  *     around the axis.
  */
 export const rotation = axisRotation;
@@ -1274,14 +1245,14 @@ export const rotation = axisRotation;
 /**
  * Rotates the given 4-by-4 matrix around the given axis by the
  * given angle.
- * @param {Mat4} m The matrix.
- * @param {Vec3} axis The axis
+ * @param m - The matrix.
+ * @param axis - The axis
  *     about which to rotate.
- * @param {number} angleInRadians The angle by which to rotate (in radians).
- * @param {Mat4} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat4} The rotated matrix.
+ * @param angleInRadians - The angle by which to rotate (in radians).
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The rotated matrix.
  */
-export function axisRotate(m, axis, angleInRadians, dst) {
+export function axisRotate(m: Mat4, axis: Vec3, angleInRadians: number, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
 
   let x = axis[0];
@@ -1347,13 +1318,12 @@ export function axisRotate(m, axis, angleInRadians, dst) {
 /**
  * Rotates the given 4-by-4 matrix around the given axis by the
  * given angle. (same as rotate)
- * @function
- * @param {Mat4} m The matrix.
- * @param {Vec3} axis The axis
+ * @param m - The matrix.
+ * @param axis - The axis
  *     about which to rotate.
- * @param {number} angleInRadians The angle by which to rotate (in radians).
- * @param {Mat4} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat4} The rotated matrix.
+ * @param angleInRadians - The angle by which to rotate (in radians).
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The rotated matrix.
  */
 export const rotate = axisRotate;
 
@@ -1361,12 +1331,12 @@ export const rotate = axisRotate;
  * Creates a 4-by-4 matrix which scales in each dimension by an amount given by
  * the corresponding entry in the given vector; assumes the vector has three
  * entries.
- * @param {Vec3} v A vector of
+ * @param v - A vector of
  *     three entries specifying the factor by which to scale in each dimension.
- * @param {Mat4} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat4} The scaling matrix.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The scaling matrix.
  */
-export function scaling(v, dst) {
+export function scaling(v: Vec3, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
 
   dst[ 0] = v[0];
@@ -1393,13 +1363,13 @@ export function scaling(v, dst) {
  * Scales the given 4-by-4 matrix in each dimension by an amount
  * given by the corresponding entry in the given vector; assumes the vector has
  * three entries.
- * @param {Mat4} m The matrix to be modified.
- * @param {Vec3} v A vector of three entries specifying the
+ * @param m - The matrix to be modified.
+ * @param v - A vector of three entries specifying the
  *     factor by which to scale in each dimension.
- * @param {Mat4} [dst] matrix to hold result. If not passed a new one is created.
- * @return {Mat4} The scaled matrix.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The scaled matrix.
  */
-export function scale(m, v, dst) {
+export function scale(m: Mat4, v: Vec3, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
 
   const v0 = v[0];
@@ -1428,4 +1398,3 @@ export function scale(m, v, dst) {
 
   return dst;
 }
-

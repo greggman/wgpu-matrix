@@ -1,4 +1,4 @@
-/* global mat4 utils vec3 */
+import {mat4, utils, vec3} from '../../dist/1.x/wgpu-matrix.module.js';
 
 import {
   assertEqual,
@@ -21,7 +21,7 @@ function check(Type) {
       12, 13, 14, 15,
     ];
 
-    before(function() {
+    before(function () {
       mat4.setDefaultType(Type);
     });
 
@@ -499,7 +499,7 @@ function check(Type) {
       shouldBeCloseArray(vec3.transformMat4([left, bottom, -near], m), [-1, -1, 0], 0.000001);
       const centerX = (left + right) * 0.5;
       const centerY = (top + bottom) * 0.5;
-      const p = vec3.transformMat4([centerX, centerY, -far], m);
+      const p = vec3.transformMat4([centerX, centerY, m, -far], m);
       //shouldBeCloseArray(p, [1, 1, 1], 0.000001);
       assertEqualApproximately(p[2], 1);
     });

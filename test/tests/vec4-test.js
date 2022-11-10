@@ -1,4 +1,4 @@
-/* global vec4 utils */
+import {vec4, utils} from '../../dist/1.x/wgpu-matrix.module.js';
 
 import {
   assertEqual,
@@ -57,7 +57,7 @@ function check(Type) {
       // correct result
       d = vec4.clone(v);
       // clone args to make sure we don't overwrite first arg
-      const bOrig = args.map(b => b.slice());
+      const bOrig = args.map(b => b.slice(b));
       c = func(d, ...args, d);
       assertStrictEqual(c, d);
       elementsEqual(c, expected);

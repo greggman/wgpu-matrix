@@ -1,0 +1,12 @@
+{
+  "extends": "@tsconfig/recommended/tsconfig.json",
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "esnext",
+    "outDir": "dist/1.x",
+    "declaration": true,
+  },
+  "files": [
+    "src/wgpu-matrix.ts",
+  ],
+}

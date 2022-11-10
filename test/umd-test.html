@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>UMD Test</title>
+  </head>
+  <body>
+    <script src="../dist/1.x/wgpu-matrix.js"></script>
+    <script>
+      /* global wgpuMatrix */
+      const { mat4, vec3 } = wgpuMatrix;
+
+      function fail(...args) {
+        logImpl('red', 'FAIL:', ...args);
+      }
+
+      function pass(...args) {
+        logImpl('green', 'PASS:', ...args);
+      }
+
+      function log(...args) {
+        logImpl('inherit', ...args);
+      }
+
+      function logImpl(color, ...args) {
+        const elem = document.createElement('pre');
+        elem.style.color = color;
+        elem.textContent = args.join(' ');
+        document.body.appendChild(elem);
+      }
+
+      function assert(fn) {
+        log((fn() ? pass : fail)(), fn);
+      }
+
+      const v1 = vec3.create(1, 2, 3);
+      const v2 = vec3.create(4, 5, 6);
+      const v3 = vec3.add(v1, v2);
+      assert(() => vec3.equals(v3, [5, 7, 9]));
+
+      const m = mat4.translation(v3);
+      assert(() => m[12] === 5);
+    </script>
+  </body>
+</html>

@@ -1,4 +1,4 @@
-/* global vec3 utils */
+import {vec3, utils} from '../../dist/1.x/wgpu-matrix.module.js';
 
 import {
   assertEqual,
@@ -58,7 +58,7 @@ function check(Type) {
       // correct result
       d = vec3.clone(v);
       // clone args to make sure we don't overwrite first arg
-      const bOrig = args.map(b => b.slice());
+      const bOrig = args.map(b => b.slice(b));
       c = func(d, ...args, d);
       assertStrictEqual(c, d);
       elementsEqual(c, expected);
@@ -390,22 +390,22 @@ function check(Type) {
         0, 5, 0, 0,
         0, 0, 6, 0,
       ];
-      testV3WithAndWithoutDest((v, mat, dst) => {
-        return vec3.transformMat3(v, mat, dst);
-      }, expected, [1, 2, 3], m);
+      testV3WithAndWithoutDest((v, dst) => {
+        return vec3.transformMat3(v, m, dst);
+      }, expected, [1, 2, 3]);
     });
 
     it('should transform by 4x4', () => {
       const expected = [5, 9, 15];
-      const m = [
-        1, 0, 0, 0,
-        0, 2, 0, 0,
-        0, 0, 3, 0,
-        4, 5, 6, 1,
-      ];
-      testV3WithAndWithoutDest((v, mat, dst) => {
-        return vec3.transformMat4(v, mat, dst);
-      }, expected, [1, 2, 3], m);
+      testV3WithAndWithoutDest((v, dst) => {
+        const m = [
+          1, 0, 0, 0,
+          0, 2, 0, 0,
+          0, 0, 3, 0,
+          4, 5, 6, 1,
+        ];
+        return vec3.transformMat4(v, m, dst);
+      }, expected, [1, 2, 3]);
     });
 
     it('should transform by 4x4Upper3x3', () => {
