@@ -8,6 +8,15 @@ Fast 3d math library for webgpu
 * [Repo](https://github.com/greggman/wgpu-matrix)
 * [Tests](https://wgpu-matrix.org/test/)
 
+
+## Why another 3d math library?
+
+Most (all?) math libraries for the web at this point assume webgl is the rendering api.
+Webgpu and webgl are similar, but there are some differences.
+Style-wise this library also makes a tradeoff slightly torwards convenience over perf compared
+to `gl-matrix`.  These are outlined in more detail below.  
+
+
 ## Usage
 
 ```js
