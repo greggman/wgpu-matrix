@@ -11,6 +11,7 @@
   },
   "scripts": {
     "build": "rollup -c",
+    "build-min": "rollup -c && google-closure-compiler --warning_level=VERBOSE --jscomp_off=globalThis --jscomp_off=checkTypes --externs build/externs.js --language_in=ECMASCRIPT_2019 --language_out=ECMASCRIPT_2019 --js dist/1.x/wgpu-matrix.js --js_output_file dist/1.x/wgpu-matrix.min.js && node ./build/append-banner.js dist/1.x/wgpu-matrix.min.js",
     "check": "npm run lint",
     "check-ci": "npm run pre-push",
     "docs": "typedoc --disableSources src/wgpu-matrix.ts",
@@ -52,6 +53,7 @@
     "eslint-plugin-optional-comma-spacing": "^0.0.4",
     "eslint-plugin-require-trailing-comma": "^0.0.1",
     "express": "^4.18.2",
+    "google-closure-compiler": "^20230228.0.0",
     "mocha": "^10.1.0",
     "rollup": "^3.2.5",
     "tslib": "^2.4.1",
