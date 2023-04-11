@@ -1,5 +1,6 @@
 
 import { ArrayLikeCtor } from './array-like';
+import { Mat3 } from './mat3';
 import { Mat4 } from './mat4';
 import Vec3, * as vec3 from './vec3-impl';
 import * as utils from './utils';
@@ -137,6 +138,33 @@ export function create(
       }
     }
   }
+  return dst;
+}
+
+/**
+ * Creates a Mat4 from a Mat3
+ * @param m3 - source matrix
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns Mat4 made from m3
+ */
+export function fromMat3(m3: Mat3, dst?: Mat4): Mat4 {
+  dst = dst || new MatType(16);
+  dst[0] = m3[0];
+  dst[1] = m3[1];
+  dst[2] = m3[2];
+  dst[3] = 0;
+  dst[4] = m3[4];
+  dst[5] = m3[5];
+  dst[6] = m3[6];
+  dst[7] = 0;
+  dst[8] = m3[8];
+  dst[9] = m3[9];
+  dst[10] = m3[10];
+  dst[11] = 0;
+  dst[12] = 0;
+  dst[13] = 0;
+  dst[14] = 0;
+  dst[15] = 1;
   return dst;
 }
 

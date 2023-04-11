@@ -1,4 +1,4 @@
-import {mat4, utils, vec3} from '../../dist/1.x/wgpu-matrix.module.js';
+import {mat4, mat3, utils, vec3} from '../../dist/1.x/wgpu-matrix.module.js';
 
 import {
   assertEqual,
@@ -724,6 +724,19 @@ function check(Type) {
       ];
       testM4WithAndWithoutDest((dst) => {
         return mat4.scale(m, [2, 3, 4], dst);
+      }, expected);
+    });
+
+    it('should make a mat4 from mat3', () => {
+      const expected = [
+        1, 2, 3, 0,
+        4, 5, 6, 0,
+        7, 8, 9, 0,
+        0, 0, 0, 1,
+      ];
+      testM4WithAndWithoutDest((dst) => {
+        const m3 = mat3.create(1, 2, 3, 4, 5, 6, 7, 8, 9);
+        return mat4.fromMat3(m3, dst);
       }, expected);
     });
 

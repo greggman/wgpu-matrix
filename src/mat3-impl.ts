@@ -23,6 +23,7 @@
 import { ArrayLikeCtor } from './array-like';
 import * as utils from './utils.js';
 import { Mat3 } from './mat3';
+import { Mat4 } from './mat4';
 import Vec2, * as vec2 from './vec2-impl';
 
 export default Mat3;
@@ -146,6 +147,29 @@ export function create(
     }
   }
 
+  return dst;
+}
+
+/**
+ * Creates a Mat3 from the upper left 3x3 part of a Mat4
+ * @param m4 - source matrix
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns Mat3 made from m4
+ */
+export function fromMat4(m4: Mat4, dst?: Mat3): Mat3 {
+  dst = dst || newMat3();
+  dst[0] = m4[0];
+  dst[1] = m4[1];
+  dst[2] = m4[2];
+  dst[3] = 0;
+  dst[4] = m4[4];
+  dst[5] = m4[5];
+  dst[6] = m4[6];
+  dst[7] = 0;
+  dst[8] = m4[8];
+  dst[9] = m4[9];
+  dst[10] = m4[10];
+  dst[11] = 0;
   return dst;
 }
 
