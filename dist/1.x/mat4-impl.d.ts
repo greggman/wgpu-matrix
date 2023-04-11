@@ -1,4 +1,5 @@
 import { ArrayLikeCtor } from './array-like';
+import { Mat3 } from './mat3';
 import { Mat4 } from './mat4';
 import Vec3 from './vec3-impl';
 export default Mat4;
@@ -50,6 +51,13 @@ export declare function setDefaultType(ctor: new (n: number) => Mat4): ArrayLike
  * @returns created from values.
  */
 export declare function create(v0?: number, v1?: number, v2?: number, v3?: number, v4?: number, v5?: number, v6?: number, v7?: number, v8?: number, v9?: number, v10?: number, v11?: number, v12?: number, v13?: number, v14?: number, v15?: number): Mat4;
+/**
+ * Creates a Mat4 from a Mat3
+ * @param m3 - source matrix
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns Mat4 made from m3
+ */
+export declare function fromMat3(m3: Mat3, dst?: Mat4): Mat4;
 /**
  * Negates a matrix.
  * @param m - The matrix.
