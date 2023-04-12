@@ -158,18 +158,9 @@ export function create(
  */
 export function fromMat4(m4: Mat4, dst?: Mat3): Mat3 {
   dst = dst || newMat3();
-  dst[0] = m4[0];
-  dst[1] = m4[1];
-  dst[2] = m4[2];
-  dst[3] = 0;
-  dst[4] = m4[4];
-  dst[5] = m4[5];
-  dst[6] = m4[6];
-  dst[7] = 0;
-  dst[8] = m4[8];
-  dst[9] = m4[9];
-  dst[10] = m4[10];
-  dst[11] = 0;
+  dst[0] = m4[0];  dst[1] = m4[1];  dst[ 2] = m4[ 2];  dst[ 3] = 0;
+  dst[4] = m4[4];  dst[5] = m4[5];  dst[ 6] = m4[ 6];  dst[ 7] = 0;
+  dst[8] = m4[8];  dst[9] = m4[9];  dst[10] = m4[10];  dst[11] = 0;
   return dst;
 }
 
@@ -182,15 +173,9 @@ export function fromMat4(m4: Mat4, dst?: Mat3): Mat3 {
 export function negate(m: Mat3, dst?: Mat3): Mat3 {
   dst = dst || newMat3();
 
-  dst[ 0] = -m[ 0];
-  dst[ 1] = -m[ 1];
-  dst[ 2] = -m[ 2];
-  dst[ 4] = -m[ 4];
-  dst[ 5] = -m[ 5];
-  dst[ 6] = -m[ 6];
-  dst[ 8] = -m[ 8];
-  dst[ 9] = -m[ 9];
-  dst[10] = -m[10];
+  dst[ 0] = -m[ 0];  dst[ 1] = -m[ 1];  dst[ 2] = -m[ 2];
+  dst[ 4] = -m[ 4];  dst[ 5] = -m[ 5];  dst[ 6] = -m[ 6];
+  dst[ 8] = -m[ 8];  dst[ 9] = -m[ 9];  dst[10] = -m[10];
 
   return dst;
 }
@@ -204,17 +189,9 @@ export function negate(m: Mat3, dst?: Mat3): Mat3 {
 export function copy(m: Mat3, dst?: Mat3): Mat3 {
   dst = dst || newMat3();
 
-  dst[ 0] = m[ 0];
-  dst[ 1] = m[ 1];
-  dst[ 2] = m[ 2];
-
-  dst[ 4] = m[ 4];
-  dst[ 5] = m[ 5];
-  dst[ 6] = m[ 6];
-
-  dst[ 8] = m[ 8];
-  dst[ 9] = m[ 9];
-  dst[10] = m[10];
+  dst[ 0] = m[ 0];  dst[ 1] = m[ 1];  dst[ 2] = m[ 2];
+  dst[ 4] = m[ 4];  dst[ 5] = m[ 5];  dst[ 6] = m[ 6];
+  dst[ 8] = m[ 8];  dst[ 9] = m[ 9];  dst[10] = m[10];
 
   return dst;
 }
@@ -272,15 +249,9 @@ export function equals(a: Mat3, b: Mat3): boolean {
 export function identity(dst?: Mat3): Mat3 {
   dst = dst || newMat3();
 
-  dst[ 0] = 1;
-  dst[ 1] = 0;
-  dst[ 2] = 0;
-  dst[ 4] = 0;
-  dst[ 5] = 1;
-  dst[ 6] = 0;
-  dst[ 8] = 0;
-  dst[ 9] = 0;
-  dst[10] = 1;
+  dst[ 0] = 1;  dst[ 1] = 0;  dst[ 2] = 0;
+  dst[ 4] = 0;  dst[ 5] = 1;  dst[ 6] = 0;
+  dst[ 8] = 0;  dst[ 9] = 0;  dst[10] = 1;
 
   return dst;
 }
@@ -325,15 +296,9 @@ export function transpose(m: Mat3, dst?: Mat3): Mat3 {
   const m21 = m[2 * 4 + 1];
   const m22 = m[2 * 4 + 2];
 
-  dst[ 0] = m00;
-  dst[ 1] = m10;
-  dst[ 2] = m20;
-  dst[ 4] = m01;
-  dst[ 5] = m11;
-  dst[ 6] = m21;
-  dst[ 8] = m02;
-  dst[ 9] = m12;
-  dst[10] = m22;
+  dst[ 0] = m00;  dst[ 1] = m10;  dst[ 2] = m20;
+  dst[ 4] = m01;  dst[ 5] = m11;  dst[ 6] = m21;
+  dst[ 8] = m02;  dst[ 9] = m12;  dst[10] = m22;
 
   return dst;
 }
@@ -560,15 +525,10 @@ export function getScaling(m: Mat3, dst?: Vec2): Vec2 {
 export function translation(v: Vec2, dst?: Mat3): Mat3 {
   dst = dst || newMat3();
 
-  dst[ 0] = 1;
-  dst[ 1] = 0;
-  dst[ 2] = 0;
-  dst[ 4] = 0;
-  dst[ 5] = 1;
-  dst[ 6] = 0;
-  dst[ 8] = v[0];
-  dst[ 9] = v[1];
-  dst[10] = 1;
+  dst[ 0] = 1;     dst[ 1] = 0;     dst[ 2] = 0;
+  dst[ 4] = 0;     dst[ 5] = 1;     dst[ 6] = 0;
+  dst[ 8] = v[0];  dst[ 9] = v[1];  dst[10] = 1;
+
   return dst;
 }
 
@@ -623,15 +583,9 @@ export function rotation(angleInRadians: number, dst?: Mat3): Mat3 {
   const c = Math.cos(angleInRadians);
   const s = Math.sin(angleInRadians);
 
-  dst[ 0] = c;
-  dst[ 1] = s;
-  dst[ 2] = 0;
-  dst[ 4] = -s;
-  dst[ 5] = c;
-  dst[ 6] = 0;
-  dst[ 8] = 0;
-  dst[ 9] = 0;
-  dst[10] = 1;
+  dst[ 0] =  c;  dst[ 1] = s;  dst[ 2] = 0;
+  dst[ 4] = -s;  dst[ 5] = c;  dst[ 6] = 0;
+  dst[ 8] =  0;  dst[ 9] = 0;  dst[10] = 1;
 
   return dst;
 }
@@ -685,15 +639,9 @@ export function rotate(m: Mat3, angleInRadians: number, dst?: Mat3): Mat3 {
 export function scaling(v: Vec2, dst?: Mat3): Mat3 {
   dst = dst || newMat3();
 
-  dst[ 0] = v[0];
-  dst[ 1] = 0;
-  dst[ 2] = 0;
-  dst[ 4] = 0;
-  dst[ 5] = v[1];
-  dst[ 6] = 0;
-  dst[ 8] = 0;
-  dst[ 9] = 0;
-  dst[10] = 1;
+  dst[ 0] = v[0];  dst[ 1] = 0;     dst[ 2] = 0;
+  dst[ 4] = 0;     dst[ 5] = v[1];  dst[ 6] = 0;
+  dst[ 8] = 0;     dst[ 9] = 0;     dst[10] = 1;
 
   return dst;
 }
