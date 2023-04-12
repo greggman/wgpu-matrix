@@ -12,9 +12,9 @@ Fast 3d math library for webgpu
 ## Why another 3d math library?
 
 Most (all?) math libraries for the web at this point assume webgl is the rendering api.
-Webgpu and webgl are similar, but there are some differences.
-Style-wise this library also makes a tradeoff slightly torwards convenience over perf compared
-to `gl-matrix`.  These are outlined in more detail below.  
+Webgpu and webgl are similar, but there are some differences with the z-clip plane in `ortho` and `perspective` functions.
+API design-wise this library puts `out` as an optional last parameter in each function call as this is more convenient.
+These differences have more detail below.  
 
 
 ## Usage
