@@ -8,6 +8,15 @@ Fast 3d math library for webgpu
 * [Repo](https://github.com/greggman/wgpu-matrix)
 * [Tests](https://wgpu-matrix.org/test/)
 
+
+## Why another 3d math library?
+
+Most (all?) math libraries for the web at this point assume webgl is the rendering api.
+Webgpu and webgl are similar, but there are some differences with the z-clip plane in `ortho` and `perspective` functions.
+API design-wise this library puts `out` as an optional last parameter in each function call as this is more convenient.
+These differences have more detail below.  
+
+
 ## Usage
 
 ```js
@@ -91,9 +100,9 @@ import {vec3, mat3} from 'wgpu-matrix';
 
 ## Notes
 
-[`mat4.perspective`](https://wgpu-matrix.org/docs/module-mat4.html#.perspective),
-[`mat4.ortho`](https://wgpu-matrix.org/docs/module-mat4.html#.ortho), and
-[`mat4.frustum`](https://wgpu-matrix.org/docs/module-mat4.html#.frustum)
+[`mat4.perspective`](https://wgpu-matrix.org/docs/functions/mat4.perspective.html),
+[`mat4.ortho`](https://wgpu-matrix.org/docs/functions/mat4.ortho.html), and
+[`mat4.frustum`](https://wgpu-matrix.org/docs/functions/mat4.frustum.html)
 all return matrices with Z clip space from 0 to 1 (unlike most WebGL matrix libraries which return -1 to 1)
 
 [`mat4.lookAt`](https://wgpu-matrix.org/docs/module-mat4.html#.lookAt)
