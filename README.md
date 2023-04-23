@@ -40,13 +40,13 @@ Fast 3d math library for webgpu
 
     ```js
     const t = mat4.create();
-    mat4.translation([x, y, z],t );
+    mat4.translation([x, y, z], t);
 
     const p = mat4.create();
     mat4.perspective(fov, aspect, near, far, p);
 
     const r = mat4.create();
-    mat4.rotationX(rad, t);
+    mat4.rotationX(rad, r);
     ```
 
 ## Usage
