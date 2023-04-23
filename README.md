@@ -11,15 +11,43 @@ Fast 3d math library for webgpu
 
 ## Why another 3d math library?
 
-Most (all?) math libraries for the web at this point assume WebGL is the rendering API.
-WebGPU and WebGL are similar, but there are some differences
+* Most other 3D math libraries are designed for WebGL, not WebGPU
+  * WebGPU uses clip space Z 0 to 1, vs WebGL -1 to 1. So `ortho`, `perspective`, `frustum` are different
+  * WebGPU mat3s are 12 floats (padded), WebGL they're 9.
+* Many other 3D math libraries are overly verbose
+  * compare
 
-* z-clip plane in `ortho`, `perspective`, and `frustum` functions.
-* mat3 is 12 floats in WebGPU, 9 in WebGL
+    ```js
+    // wgpu-matrix
+    const t = mat4.translation([x, y, z]);
+    const p = mat4.perspective(fov, aspect, near, far);
+    const r = mat4.rotationX(rad);
+    ```
 
-Also, design-wise this library puts `out` as an optional last parameter in each function call as this is more convenient.
-These differences have more detail below.  
+    ```js
+    // gl-matrix
+    const t = mat4.create();
+    mat4.fromTranslation(t, [x, y, z]);
 
+    const p = mat4.create();
+    mat4.perspective(p, fov, aspect, near, far);
+
+    const r = mat4.create();
+    mat4.fromXRotation(r, rad);
+    ```
+
+    note that if you want to pre-create matrices you can still do this in wgpu-matrix
+
+    ```js
+    const t = mat4.create();
+    mat4.translation([x, y, z],t );
+
+    const p = mat4.create();
+    mat4.perspective(fov, aspect, near, far, p);
+
+    const r = mat4.create();
+    mat4.rotationX(rad, t);
+    ```
 
 ## Usage
 
@@ -63,7 +91,8 @@ const s = mat4.scale(m, [1, 2, 3]);        // m * scaling([1, 2, 3])
 Functions take an optional destination to hold the result.
 
 ```js
-const m = mat4.identity();
+const m = mat4.create();            // m = new mat4
+mat4.identity(m);                   // m = identity
 mat4.translate(m, [1, 2, 3], m);    // m = m * translation([1, 2, 3])
 mat4.rotateX(m, Math.PI * 0.5, m);  // m = m * rotationX(Math.PI * 0.5)
 mat4.scale(m, [1, 2, 3], m);        // m = m * scaling([1, 2, 3])
@@ -112,6 +141,9 @@ all return matrices with Z clip space from 0 to 1 (unlike most WebGL matrix libr
 [`mat4.lookAt`](https://wgpu-matrix.org/docs/module-mat4.html#.lookAt)
 returns a matrix that makes an object look down the -Z axis. If you want
 a view matrix take its inverse.
+
+[`mat4.create`](https://wgpu-matrix.org/docs/module-mat4.html#.create) makes an all zero matrix if passed no parameters.
+If you want an identity matrix call `mat4.identity`
 
 ## Important!
 
@@ -174,7 +206,7 @@ This issue has confused programmers since at least the early 90s 😌
 ## Performance vs Convenience
 
 Most functions take an optional destination as the last argument.
-If you don't supply it a new one (vector, matrix) will be created
+If you don't supply it, a new one (vector, matrix) will be created
 for you.
 
 ```js
