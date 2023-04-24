@@ -213,19 +213,21 @@ for you.
 // convenient usage
 
 const persp = mat4.perspective(fov, aspect, near, far);
-const camera = mat4.target(eye, target, up);
+const camera = mat4.lookAt(eye, target, up);
 const view = mat4.inverse(camera);
 ```
 
 ```js
 // performant usage
 
+// at init time
 const persp = mat4.create();
 const camera = mat4.create();
 const view = mat4.create();
 
+// at usage time
 mat4.perspective(fov, aspect, near, far, persp);
-mat4.target(eye, target, up, camera);
+mat4.lookAt(eye, target, up, camera);
 mat4.inverse(camera, view);
 ```
 
