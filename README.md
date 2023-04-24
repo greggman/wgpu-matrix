@@ -93,9 +93,9 @@ Functions take an optional destination to hold the result.
 ```js
 const m = mat4.create();            // m = new mat4
 mat4.identity(m);                   // m = identity
-mat4.translate(m, [1, 2, 3], m);    // m = m * translation([1, 2, 3])
-mat4.rotateX(m, Math.PI * 0.5, m);  // m = m * rotationX(Math.PI * 0.5)
-mat4.scale(m, [1, 2, 3], m);        // m = m * scaling([1, 2, 3])
+mat4.translate(m, [1, 2, 3], m);    // m *= translation([1, 2, 3])
+mat4.rotateX(m, Math.PI * 0.5, m);  // m *= rotationX(Math.PI * 0.5)
+mat4.scale(m, [1, 2, 3], m);        // m *= scaling([1, 2, 3])
 ```
 
 There is also the minified version
