@@ -34,6 +34,7 @@
     "math",
     "gpu",
     "3d",
+    "2d",
     "graphics"
   ],
   "author": "Gregg Tavares",
