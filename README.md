@@ -8,7 +8,6 @@ Fast 3d math library for webgpu
 * [Repo](https://github.com/greggman/wgpu-matrix)
 * [Tests](https://wgpu-matrix.org/test/)
 
-
 ## Why another 3d math library?
 
 * Most other 3D math libraries are designed for WebGL, not WebGPU
@@ -136,7 +135,7 @@ import {vec3, mat3} from 'wgpu-matrix';
 [`mat4.frustum`](https://wgpu-matrix.org/docs/functions/mat4.frustum.html)
 all return matrices with Z clip space from 0 to 1 (unlike most WebGL matrix libraries which return -1 to 1)
 
-[`mat4.create`](https://wgpu-matrix.org/docs/module-mat4.html#.create) makes an all zero matrix if passed no parameters.
+[`mat4.create`](https://wgpu-matrix.org/docs/functions/mat4.create.html) makes an all zero matrix if passed no parameters.
 If you want an identity matrix call `mat4.identity`
 
 ## Important!
@@ -231,6 +230,13 @@ stay convenient and then, if and only if I find a performance issue, then I
 might bother to switch to the performant style.
 
 As the saying goes [*premature optimization is the root of all evil.*](https://softwareengineering.stackexchange.com/questions/80084/is-premature-optimization-really-the-root-of-all-evil) 😉
+
+## Migration
+
+1.x -> 2.x
+
+* [`mat4.lookAt`](https://wgpu-matrix.org/docs/functions/mat4.lookAt.html) changed from a "camera matrix" to a "view matrix" (same as gluLookAt). If you want a matrix that orients an
+  something in world space see [`mat4.aim`](https://wgpu-matrix.org/docs/functions/mat4.frustum.html).
 
 ## Development
 
