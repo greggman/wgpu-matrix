@@ -25,14 +25,14 @@
 is valid in all circumstances, if you want to
 force a JavaScript array into a Vec2&#39;s specified type
 it would be faster to use</p>
-<pre><code><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">v</span><span class="hl-1"> = </span><span class="hl-2">vec2</span><span class="hl-1">.</span><span class="hl-7">clone</span><span class="hl-1">(</span><span class="hl-2">someJSArray</span><span class="hl-1">);</span>
+<pre><code><span class="hl-1">const</span><span class="hl-2"> </span><span class="hl-3">v</span><span class="hl-2"> = </span><span class="hl-4">vec2</span><span class="hl-2">.</span><span class="hl-5">clone</span><span class="hl-2">(</span><span class="hl-4">someJSArray</span><span class="hl-2">);</span>
 </code></pre>
 <p>Note: a consequence of the implementation is if your Vec2Type = <code>Array</code>
 instead of <code>Float32Array</code> or <code>Float64Array</code> then any values you
 don&#39;t pass in will be undefined. Usually this is not an issue since
 (a) using <code>Array</code> is rare and (b) using <code>vec2.create</code> is usually used
 to create a Vec2 to be filled out as in</p>
-<pre><code><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">sum</span><span class="hl-1"> = </span><span class="hl-2">vec2</span><span class="hl-1">.</span><span class="hl-7">create</span><span class="hl-1">();</span><br/><span class="hl-2">vec2</span><span class="hl-1">.</span><span class="hl-7">add</span><span class="hl-1">(</span><span class="hl-2">v1</span><span class="hl-1">, </span><span class="hl-2">v2</span><span class="hl-1">, </span><span class="hl-2">sum</span><span class="hl-1">);</span>
+<pre><code><span class="hl-1">const</span><span class="hl-2"> </span><span class="hl-3">sum</span><span class="hl-2"> = </span><span class="hl-4">vec2</span><span class="hl-2">.</span><span class="hl-5">create</span><span class="hl-2">();</span><br/><span class="hl-4">vec2</span><span class="hl-2">.</span><span class="hl-5">add</span><span class="hl-2">(</span><span class="hl-4">v1</span><span class="hl-2">, </span><span class="hl-4">v2</span><span class="hl-2">, </span><span class="hl-4">sum</span><span class="hl-2">);</span>
 </code></pre>
 
 <h3>Returns</h3><p>the created vector</p>

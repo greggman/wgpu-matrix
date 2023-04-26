@@ -51,15 +51,15 @@
 <div class="tsd-comment tsd-typography"><p>Vec3 math functions.</p>
 <p>Almost all functions take an optional <code>dst</code> argument. If it is not passed in the
 functions will create a new <code>Vec3</code>. In other words you can do this</p>
-<pre><code><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">v</span><span class="hl-1"> = </span><span class="hl-2">vec3</span><span class="hl-1">.</span><span class="hl-7">cross</span><span class="hl-1">(</span><span class="hl-2">v1</span><span class="hl-1">, </span><span class="hl-2">v2</span><span class="hl-1">);  </span><span class="hl-8">// Creates a new Vec3 with the cross product of v1 x v2.</span>
+<pre><code><span class="hl-1">const</span><span class="hl-2"> </span><span class="hl-3">v</span><span class="hl-2"> = </span><span class="hl-4">vec3</span><span class="hl-2">.</span><span class="hl-5">cross</span><span class="hl-2">(</span><span class="hl-4">v1</span><span class="hl-2">, </span><span class="hl-4">v2</span><span class="hl-2">);  </span><span class="hl-0">// Creates a new Vec3 with the cross product of v1 x v2.</span>
 </code></pre>
 <p>or</p>
-<pre><code><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">v</span><span class="hl-1"> = </span><span class="hl-2">vec3</span><span class="hl-1">.</span><span class="hl-7">create</span><span class="hl-1">();</span><br/><span class="hl-2">vec3</span><span class="hl-1">.</span><span class="hl-7">cross</span><span class="hl-1">(</span><span class="hl-2">v1</span><span class="hl-1">, </span><span class="hl-2">v2</span><span class="hl-1">, </span><span class="hl-2">v</span><span class="hl-1">);  </span><span class="hl-8">// Puts the cross product of v1 x v2 in v</span>
+<pre><code><span class="hl-1">const</span><span class="hl-2"> </span><span class="hl-3">v</span><span class="hl-2"> = </span><span class="hl-4">vec3</span><span class="hl-2">.</span><span class="hl-5">create</span><span class="hl-2">();</span><br/><span class="hl-4">vec3</span><span class="hl-2">.</span><span class="hl-5">cross</span><span class="hl-2">(</span><span class="hl-4">v1</span><span class="hl-2">, </span><span class="hl-4">v2</span><span class="hl-2">, </span><span class="hl-4">v</span><span class="hl-2">);  </span><span class="hl-0">// Puts the cross product of v1 x v2 in v</span>
 </code></pre>
 <p>The first style is often easier but depending on where it&#39;s used it generates garbage where
 as there is almost never allocation with the second style.</p>
 <p>It is always safe to pass any vector as the destination. So for example</p>
-<pre><code><span class="hl-2">vec3</span><span class="hl-1">.</span><span class="hl-7">cross</span><span class="hl-1">(</span><span class="hl-2">v1</span><span class="hl-1">, </span><span class="hl-2">v2</span><span class="hl-1">, </span><span class="hl-2">v1</span><span class="hl-1">);  </span><span class="hl-8">// Puts the cross product of v1 x v2 in v1</span>
+<pre><code><span class="hl-4">vec3</span><span class="hl-2">.</span><span class="hl-5">cross</span><span class="hl-2">(</span><span class="hl-4">v1</span><span class="hl-2">, </span><span class="hl-4">v2</span><span class="hl-2">, </span><span class="hl-4">v1</span><span class="hl-2">);  </span><span class="hl-0">// Puts the cross product of v1 x v2 in v1</span>
 </code></pre>
 </div>
 <div class="tsd-parameters">

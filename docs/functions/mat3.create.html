@@ -25,14 +25,14 @@
 is valid in all circumstances, if you want to
 force a JavaScript array into a Mat3&#39;s specified type
 it would be faster to use</p>
-<pre><code><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">m</span><span class="hl-1"> = </span><span class="hl-2">mat3</span><span class="hl-1">.</span><span class="hl-7">clone</span><span class="hl-1">(</span><span class="hl-2">someJSArray</span><span class="hl-1">);</span>
+<pre><code><span class="hl-1">const</span><span class="hl-2"> </span><span class="hl-3">m</span><span class="hl-2"> = </span><span class="hl-4">mat3</span><span class="hl-2">.</span><span class="hl-5">clone</span><span class="hl-2">(</span><span class="hl-4">someJSArray</span><span class="hl-2">);</span>
 </code></pre>
 <p>Note: a consequence of the implementation is if your Mat3Type = <code>Array</code>
 instead of <code>Float32Array</code> or <code>Float64Array</code> then any values you
 don&#39;t pass in will be undefined. Usually this is not an issue since
 (a) using <code>Array</code> is rare and (b) using <code>mat3.create</code> is usually used
 to create a Mat3 to be filled out as in</p>
-<pre><code><span class="hl-4">const</span><span class="hl-1"> </span><span class="hl-5">m</span><span class="hl-1"> = </span><span class="hl-2">mat3</span><span class="hl-1">.</span><span class="hl-7">create</span><span class="hl-1">();</span><br/><span class="hl-2">mat3</span><span class="hl-1">.</span><span class="hl-7">perspective</span><span class="hl-1">(</span><span class="hl-2">fov</span><span class="hl-1">, </span><span class="hl-2">aspect</span><span class="hl-1">, </span><span class="hl-2">near</span><span class="hl-1">, </span><span class="hl-2">far</span><span class="hl-1">, </span><span class="hl-2">m</span><span class="hl-1">);</span>
+<pre><code><span class="hl-1">const</span><span class="hl-2"> </span><span class="hl-3">m</span><span class="hl-2"> = </span><span class="hl-4">mat3</span><span class="hl-2">.</span><span class="hl-5">create</span><span class="hl-2">();</span><br/><span class="hl-4">mat3</span><span class="hl-2">.</span><span class="hl-5">perspective</span><span class="hl-2">(</span><span class="hl-4">fov</span><span class="hl-2">, </span><span class="hl-4">aspect</span><span class="hl-2">, </span><span class="hl-4">near</span><span class="hl-2">, </span><span class="hl-4">far</span><span class="hl-2">, </span><span class="hl-4">m</span><span class="hl-2">);</span>
 </code></pre>
 
 <h3>Returns</h3><p>matrix created from values.</p>
