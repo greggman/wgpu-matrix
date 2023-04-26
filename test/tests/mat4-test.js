@@ -398,6 +398,39 @@ function check(Type) {
       }, expected);
     });
 
+    it('should compute perspective with zFar at infinity', () => {
+      const fov = 2;
+      const aspect = 4;
+      const zNear = 10;
+      const zFar = Infinity;
+      const f = Math.tan(Math.PI * 0.5 - 0.5 * fov);
+      const rangeInv = 1.0 / (zNear - zFar);
+      const expected = [
+        f / aspect,
+        0,
+        0,
+        0,
+
+        0,
+        f,
+        0,
+        0,
+
+        0,
+        0,
+        zFar * rangeInv,
+        -1,
+
+        0,
+        0,
+        zNear * zFar * rangeInv,
+        0,
+      ];
+      testM4WithAndWithoutDest((dst) => {
+        return mat4.perspective(fov, aspect, zNear, zFar, dst);
+      }, expected);
+    });
+
     it('should compute correct perspective', () => {
       const fov = Math.PI / 4;
       const aspect = 2;
@@ -406,6 +439,33 @@ function check(Type) {
       const m = mat4.perspective(fov, aspect, zNear, zFar);
       shouldBeCloseArray(vec3.transformMat4([0, 0, -zNear], m), [0, 0, 0], 0.000001);
       shouldBeCloseArray(vec3.transformMat4([0, 0, -zFar], m), [0, 0, 1], 0.000001);
+    });
+
+    it('should compute correct perspective with zFar at Infinity', () => {
+      const fov = Math.PI / 4;
+      const aspect = 2;
+      const zNear = 10;
+      const zFar = Number.MAX_VALUE;
+      const m = mat4.perspective(fov, aspect, zNear, zFar);
+      shouldBeCloseArray(vec3.transformMat4([0, 0, -zNear], m), [0, 0, -Infinity], 0.000001);
+      shouldBeCloseArray(vec3.transformMat4([0, 0, -1000], m), [0, 0, -Infinity], 0.000001);
+      shouldBeCloseArray(vec3.transformMat4([0, 0, -1000000], m), [0, 0, -Infinity], 0.000001);
+      shouldBeCloseArray(vec3.transformMat4([0, 0, -1000000000], m), [0, 0, -Infinity], 0.000001);
+      shouldBeCloseArray(vec3.transformMat4([0, 0, -zFar], m), [0, 0, -Infinity], 0.000001);
+
+      shouldBeCloseArray(vec3.transformMat4([0, 0, -9], m), [0, 0, -Infinity], 0.000001);
+      shouldBeCloseArray(vec3.transformMat4([0, 0, -5], m), [0, 0, -Infinity], 0.000001);
+      shouldBeCloseArray(vec3.transformMat4([0, 0, -1], m), [0, 0, -Infinity], 0.000001);
+      shouldBeCloseArray(vec3.transformMat4([0, 0,  0], m), [0, 0, -Infinity], 0.000001);
+      shouldBeCloseArray(vec3.transformMat4([0, 0,  1], m), [0, 0, Infinity], 0.000001);
+      shouldBeCloseArray(vec3.transformMat4([0, 0,  5], m), [0, 0, Infinity], 0.000001);
+      shouldBeCloseArray(vec3.transformMat4([0, 0,  9], m), [0, 0, Infinity], 0.000001);
+
+      shouldBeCloseArray(vec3.transformMat4([0, 0, zNear], m), [0, 0, Infinity], 0.000001);
+      shouldBeCloseArray(vec3.transformMat4([0, 0, 1000], m), [0, 0, Infinity], 0.000001);
+      shouldBeCloseArray(vec3.transformMat4([0, 0, 1000000], m), [0, 0, Infinity], 0.000001);
+      shouldBeCloseArray(vec3.transformMat4([0, 0, 1000000000], m), [0, 0, Infinity], 0.000001);
+      shouldBeCloseArray(vec3.transformMat4([0, 0, zFar], m), [0, 0, Infinity], 0.000001);
     });
 
     it('should compute ortho', () => {

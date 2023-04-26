@@ -664,6 +664,11 @@ export function getScaling(m: Mat4, dst?: Vec3): Vec3 {
  * z-axis.  The matrix generated sends the viewing frustum to the unit box.
  * We assume a unit box extending from -1 to 1 in the x and y dimensions and
  * from 0 to 1 in the z dimension.
+ *
+ * Note: If you pass `Infinity` for zFar then it will produce a projection matrix
+ * returns -Infinity for Z when transforming coordinates with Z <= 0 and +Infinity for Z
+ * otherwise.
+ *
  * @param fieldOfViewYInRadians - The camera angle from top to bottom (in radians).
  * @param aspect - The aspect ratio width / height.
  * @param zNear - The depth (negative z coordinate)
@@ -677,7 +682,6 @@ export function perspective(fieldOfViewYInRadians: number, aspect: number, zNear
   dst = dst || new MatType(16);
 
   const f = Math.tan(Math.PI * 0.5 - 0.5 * fieldOfViewYInRadians);
-  const rangeInv = 1 / (zNear - zFar);
 
   dst[0]  = f / aspect;
   dst[1]  = 0;
@@ -691,13 +695,20 @@ export function perspective(fieldOfViewYInRadians: number, aspect: number, zNear
 
   dst[8]  = 0;
   dst[9]  = 0;
-  dst[10] = zFar * rangeInv;
   dst[11] = -1;
 
   dst[12] = 0;
   dst[13] = 0;
-  dst[14] = zNear * zFar * rangeInv;
   dst[15] = 0;
+
+  if (zFar === Infinity) {
+    dst[10] = -1;
+    dst[14] = -zNear;
+  } else {
+    const rangeInv = 1 / (zNear - zFar);
+    dst[10] = zFar * rangeInv;
+    dst[14] = zFar * zNear * rangeInv;
+  }
 
   return dst;
 }
@@ -715,7 +726,7 @@ export function perspective(fieldOfViewYInRadians: number, aspect: number, zNear
  * @param far - The depth (negative z coordinate)
  *     of the far clipping plane.
  * @param dst - Output matrix. If not passed a new one is created.
- * @returns The perspective matrix.
+ * @returns The orthographic projection matrix.
  */
 export function ortho(left: number, right: number, bottom: number, top: number, near: number, far: number, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
@@ -795,7 +806,7 @@ let zAxis: Vec3;
 /**
  * Computes a 4-by-4 aim transformation.
  *
- * This is a matrix which positions an object looking down positive Z.
+ * This is a matrix which positions an object aiming down positive Z.
  * toward the target.
  *
  * Note: this is **NOT** the inverse of lookAt as lookAt looks at negative Z.
@@ -804,7 +815,7 @@ let zAxis: Vec3;
  * @param target - The position meant to be aimed at.
  * @param up - A vector pointing up.
  * @param dst - matrix to hold result. If not passed a new one is created.
- * @returns The look-at matrix.
+ * @returns The aim matrix.
  */
 export function aim(position: Vec3, target: Vec3, up: Vec3, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
@@ -829,7 +840,7 @@ export function aim(position: Vec3, target: Vec3, up: Vec3, dst?: Mat4): Mat4 {
  * Computes a 4-by-4 view transformation.
  *
  * This is a view matrix which transforms all other objects
- * to be in the space of the the view defined by the parameters.
+ * to be in the space of the view defined by the parameters.
  *
  * @param eye - The position of the object.
  * @param target - The position meant to be aimed at.
