@@ -3,7 +3,7 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "esnext",
-    "outDir": "dist/1.x",
+    "outDir": "dist/2.x",
     "declaration": true,
   },
   "files": [

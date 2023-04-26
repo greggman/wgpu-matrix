@@ -1,4 +1,4 @@
-import {utils} from '../../dist/1.x/wgpu-matrix.module.js';
+import {utils} from '../../dist/2.x/wgpu-matrix.module.js';
 
 import {
   assertEqual,

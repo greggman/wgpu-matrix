@@ -1,4 +1,4 @@
-import {mat4, mat3, utils, vec3} from '../../dist/1.x/wgpu-matrix.module.js';
+import {mat4, mat3, utils, vec3} from '../../dist/2.x/wgpu-matrix.module.js';
 
 import {
   assertEqual,
@@ -522,26 +522,99 @@ function check(Type) {
       const up = [-4, -5, -6];
       const expected = [
         0.40824833512306213,
-        -0.8164966106414795,
-        0.40824824571609497,
-        0,
         -0.8728715181350708,
-        -0.21821792423725128,
-        0.4364357888698578,
-        0,
         -0.26726123690605164,
+        0,
+        -0.8164966106414795,
+        -0.21821792423725128,
         -0.5345224738121033,
+        0,
+        0.40824824571609497,
+        0.4364357888698578,
         -0.8017837405204773,
         0,
-        1,
-        2,
-        3,
+        1.4901161193847656e-7,
+        0,
+        3.74165740609169,
         1,
       ];
       testM4WithAndWithoutDest((dst) => {
         return mat4.lookAt(eye, target, up, dst);
       }, expected);
     });
+
+    {
+      const tests = [
+        {
+          position: [11, 12, 13],
+          target: [11, 12, 13 + 5],
+          up: [0, 1, 0],
+          expected: [
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            11, 12, 13, 1,
+          ],
+        },
+        {
+          position: [11, 12, 13],
+          target: [11, 12, 13 - 5],
+          up: [0, 1, 0],
+          expected: [
+            -1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, -1, 0,
+            11, 12, 13, 1,
+          ],
+        },
+        {
+          position: [11, 12, 13],
+          target: [11 + 5, 12, 13],
+          up: [0, 1, 0],
+          expected: [
+            0, 0, -1, 0,
+            0, 1, 0, 0,
+            1, 0, 0, 0,
+            11, 12, 13, 1,
+          ],
+        },
+        {
+          position: [1, 2, 3],
+          target: [11, 22, 33],
+          up: [-4, -5, -6],
+          expected: [
+            -0.40824833512306213,
+            0.8164966106414795,
+            -0.40824824571609497,
+            0,
+            -0.8728715181350708,
+            -0.21821792423725128,
+            0.4364357888698578,
+            0,
+            0.26726123690605164,
+            0.5345224738121033,
+            0.8017837405204773,
+            0,
+            1,
+            2,
+            3,
+            1,
+          ],
+        },
+      ];
+      tests.forEach(({
+        position,
+        target,
+        up,
+        expected
+      }, i) => {
+        it(`should make aim matrix ${i}`, () => {
+          testM4WithAndWithoutDest((dst) => {
+            return mat4.aim(position, target, up, dst);
+          }, expected);
+        });
+      });
+    }
 
     it('should make translation matrix', () => {
       const expected = [

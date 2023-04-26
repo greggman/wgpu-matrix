@@ -3,6 +3,7 @@ import fs from 'fs';
 
 const pkg = JSON.parse(fs.readFileSync('package.json', {encoding: 'utf8'}));
 const banner = `/* wgpu-matrix@${pkg.version}, license MIT */`;
+const ver = `${/^(\d+)\./.exec(pkg.version)[1]}.x`;
 
 const plugins = [
     typescript({ tsconfig: './tsconfig.json' }),
@@ -13,7 +14,7 @@ export default [
         input: 'src/wgpu-matrix.ts',
         output: [
             {
-                file: 'dist/1.x/wgpu-matrix.module.js',
+                file: `dist/${ver}/wgpu-matrix.module.js`,
                 format: 'esm',
                 sourcemap: true,
                 banner,
@@ -26,7 +27,7 @@ export default [
         output: [
             {
                 name: 'wgpuMatrix',
-                file: 'dist/1.x/wgpu-matrix.js',
+                file: `dist/${ver}/wgpu-matrix.js`,
                 format: 'umd',
                 sourcemap: true,
                 banner,

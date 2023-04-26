@@ -66,9 +66,7 @@ const perspective = mat4.perspective(fov, aspect, near, far);
 const eye = [3, 5, 10];
 const target = [0, 4, 0];
 const up = [0, 1, 0];
-const camera = mat4.lookAt(eye, target, up);
-
-const view = mat4.inverse(camera);
+const view = mat4.lookAt(eye, target, up);
 ```
 
 Note: for translation, rotation, and scaling there are 2 versions
@@ -137,10 +135,6 @@ import {vec3, mat3} from 'wgpu-matrix';
 [`mat4.ortho`](https://wgpu-matrix.org/docs/functions/mat4.ortho.html), and
 [`mat4.frustum`](https://wgpu-matrix.org/docs/functions/mat4.frustum.html)
 all return matrices with Z clip space from 0 to 1 (unlike most WebGL matrix libraries which return -1 to 1)
-
-[`mat4.lookAt`](https://wgpu-matrix.org/docs/module-mat4.html#.lookAt)
-returns a matrix that makes an object look down the -Z axis. If you want
-a view matrix take its inverse.
 
 [`mat4.create`](https://wgpu-matrix.org/docs/module-mat4.html#.create) makes an all zero matrix if passed no parameters.
 If you want an identity matrix call `mat4.identity`

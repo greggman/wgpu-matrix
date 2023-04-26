@@ -1,4 +1,4 @@
-import {setDefaultType, mat3, mat4, vec2, vec3, vec4} from '../../dist/1.x/wgpu-matrix.module.js';
+import {setDefaultType, mat3, mat4, vec2, vec3, vec4} from '../../dist/2.x/wgpu-matrix.module.js';
 
 import {
   assertInstanceOf,

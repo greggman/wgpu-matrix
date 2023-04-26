@@ -793,14 +793,46 @@ let yAxis: Vec3;
 let zAxis: Vec3;
 
 /**
- * Computes a 4-by-4 look-at transformation.
+ * Computes a 4-by-4 aim transformation.
  *
- * This is a matrix which positions the camera itself. If you want
- * a view matrix (a matrix which moves things in front of the camera)
- * take the inverse of this.
+ * This is a matrix which positions an object looking down positive Z.
+ * toward the target.
  *
- * @param eye - The position of the eye.
- * @param target - The position meant to be viewed.
+ * Note: this is **NOT** the inverse of lookAt as lookAt looks at negative Z.
+ *
+ * @param position - The position of the object.
+ * @param target - The position meant to be aimed at.
+ * @param up - A vector pointing up.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The look-at matrix.
+ */
+export function aim(position: Vec3, target: Vec3, up: Vec3, dst?: Mat4): Mat4 {
+  dst = dst || new MatType(16);
+
+  xAxis = xAxis || vec3.create();
+  yAxis = yAxis || vec3.create();
+  zAxis = zAxis || vec3.create();
+
+  vec3.normalize(vec3.subtract(target, position, zAxis), zAxis);
+  vec3.normalize(vec3.cross(up, zAxis, xAxis), xAxis);
+  vec3.normalize(vec3.cross(zAxis, xAxis, yAxis), yAxis);
+
+  dst[ 0] = xAxis[0];     dst[ 1] = xAxis[1];     dst[ 2] = xAxis[2];     dst[ 3] = 0;
+  dst[ 4] = yAxis[0];     dst[ 5] = yAxis[1];     dst[ 6] = yAxis[2];     dst[ 7] = 0;
+  dst[ 8] = zAxis[0];     dst[ 9] = zAxis[1];     dst[10] = zAxis[2];     dst[11] = 0;
+  dst[12] = position[0];  dst[13] = position[1];  dst[14] = position[2];  dst[15] = 1;
+
+  return dst;
+}
+
+/**
+ * Computes a 4-by-4 view transformation.
+ *
+ * This is a view matrix which transforms all other objects
+ * to be in the space of the the view defined by the parameters.
+ *
+ * @param eye - The position of the object.
+ * @param target - The position meant to be aimed at.
  * @param up - A vector pointing up.
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns The look-at matrix.
@@ -812,15 +844,18 @@ export function lookAt(eye: Vec3, target: Vec3, up: Vec3, dst?: Mat4): Mat4 {
   yAxis = yAxis || vec3.create();
   zAxis = zAxis || vec3.create();
 
-  vec3.normalize(
-      vec3.subtract(eye, target, zAxis), zAxis);
+  vec3.normalize(vec3.subtract(eye, target, zAxis), zAxis);
   vec3.normalize(vec3.cross(up, zAxis, xAxis), xAxis);
   vec3.normalize(vec3.cross(zAxis, xAxis, yAxis), yAxis);
 
-  dst[ 0] = xAxis[0];  dst[ 1] = xAxis[1];  dst[ 2] = xAxis[2];  dst[ 3] = 0;
-  dst[ 4] = yAxis[0];  dst[ 5] = yAxis[1];  dst[ 6] = yAxis[2];  dst[ 7] = 0;
-  dst[ 8] = zAxis[0];  dst[ 9] = zAxis[1];  dst[10] = zAxis[2];  dst[11] = 0;
-  dst[12] = eye[0];    dst[13] = eye[1];    dst[14] = eye[2];    dst[15] = 1;
+  dst[ 0] = xAxis[0];  dst[ 1] = yAxis[0];  dst[ 2] = zAxis[0];  dst[ 3] = 0;
+  dst[ 4] = xAxis[1];  dst[ 5] = yAxis[1];  dst[ 6] = zAxis[1];  dst[ 7] = 0;
+  dst[ 8] = xAxis[2];  dst[ 9] = yAxis[2];  dst[10] = zAxis[2];  dst[11] = 0;
+
+  dst[12] = -(xAxis[0] * eye[0] + xAxis[1] * eye[1] + xAxis[2] * eye[2]);
+  dst[13] = -(yAxis[0] * eye[0] + yAxis[1] * eye[1] + yAxis[2] * eye[2]);
+  dst[14] = -(zAxis[0] * eye[0] + zAxis[1] * eye[1] + zAxis[2] * eye[2]);
+  dst[15] = 1;
 
   return dst;
 }
