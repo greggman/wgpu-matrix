@@ -233,10 +233,15 @@ As the saying goes [*premature optimization is the root of all evil.*](https://s
 
 ## Migration
 
-1.x -> 2.x
+* 1.x -> 2.x
 
-* [`mat4.lookAt`](https://wgpu-matrix.org/docs/functions/mat4.lookAt.html) changed from a "camera matrix" to a "view matrix" (same as gluLookAt). If you want a matrix that orients an
-  something in world space see [`mat4.aim`](https://wgpu-matrix.org/docs/functions/mat4.frustum.html).
+  * [`mat4.lookAt`](https://wgpu-matrix.org/docs/functions/mat4.lookAt.html) 
+    changed from a "camera matrix" to a "view matrix" (same as gluLookAt). 
+    If you want a matrix that orients an something in world space see
+    [`mat4.aim`](https://wgpu-matrix.org/docs/functions/mat4.frustum.html).
+    Sorry about this change but people are used to lookAt making a a view matrix
+    and it seemed prudent to make this change now and save more people from
+    frustration going forward.
 
 ## Development
 
