@@ -404,7 +404,6 @@ function check(Type) {
       const zNear = 10;
       const zFar = Infinity;
       const f = Math.tan(Math.PI * 0.5 - 0.5 * fov);
-      const rangeInv = 1.0 / (zNear - zFar);
       const expected = [
         f / aspect,
         0,
