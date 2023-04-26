@@ -418,12 +418,12 @@ function check(Type) {
 
         0,
         0,
-        zFar * rangeInv,
+        -1,
         -1,
 
         0,
         0,
-        zNear * zFar * rangeInv,
+        -zNear,
         0,
       ];
       testM4WithAndWithoutDest((dst) => {
