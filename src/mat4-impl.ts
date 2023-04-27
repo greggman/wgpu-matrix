@@ -837,6 +837,39 @@ export function aim(position: Vec3, target: Vec3, up: Vec3, dst?: Mat4): Mat4 {
 }
 
 /**
+ * Computes a 4-by-4 camera aim transformation.
+ *
+ * This is a matrix which positions an object aiming down negative Z.
+ * toward the target.
+ *
+ * Note: this is the inverse of `lookAt`
+ *
+ * @param eye - The position of the object.
+ * @param target - The position meant to be aimed at.
+ * @param up - A vector pointing up.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The aim matrix.
+ */
+export function cameraAim(eye: Vec3, target: Vec3, up: Vec3, dst?: Mat4): Mat4 {
+  dst = dst || new MatType(16);
+
+  xAxis = xAxis || vec3.create();
+  yAxis = yAxis || vec3.create();
+  zAxis = zAxis || vec3.create();
+
+  vec3.normalize(vec3.subtract(eye, target, zAxis), zAxis);
+  vec3.normalize(vec3.cross(up, zAxis, xAxis), xAxis);
+  vec3.normalize(vec3.cross(zAxis, xAxis, yAxis), yAxis);
+
+  dst[ 0] = xAxis[0];     dst[ 1] = xAxis[1];     dst[ 2] = xAxis[2];     dst[ 3] = 0;
+  dst[ 4] = yAxis[0];     dst[ 5] = yAxis[1];     dst[ 6] = yAxis[2];     dst[ 7] = 0;
+  dst[ 8] = zAxis[0];     dst[ 9] = zAxis[1];     dst[10] = zAxis[2];     dst[11] = 0;
+  dst[12] = eye[0];  dst[13] = eye[1];  dst[14] = eye[2];  dst[15] = 1;
+
+  return dst;
+}
+
+/**
  * Computes a 4-by-4 view transformation.
  *
  * This is a view matrix which transforms all other objects

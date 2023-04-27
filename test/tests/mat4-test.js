@@ -614,6 +614,12 @@ function check(Type) {
             0, 0, 1, 0,
             11, 12, 13, 1,
           ],
+          camExpected: [
+           -1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, -1, 0,
+            11, 12, 13, 1,
+          ],
         },
         {
           position: [11, 12, 13],
@@ -625,6 +631,12 @@ function check(Type) {
             0, 0, -1, 0,
             11, 12, 13, 1,
           ],
+          camExpected: [
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            11, 12, 13, 1,
+          ],
         },
         {
           position: [11, 12, 13],
@@ -634,6 +646,12 @@ function check(Type) {
             0, 0, -1, 0,
             0, 1, 0, 0,
             1, 0, 0, 0,
+            11, 12, 13, 1,
+          ],
+          camExpected: [
+            0, 0, 1, 0,
+            0, 1, 0, 0,
+            -1, 0, 0, 0,
             11, 12, 13, 1,
           ],
         },
@@ -659,18 +677,43 @@ function check(Type) {
             3,
             1,
           ],
+          camExpected: [
+            0.40824833512306213,
+            -0.8164966106414795,
+            0.40824824571609497,
+            0,
+            -0.8728715181350708,
+            -0.21821792423725128,
+            0.4364357888698578,
+            0,
+            -0.26726123690605164,
+            -0.5345224738121033,
+            -0.8017837405204773,
+            0,
+            1,
+            2,
+            3,
+            1,
+          ],
         },
       ];
       tests.forEach(({
         position,
         target,
         up,
-        expected
+        expected,
+        camExpected,
       }, i) => {
         it(`should make aim matrix ${i}`, () => {
           testM4WithAndWithoutDest((dst) => {
             return mat4.aim(position, target, up, dst);
           }, expected);
+        });
+
+        it(`should make cameraAim matrix ${i}`, () => {
+          testM4WithAndWithoutDest((dst) => {
+            return mat4.cameraAim(position, target, up, dst);
+          }, camExpected);
         });
       });
     }
