@@ -259,6 +259,21 @@ export declare function frustum(left: number, right: number, bottom: number, top
  */
 export declare function aim(position: Vec3, target: Vec3, up: Vec3, dst?: Mat4): Mat4;
 /**
+ * Computes a 4-by-4 camera aim transformation.
+ *
+ * This is a matrix which positions an object aiming down negative Z.
+ * toward the target.
+ *
+ * Note: this is the inverse of `lookAt`
+ *
+ * @param eye - The position of the object.
+ * @param target - The position meant to be aimed at.
+ * @param up - A vector pointing up.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The aim matrix.
+ */
+export declare function cameraAim(eye: Vec3, target: Vec3, up: Vec3, dst?: Mat4): Mat4;
+/**
  * Computes a 4-by-4 view transformation.
  *
  * This is a view matrix which transforms all other objects
