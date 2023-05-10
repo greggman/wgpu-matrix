@@ -159,7 +159,7 @@ mat3s in TypeArrays directly.
 `vec3` in a Uniform Block or other structure in WGSL, each vec3 is
 padded to 4 floats! In other words, if you declare
 
-```wgsl
+```
 struct Foo {
   bar: vec3<f32>[3];
 };
