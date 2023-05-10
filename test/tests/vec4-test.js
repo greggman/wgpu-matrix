@@ -375,8 +375,15 @@ describe('vec4', () => {
     vec4.setDefaultType(Array);
     let d = vec4.create(1, 2, 3, 4);
     assertIsArray(d);
+
+    d = vec4.add([1, 2, 3, 4], [5, 6, 7, 8]);
+    assertIsArray(d);
+
     vec4.setDefaultType(Float32Array);
     d = vec4.create(1, 2, 3, 4);
+    assertInstanceOf(d, Float32Array);
+
+    d = vec4.add([1, 2, 3, 4], [5, 6, 7, 8]);
     assertInstanceOf(d, Float32Array);
   });
 

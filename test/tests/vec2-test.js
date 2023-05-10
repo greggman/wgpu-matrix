@@ -442,8 +442,15 @@ describe('vec2', () => {
     vec2.setDefaultType(Array);
     let d = vec2.create(1, 2, 3);
     assertIsArray(d);
+
+    d = vec2.add([1, 2], [3, 4]);
+    assertIsArray(d);
+
     vec2.setDefaultType(Float32Array);
     d = vec2.create(1, 2, 3);
+    assertInstanceOf(d, Float32Array);
+
+    d = vec2.add([1, 2], [3, 4]);
     assertInstanceOf(d, Float32Array);
   });
 
