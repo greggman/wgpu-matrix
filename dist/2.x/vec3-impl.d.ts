@@ -346,3 +346,24 @@ export declare function transformMat4Upper3x3(v: Vec3, m: Mat4, dst?: Vec3): Vec
  * @returns the transformed vector
  */
 export declare function transformMat3(v: Vec3, m: Mat3, dst?: Vec3): Vec3;
+/**
+ * Returns the translation component of a 4-by-4 matrix as a vector with 3
+ * entries.
+ * @param m - The matrix.
+ * @param dst - vector to hold result. If not passed a new one is created.
+ * @returns The translation component of m.
+ */
+export declare function getTranslation(m: Mat3, dst?: Vec3): import("./array-like.js").ArrayLike;
+/**
+ * Returns an axis of a 4x4 matrix as a vector with 3 entries
+ * @param m - The matrix.
+ * @param axis - The axis 0 = x, 1 = y, 2 = z;
+ * @returns The axis component of m.
+ */
+export declare function getAxis(m: Mat4, axis: number, dst?: Vec3): import("./array-like.js").ArrayLike;
+/**
+ * Returns the scaling component of the matrix
+ * @param m - The Matrix
+ * @param dst - The vector to set. If not passed a new one is created.
+ */
+export declare function getScaling(m: Mat4, dst: Vec3): import("./array-like.js").ArrayLike;

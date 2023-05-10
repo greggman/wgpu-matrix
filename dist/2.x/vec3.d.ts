@@ -30,7 +30,7 @@ export declare type Vec3 = ArrayLike;
 export declare let VecType: new (n: number) => Vec3;
 /**
  * Sets the type this library creates for a Vec3
- * @param ctor - the constructor for the type. Either `Float32Array`, 'Float64Array', or `Array`
+ * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`
  * @returns previous constructor for Vec3
  */
 export declare function setDefaultType(ctor: new (n: number) => Vec3): new (n: number) => ArrayLike;
@@ -41,4 +41,4 @@ export declare function setDefaultType(ctor: new (n: number) => Vec3): new (n: n
  * @param z - Initial z value.
  * @returns the created vector
  */
-export declare function create(x?: number, y?: number, z?: number): ArrayLike;
+export declare function create(x?: number, y?: number, z?: number): Vec3;

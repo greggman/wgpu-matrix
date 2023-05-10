@@ -1,22 +1,7 @@
-import { ArrayLikeCtor } from './array-like';
+import { Vec4, create, setDefaultType } from './vec4';
 import { Mat4 } from './mat4';
-import { Vec4 } from './vec4';
 export default Vec4;
-/**
- * Sets the type this library creates for a Vec4
- * @param ctor - the constructor for the type. Either `Float32Array`, 'Float64Array', or `Array`
- * @returns previous constructor for Vec4
- */
-export declare function setDefaultType(ctor: new (n: number) => Vec4): ArrayLikeCtor;
-/**
- * Creates a vec4; may be called with x, y, z to set initial values.
- * @param x - Initial x value.
- * @param y - Initial y value.
- * @param z - Initial z value.
- * @param w - Initial w value.
- * @returns the created vector
- */
-export declare function create(x?: number, y?: number, z?: number, w?: number): Vec4;
+export { create, setDefaultType };
 /**
  * Creates a vec4; may be called with x, y, z to set initial values. (same as create)
  * @param x - Initial x value.
@@ -297,7 +282,7 @@ export declare const mul: typeof multiply;
  * @param dst - vector to hold result. If not new one is created.
  * @returns The vector of quotients of entries of a and b.
  */
-export declare function divide(a: Vec4, b: Vec4, dst?: Vec4): import("./array-like").ArrayLike;
+export declare function divide(a: Vec4, b: Vec4, dst?: Vec4): import("./array-like.js").ArrayLike;
 /**
  * Divides a vector by another vector (component-wise); assumes a and
  * b have the same length. (same as divide)

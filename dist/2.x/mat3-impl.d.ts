@@ -5,7 +5,7 @@ import Vec2 from './vec2-impl';
 export default Mat3;
 /**
  * Sets the type this library creates for a Mat3
- * @param ctor - the constructor for the type. Either `Float32Array`, 'Float64Array', or `Array`
+ * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`
  * @returns previous constructor for Mat3
  */
 export declare function setDefaultType(ctor: new (n: number) => Mat3): ArrayLikeCtor;

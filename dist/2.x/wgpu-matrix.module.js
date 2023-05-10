@@ -1,4 +1,4 @@
-/* wgpu-matrix@2.1.0, license MIT */
+/* wgpu-matrix@2.1.1, license MIT */
 var arrayLike = /*#__PURE__*/Object.freeze({
     __proto__: null
 });
@@ -131,7 +131,7 @@ var utils = /*#__PURE__*/Object.freeze({
 let VecType$2 = Float32Array;
 /**
  * Sets the type this library creates for a Vec2
- * @param ctor - the constructor for the type. Either `Float32Array`, 'Float64Array', or `Array`
+ * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`
  * @returns previous constructor for Vec2
  */
 function setDefaultType$5(ctor) {
@@ -807,7 +807,7 @@ const ctorMap = new Map([
 let newMat3 = ctorMap.get(Float32Array);
 /**
  * Sets the type this library creates for a Mat3
- * @param ctor - the constructor for the type. Either `Float32Array`, 'Float64Array', or `Array`
+ * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`
  * @returns previous constructor for Mat3
  */
 function setDefaultType$4(ctor) {
@@ -1188,7 +1188,7 @@ function setTranslation$1(a, v, dst) {
  * @param dst - vector to hold result. If not passed a new one is created.
  * @returns The translation component of m.
  */
-function getTranslation$1(m, dst) {
+function getTranslation$2(m, dst) {
     dst = dst || create$4();
     dst[0] = m[8];
     dst[1] = m[9];
@@ -1200,7 +1200,7 @@ function getTranslation$1(m, dst) {
  * @param axis - The axis 0 = x, 1 = y,
  * @returns The axis component of m.
  */
-function getAxis$1(m, axis, dst) {
+function getAxis$2(m, axis, dst) {
     dst = dst || create$4();
     const off = axis * 4;
     dst[0] = m[off + 0];
@@ -1229,7 +1229,7 @@ function setAxis$1(m, v, axis, dst) {
  * @param m - The Matrix
  * @param dst - The vector to set. If not passed a new one is created.
  */
-function getScaling$1(m, dst) {
+function getScaling$2(m, dst) {
     dst = dst || create$4();
     const xx = m[0];
     const xy = m[1];
@@ -1410,10 +1410,10 @@ var mat3Impl = /*#__PURE__*/Object.freeze({
     multiply: multiply$3,
     mul: mul$3,
     setTranslation: setTranslation$1,
-    getTranslation: getTranslation$1,
-    getAxis: getAxis$1,
+    getTranslation: getTranslation$2,
+    getAxis: getAxis$2,
     setAxis: setAxis$1,
-    getScaling: getScaling$1,
+    getScaling: getScaling$2,
     translation: translation$1,
     translate: translate$1,
     rotation: rotation$1,
@@ -1447,7 +1447,7 @@ var mat3Impl = /*#__PURE__*/Object.freeze({
 let VecType$1 = Float32Array;
 /**
  * Sets the type this library creates for a Vec3
- * @param ctor - the constructor for the type. Either `Float32Array`, 'Float64Array', or `Array`
+ * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`
  * @returns previous constructor for Vec3
  */
 function setDefaultType$3(ctor) {
@@ -2056,6 +2056,55 @@ function transformMat3(v, m, dst) {
     dst[2] = x * m[2] + y * m[6] + z * m[10];
     return dst;
 }
+/**
+ * Returns the translation component of a 4-by-4 matrix as a vector with 3
+ * entries.
+ * @param m - The matrix.
+ * @param dst - vector to hold result. If not passed a new one is created.
+ * @returns The translation component of m.
+ */
+function getTranslation$1(m, dst) {
+    dst = dst || new VecType$1(3);
+    dst[0] = m[12];
+    dst[1] = m[13];
+    dst[2] = m[14];
+    return dst;
+}
+/**
+ * Returns an axis of a 4x4 matrix as a vector with 3 entries
+ * @param m - The matrix.
+ * @param axis - The axis 0 = x, 1 = y, 2 = z;
+ * @returns The axis component of m.
+ */
+function getAxis$1(m, axis, dst) {
+    dst = dst || new VecType$1(3);
+    const off = axis * 4;
+    dst[0] = m[off + 0];
+    dst[1] = m[off + 1];
+    dst[2] = m[off + 2];
+    return dst;
+}
+/**
+ * Returns the scaling component of the matrix
+ * @param m - The Matrix
+ * @param dst - The vector to set. If not passed a new one is created.
+ */
+function getScaling$1(m, dst) {
+    dst = dst || new VecType$1(3);
+    const xx = m[0];
+    const xy = m[1];
+    const xz = m[2];
+    const yx = m[4];
+    const yy = m[5];
+    const yz = m[6];
+    const zx = m[8];
+    const zy = m[9];
+    const zz = m[10];
+    dst[0] = Math.sqrt(xx * xx + xy * xy + xz * xz);
+    dst[1] = Math.sqrt(yx * yx + yy * yy + yz * yz);
+    dst[2] = Math.sqrt(zx * zx + zy * zy + zz * zz);
+    return dst;
+}
 
 var vec3Impl = /*#__PURE__*/Object.freeze({
     __proto__: null,
@@ -2104,7 +2153,10 @@ var vec3Impl = /*#__PURE__*/Object.freeze({
     zero: zero$1,
     transformMat4: transformMat4$1,
     transformMat4Upper3x3: transformMat4Upper3x3,
-    transformMat3: transformMat3
+    transformMat3: transformMat3,
+    getTranslation: getTranslation$1,
+    getAxis: getAxis$1,
+    getScaling: getScaling$1
 });
 
 /**
@@ -2133,7 +2185,7 @@ var vec3Impl = /*#__PURE__*/Object.freeze({
 let MatType = Float32Array;
 /**
  * Sets the type this library creates for a Mat4
- * @param ctor - the constructor for the type. Either `Float32Array`, 'Float64Array', or `Array`
+ * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`
  * @returns previous constructor for Mat4
  */
 function setDefaultType$2(ctor) {
@@ -3554,7 +3606,7 @@ var mat4Impl = /*#__PURE__*/Object.freeze({
 let VecType = Float32Array;
 /**
  * Sets the type this library creates for a Vec4
- * @param ctor - the constructor for the type. Either `Float32Array`, 'Float64Array', or `Array`
+ * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`
  * @returns previous constructor for Vec4
  */
 function setDefaultType$1(ctor) {
@@ -3586,6 +3638,28 @@ function create(x, y, z, w) {
     }
     return dst;
 }
+
+/*
+ * Copyright 2022 Gregg Tavares
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE.
+ */
 /**
  * Creates a vec4; may be called with x, y, z to set initial values. (same as create)
  * @param x - Initial x value.
@@ -4090,8 +4164,8 @@ function transformMat4(v, m, dst) {
 
 var vec4Impl = /*#__PURE__*/Object.freeze({
     __proto__: null,
-    setDefaultType: setDefaultType$1,
     create: create,
+    setDefaultType: setDefaultType$1,
     fromValues: fromValues,
     ceil: ceil,
     floor: floor,
