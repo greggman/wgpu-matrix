@@ -55,7 +55,7 @@ export let VecType: new (n: number) => Vec2 = Float32Array;
 
 /**
  * Sets the type this library creates for a Vec2
- * @param ctor - the constructor for the type. Either `Float32Array`, 'Float64Array', or `Array`
+ * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`
  * @returns previous constructor for Vec2
  */
 export function setDefaultType(ctor: new (n: number) => Vec2) {

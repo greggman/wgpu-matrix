@@ -55,7 +55,7 @@ export let VecType: new (n: number) => Vec3 = Float32Array;
 
 /**
  * Sets the type this library creates for a Vec3
- * @param ctor - the constructor for the type. Either `Float32Array`, 'Float64Array', or `Array`
+ * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`
  * @returns previous constructor for Vec3
  */
 export function setDefaultType(ctor: new (n: number) => Vec3) {
@@ -71,7 +71,7 @@ export function setDefaultType(ctor: new (n: number) => Vec3) {
  * @param z - Initial z value.
  * @returns the created vector
  */
-export function create(x?: number, y?: number, z?: number) {
+export function create(x?: number, y?: number, z?: number): Vec3 {
   const dst = new VecType(3);
   if (x !== undefined) {
     dst[0] = x;

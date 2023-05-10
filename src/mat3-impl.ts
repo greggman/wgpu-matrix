@@ -65,7 +65,7 @@ let newMat3: () => Mat3 = ctorMap.get(Float32Array)!;
 
 /**
  * Sets the type this library creates for a Mat3
- * @param ctor - the constructor for the type. Either `Float32Array`, 'Float64Array', or `Array`
+ * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`
  * @returns previous constructor for Mat3
  */
 export function setDefaultType(ctor: new (n: number) => Mat3) {

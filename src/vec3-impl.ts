@@ -685,3 +685,52 @@ export function transformMat3(v: Vec3, m: Mat3, dst?: Vec3): Vec3 {
   return dst;
 }
 
+/**
+ * Returns the translation component of a 4-by-4 matrix as a vector with 3
+ * entries.
+ * @param m - The matrix.
+ * @param dst - vector to hold result. If not passed a new one is created.
+ * @returns The translation component of m.
+ */
+export function getTranslation(m: Mat3, dst?: Vec3) {
+    dst = dst || new VecType(3);
+    dst[0] = m[12];
+    dst[1] = m[13];
+    dst[2] = m[14];
+    return dst;
+}
+/**
+ * Returns an axis of a 4x4 matrix as a vector with 3 entries
+ * @param m - The matrix.
+ * @param axis - The axis 0 = x, 1 = y, 2 = z;
+ * @returns The axis component of m.
+ */
+export function getAxis(m: Mat4, axis: number, dst?: Vec3) {
+    dst = dst || new VecType(3);
+    const off = axis * 4;
+    dst[0] = m[off + 0];
+    dst[1] = m[off + 1];
+    dst[2] = m[off + 2];
+    return dst;
+}
+/**
+ * Returns the scaling component of the matrix
+ * @param m - The Matrix
+ * @param dst - The vector to set. If not passed a new one is created.
+ */
+export function getScaling(m: Mat4, dst: Vec3) {
+    dst = dst || new VecType(3);
+    const xx = m[0];
+    const xy = m[1];
+    const xz = m[2];
+    const yx = m[4];
+    const yy = m[5];
+    const yz = m[6];
+    const zx = m[8];
+    const zy = m[9];
+    const zz = m[10];
+    dst[0] = Math.sqrt(xx * xx + xy * xy + xz * xz);
+    dst[1] = Math.sqrt(yx * yx + yy * yy + yz * yz);
+    dst[2] = Math.sqrt(zx * zx + zy * zy + zz * zz);
+    return dst;
+}

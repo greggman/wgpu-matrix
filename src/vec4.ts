@@ -19,7 +19,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
-import { ArrayLike } from './array-like';
+import { ArrayLike, ArrayLikeCtor } from './array-like';
 
 /**
  * A JavaScript array with 4 values, Float32Array with 4 values, or a Float64Array with 4 values.
@@ -28,3 +28,63 @@ import { ArrayLike } from './array-like';
  */
 export type Vec4 = ArrayLike;
 
+/**
+ *
+ * Vec4 math functions.
+ *
+ * Almost all functions take an optional `dst` argument. If it is not passed in the
+ * functions will create a new `Vec4`. In other words you can do this
+ *
+ *     const v = vec4.cross(v1, v2);  // Creates a new Vec4 with the cross product of v1 x v2.
+ *
+ * or
+ *
+ *     const v = vec4.create();
+ *     vec4.cross(v1, v2, v);  // Puts the cross product of v1 x v2 in v
+ *
+ * The first style is often easier but depending on where it's used it generates garbage where
+ * as there is almost never allocation with the second style.
+ *
+ * It is always safe to pass any vector as the destination. So for example
+ *
+ *     vec4.cross(v1, v2, v1);  // Puts the cross product of v1 x v2 in v1
+ *
+ */
+
+export let VecType: ArrayLikeCtor = Float32Array;
+
+/**
+ * Sets the type this library creates for a Vec4
+ * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`
+ * @returns previous constructor for Vec4
+ */
+export function setDefaultType(ctor: new (n: number) => Vec4) {
+  const oldType = VecType;
+  VecType = ctor;
+  return oldType;
+}
+
+/**
+ * Creates a vec4; may be called with x, y, z to set initial values.
+ * @param x - Initial x value.
+ * @param y - Initial y value.
+ * @param z - Initial z value.
+ * @param w - Initial w value.
+ * @returns the created vector
+ */
+export function create(x?: number, y?: number, z?: number, w?: number): Vec4 {
+  const dst = new VecType(4);
+  if (x !== undefined) {
+    dst[0] = x;
+    if (y !== undefined) {
+      dst[1] = y;
+      if (z !== undefined) {
+        dst[2] = z;
+        if (w !== undefined) {
+          dst[3] = w;
+        }
+      }
+    }
+  }
+  return dst;
+}
