@@ -12,13 +12,13 @@ import {
 } from '../assert.js';
 import {describe, it, before} from '../mocha-support.js';
 
-// Note: v3.create is use extensively in these tests but that is NOT idiomatic!
+// Note: vec4.create is use extensively in these tests but that is NOT idiomatic!
 // Idiomatic usage use to use raw JS arrays where convenient. For example
 //
 // const up = [0, 1, 0];
 // const m = m4.lookAt(target, eye, up);
 //
-// The reason v3.create is used in the tests is to make sure we are working
+// The reason vec4.create is used in the tests is to make sure we are working
 // with the specified default type when testing.
 
 function check(Type) {

@@ -39,7 +39,7 @@ export const fromValues = create;
 /**
  * Applies Math.ceil to each element of vector
  * @param v - Operand vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector that is the ceil of each element of v.
  */
 export function ceil(v: Vec4, dst?: Vec4): Vec4 {
@@ -56,7 +56,7 @@ export function ceil(v: Vec4, dst?: Vec4): Vec4 {
 /**
  * Applies Math.floor to each element of vector
  * @param v - Operand vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector that is the floor of each element of v.
  */
 export function floor(v: Vec4, dst?: Vec4): Vec4 {
@@ -73,7 +73,7 @@ export function floor(v: Vec4, dst?: Vec4): Vec4 {
 /**
  * Applies Math.round to each element of vector
  * @param v - Operand vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector that is the round of each element of v.
  */
 export function round(v: Vec4, dst?: Vec4): Vec4 {
@@ -92,7 +92,7 @@ export function round(v: Vec4, dst?: Vec4): Vec4 {
  * @param v - Operand vector.
  * @param max - Min value, default 0
  * @param min - Max value, default 1
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector that the clamped value of each element of v.
  */
 export function clamp(v: Vec4, min = 0, max = 1, dst?: Vec4): Vec4 {
@@ -110,7 +110,7 @@ export function clamp(v: Vec4, min = 0, max = 1, dst?: Vec4): Vec4 {
  * Adds two vectors; assumes a and b have the same dimension.
  * @param a - Operand vector.
  * @param b - Operand vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector that is the sum of a and b.
  */
 export function add(a: Vec4, b: Vec4, dst?: Vec4): Vec4 {
@@ -129,7 +129,7 @@ export function add(a: Vec4, b: Vec4, dst?: Vec4): Vec4 {
  * @param a - Operand vector.
  * @param b - Operand vector.
  * @param scale - Amount to scale b
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector that is the sum of a + b * scale.
  */
 export function addScaled(a: Vec4, b: Vec4, scale: number, dst?: Vec4): Vec4 {
@@ -147,7 +147,7 @@ export function addScaled(a: Vec4, b: Vec4, scale: number, dst?: Vec4): Vec4 {
  * Subtracts two vectors.
  * @param a - Operand vector.
  * @param b - Operand vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector that is the difference of a and b.
  */
 export function subtract(a: Vec4, b: Vec4, dst?: Vec4): Vec4 {
@@ -165,7 +165,7 @@ export function subtract(a: Vec4, b: Vec4, dst?: Vec4): Vec4 {
  * Subtracts two vectors.
  * @param a - Operand vector.
  * @param b - Operand vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector that is the difference of a and b.
  */
 export const sub = subtract;
@@ -200,7 +200,7 @@ export function equals(a: Vec4, b: Vec4): boolean {
  * @param a - Operand vector.
  * @param b - Operand vector.
  * @param t - Interpolation coefficient.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The linear interpolated result.
  */
 export function lerp(a: Vec4, b: Vec4, t: number, dst?: Vec4): Vec4 {
@@ -221,7 +221,7 @@ export function lerp(a: Vec4, b: Vec4, t: number, dst?: Vec4): Vec4 {
  * @param a - Operand vector.
  * @param b - Operand vector.
  * @param t - Interpolation coefficients vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns the linear interpolated result.
  */
 export function lerpV(a: Vec4, b: Vec4, t: Vec4, dst?: Vec4): Vec4 {
@@ -241,7 +241,7 @@ export function lerpV(a: Vec4, b: Vec4, t: Vec4, dst?: Vec4): Vec4 {
  * [max(a[0], b[0]), max(a[1], b[1]), max(a[2], b[2])].
  * @param a - Operand vector.
  * @param b - Operand vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The max components vector.
  */
 export function max(a: Vec4, b: Vec4, dst?: Vec4): Vec4 {
@@ -261,7 +261,7 @@ export function max(a: Vec4, b: Vec4, dst?: Vec4): Vec4 {
  * [min(a[0], b[0]), min(a[1], b[1]), min(a[2], b[2])].
  * @param a - Operand vector.
  * @param b - Operand vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The min components vector.
  */
 export function min(a: Vec4, b: Vec4, dst?: Vec4): Vec4 {
@@ -279,7 +279,7 @@ export function min(a: Vec4, b: Vec4, dst?: Vec4): Vec4 {
  * Multiplies a vector by a scalar.
  * @param v - The vector.
  * @param k - The scalar.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The scaled vector.
  */
 export function mulScalar(v: Vec4, k: number, dst?: Vec4): Vec4 {
@@ -297,7 +297,7 @@ export function mulScalar(v: Vec4, k: number, dst?: Vec4): Vec4 {
  * Multiplies a vector by a scalar. (same as mulScalar)
  * @param v - The vector.
  * @param k - The scalar.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The scaled vector.
  */
 export const scale = mulScalar;
@@ -306,7 +306,7 @@ export const scale = mulScalar;
  * Divides a vector by a scalar.
  * @param v - The vector.
  * @param k - The scalar.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The scaled vector.
  */
 export function divScalar(v: Vec4, k: number, dst?: Vec4): Vec4 {
@@ -323,7 +323,7 @@ export function divScalar(v: Vec4, k: number, dst?: Vec4): Vec4 {
 /**
  * Inverse a vector.
  * @param v - The vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The inverted vector.
  */
 export function inverse(v: Vec4, dst?: Vec4): Vec4 {
@@ -340,14 +340,13 @@ export function inverse(v: Vec4, dst?: Vec4): Vec4 {
 /**
  * Invert a vector. (same as inverse)
  * @param v - The vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The inverted vector.
  */
 export const invert = inverse;
 
 /**
- * Computes the dot product of two vectors; assumes both vectors have
- * three entries.
+ * Computes the dot product of two vectors
  * @param a - Operand vector.
  * @param b - Operand vector.
  * @returns dot product
@@ -443,7 +442,7 @@ export const distSq = distanceSq;
 /**
  * Divides a vector by its Euclidean length and returns the quotient.
  * @param v - The vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The normalized vector.
  */
 export function normalize(v: Vec4, dst?: Vec4): Vec4 {
@@ -473,7 +472,7 @@ export function normalize(v: Vec4, dst?: Vec4): Vec4 {
 /**
  * Negates a vector.
  * @param v - The vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns -v.
  */
 export function negate(v: Vec4, dst?: Vec4): Vec4 {
@@ -490,7 +489,7 @@ export function negate(v: Vec4, dst?: Vec4): Vec4 {
 /**
  * Copies a vector. (same as clone)
  * @param v - The vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A copy of v.
  */
 export function copy(v: Vec4, dst?: Vec4): Vec4 {
@@ -507,7 +506,7 @@ export function copy(v: Vec4, dst?: Vec4): Vec4 {
 /**
  * Clones a vector. (same as copy)
  * @param v - The vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A copy of v.
  */
 export const clone = copy;
@@ -517,7 +516,7 @@ export const clone = copy;
  * b have the same length.
  * @param a - Operand vector.
  * @param b - Operand vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The vector of products of entries of a and b.
  */
 export function multiply(a: Vec4, b: Vec4, dst?: Vec4): Vec4 {
@@ -536,7 +535,7 @@ export function multiply(a: Vec4, b: Vec4, dst?: Vec4): Vec4 {
  * b have the same length. (same as mul)
  * @param a - Operand vector.
  * @param b - Operand vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The vector of products of entries of a and b.
  */
 export const mul = multiply;
@@ -546,7 +545,7 @@ export const mul = multiply;
  * b have the same length.
  * @param a - Operand vector.
  * @param b - Operand vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The vector of quotients of entries of a and b.
  */
 export function divide(a: Vec4, b: Vec4, dst?: Vec4) {
@@ -565,14 +564,14 @@ export function divide(a: Vec4, b: Vec4, dst?: Vec4) {
  * b have the same length. (same as divide)
  * @param a - Operand vector.
  * @param b - Operand vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The vector of quotients of entries of a and b.
  */
 export const div = divide;
 
 /**
  * Zero's a vector
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The zeroed vector.
  */
 export function zero(dst?: Vec4): Vec4 {
