@@ -1,4 +1,4 @@
-import {mat3, mat4, utils} from '../../dist/2.x/wgpu-matrix.module.js';
+import {mat3, mat4, quat, utils} from '../../dist/2.x/wgpu-matrix.module.js';
 
 import {
   assertEqual,
@@ -17,6 +17,12 @@ function assertMat3Equal(a, b) {
   }
 }
 
+function assertMat3EqualApproximately(a, b) {
+  if (!mat3.equalsApproximately(a, b)) {
+    throw new Error(`${a} !== ${b}`);
+  }
+}
+
 function check(Type) {
   describe('using ' + Type, () => {
     const m = [
@@ -31,7 +37,7 @@ function check(Type) {
 
     function testM3WithoutDest(func, expected) {
       const d = func();
-      assertMat3Equal(d, expected);
+      assertMat3EqualApproximately(d, expected);
     }
 
     function testM3WithDest(func, expected) {
@@ -39,10 +45,10 @@ function check(Type) {
       const d = new Float32Array(12);
       const c = func(d);
       assertStrictEqual(c, d);
-      assertMat3Equal(c, expected);
+      assertMat3EqualApproximately(c, expected);
     }
 
-    function testM3WithAndWithoutDest(func, expected) {
+    function testMat3WithAndWithoutDest(func, expected) {
       if (Type === Float32Array) {
         expected = new Float32Array(expected);
       }
@@ -94,14 +100,14 @@ function check(Type) {
         -4,  -5,  -6,  -7,
         -8,  -9, -10, -11,
       ];
-      testM3WithAndWithoutDest((dst) => {
+      testMat3WithAndWithoutDest((dst) => {
         return mat3.negate(m, dst);
       }, expected);
     });
 
     it('should copy', () => {
       const expected = m;
-      testM3WithAndWithoutDest((dst) => {
+      testMat3WithAndWithoutDest((dst) => {
         const result = mat3.copy(m, dst);
         assertStrictNotEqual(result, m);
         return result;
@@ -140,7 +146,7 @@ function check(Type) {
 
     it('should clone', () => {
       const expected = m;
-      testM3WithAndWithoutDest((dst) => {
+      testMat3WithAndWithoutDest((dst) => {
         const result = mat3.clone(m, dst);
         assertStrictNotEqual(result, m);
         return result;
@@ -154,7 +160,7 @@ function check(Type) {
         0, 0, 1, 0,
         0, 0, 0, 1,
       ];
-      testM3WithAndWithoutDest((dst) => {
+      testMat3WithAndWithoutDest((dst) => {
         return mat3.identity(dst);
       }, expected);
     });
@@ -166,7 +172,7 @@ function check(Type) {
         2, 6, 10, 14,
         3, 7, 11, 15,
       ];
-      testM3WithAndWithoutDest((dst) => {
+      testMat3WithAndWithoutDest((dst) => {
         return mat3.transpose(m, dst);
       }, expected);
     });
@@ -191,7 +197,7 @@ function check(Type) {
         m2[2 * 4 + 0] * m[0 * 4 + 2] + m2[2 * 4 + 1] * m[1 * 4 + 2] + m2[2 * 4 + 2] * m[2 * 4 + 2],
         m2[2 * 4 + 0] * m[0 * 4 + 3] + m2[2 * 4 + 1] * m[1 * 4 + 3] + m2[2 * 4 + 2] * m[2 * 4 + 3],
       ];
-      testM3WithAndWithoutDest((dst) => {
+      testMat3WithAndWithoutDest((dst) => {
         return fn(m, m2, dst);
       }, expected);
     }
@@ -228,7 +234,7 @@ function check(Type) {
         0.375,
         1,
       ];
-      testM3WithAndWithoutDest((dst) => {
+      testMat3WithAndWithoutDest((dst) => {
         return fn(m, dst);
       }, expected);
     }
@@ -281,7 +287,7 @@ function check(Type) {
         4,  5,  6, 0,
        11, 22,  1, 1,
       ];
-      testM3WithAndWithoutDest((dst) => {
+      testMat3WithAndWithoutDest((dst) => {
         return mat3.setTranslation(m, [11, 22], dst);
       }, expected);
     });
@@ -317,7 +323,7 @@ function check(Type) {
            8,  9, 10,  0,
         ],
       ].forEach((expected, ndx) => {
-        testM3WithAndWithoutDest((dst) => {
+        testMat3WithAndWithoutDest((dst) => {
           return mat3.setAxis(m, [11, 22], ndx, dst);
         }, expected);
       });
@@ -344,7 +350,7 @@ function check(Type) {
         0, 1, 0, 0,
         2, 3, 1, 0,
       ];
-      testM3WithAndWithoutDest((dst) => {
+      testMat3WithAndWithoutDest((dst) => {
         return mat3.translation([2, 3], dst);
       }, expected);
     });
@@ -357,7 +363,7 @@ function check(Type) {
         9 + 1 * 2 + 5 * 3,
         10 + 2 * 2 + 6 * 3, 0,
       ];
-      testM3WithAndWithoutDest((dst) => {
+      testMat3WithAndWithoutDest((dst) => {
         return mat3.translate(m, [2, 3], dst);
       }, expected);
     });
@@ -371,7 +377,7 @@ function check(Type) {
         -s, c, 0, 0,
          0, 0, 1, 0,
       ];
-      testM3WithAndWithoutDest((dst) => {
+      testMat3WithAndWithoutDest((dst) => {
         return mat3.rotation(angle, dst);
       }, expected);
     });
@@ -383,7 +389,7 @@ function check(Type) {
       const expected = mat3.multiply(m, mat3.rotation(angle));
       mat3.setDefaultType(oldType);
 
-      testM3WithAndWithoutDest((dst) => {
+      testMat3WithAndWithoutDest((dst) => {
         return mat3.rotate(m, angle, dst);
       }, expected);
     });
@@ -394,7 +400,7 @@ function check(Type) {
         0, 3, 0, 0,
         0, 0, 1, 0,
       ];
-      testM3WithAndWithoutDest((dst) => {
+      testMat3WithAndWithoutDest((dst) => {
         return mat3.scaling([2, 3], dst);
       }, expected);
     });
@@ -405,7 +411,7 @@ function check(Type) {
         12, 15, 18,  0,
          8,  9, 10,  0,
       ];
-      testM3WithAndWithoutDest((dst) => {
+      testMat3WithAndWithoutDest((dst) => {
         return mat3.scale(m, [2, 3], dst);
       }, expected);
     });
@@ -416,7 +422,7 @@ function check(Type) {
         5, 6, 7, 0,
         9, 10, 11, 0,
       ];
-      testM3WithAndWithoutDest((dst) => {
+      testMat3WithAndWithoutDest((dst) => {
         const m4 = mat4.create(
           1, 2, 3, 4,
           5, 6, 7, 8,
@@ -425,6 +431,23 @@ function check(Type) {
         return mat3.fromMat4(m4, dst);
       }, expected);
     });
+
+    it('should make a mat3 from a quat', () => {
+      const tests = [
+        { q: quat.fromEuler(Math.PI, 0, 0, 'xyz'), expected: mat3.fromMat4(mat4.rotationX(Math.PI)), },
+        { q: quat.fromEuler(0, Math.PI, 0, 'xyz'), expected: mat3.fromMat4(mat4.rotationY(Math.PI)), },
+        { q: quat.fromEuler(0, 0, Math.PI, 'xyz'), expected: mat3.fromMat4(mat4.rotationZ(Math.PI)), },
+        { q: quat.fromEuler(Math.PI / 2, 0, 0, 'xyz'), expected: mat3.fromMat4(mat4.rotationX(Math.PI / 2)), },
+        { q: quat.fromEuler(0, Math.PI / 2, 0, 'xyz'), expected: mat3.fromMat4(mat4.rotationY(Math.PI / 2)), },
+        { q: quat.fromEuler(0, 0, Math.PI / 2, 'xyz'), expected: mat3.fromMat4(mat4.rotationZ(Math.PI / 2)), },
+      ];
+      for (const {q, expected} of tests) {
+        testMat3WithAndWithoutDest((dst) => {
+          return mat3.fromQuat(q, dst);
+        }, expected);
+      }
+    });
+
   });
 }
 

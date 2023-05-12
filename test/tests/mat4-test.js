@@ -1,4 +1,4 @@
-import {mat4, mat3, utils, vec3} from '../../dist/2.x/wgpu-matrix.module.js';
+import {mat4, mat3, quat, utils, vec3} from '../../dist/2.x/wgpu-matrix.module.js';
 
 import {
   assertEqual,
@@ -25,9 +25,9 @@ function check(Type) {
       mat4.setDefaultType(Type);
     });
 
-    function testM4WithoutDest(func, expected) {
+    function testMat4WithoutDest(func, expected) {
       const d = func();
-      assertEqual(d, expected);
+      assertEqualApproximately(d, expected);
     }
 
     function testMat4WithDest(func, expected) {
@@ -35,14 +35,14 @@ function check(Type) {
       const d = new Float32Array(16);
       const c = func(d);
       assertStrictEqual(c, d);
-      assertEqual(c, expected);
+      assertEqualApproximately(c, expected);
     }
 
     function testMat4WithAndWithoutDest(func, expected) {
       if (Type === Float32Array) {
         expected = new Float32Array(expected);
       }
-      testM4WithoutDest(func, expected);
+      testMat4WithoutDest(func, expected);
       testMat4WithDest(func, expected);
     }
 
@@ -913,6 +913,22 @@ function check(Type) {
         const m3 = mat3.create(1, 2, 3, 4, 5, 6, 7, 8, 9);
         return mat4.fromMat3(m3, dst);
       }, expected);
+    });
+
+    it('should make a mat4 from a quat', () => {
+      const tests = [
+        { q: quat.fromEuler(Math.PI, 0, 0, 'xyz'), expected: mat4.rotationX(Math.PI), },
+        { q: quat.fromEuler(0, Math.PI, 0, 'xyz'), expected: mat4.rotationY(Math.PI), },
+        { q: quat.fromEuler(0, 0, Math.PI, 'xyz'), expected: mat4.rotationZ(Math.PI), },
+        { q: quat.fromEuler(Math.PI / 2, 0, 0, 'xyz'), expected: mat4.rotationX(Math.PI / 2), },
+        { q: quat.fromEuler(0, Math.PI / 2, 0, 'xyz'), expected: mat4.rotationY(Math.PI / 2), },
+        { q: quat.fromEuler(0, 0, Math.PI / 2, 'xyz'), expected: mat4.rotationZ(Math.PI / 2), },
+      ];
+      for (const {q, expected} of tests) {
+        testMat4WithAndWithoutDest((dst) => {
+          return mat4.fromQuat(q, dst);
+        }, expected);
+      }
     });
 
   });

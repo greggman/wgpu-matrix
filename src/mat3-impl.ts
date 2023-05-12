@@ -22,6 +22,7 @@
 
 import { ArrayLikeCtor } from './array-like';
 import * as utils from './utils.js';
+import { Quat } from './quat';
 import { Mat3 } from './mat3';
 import { Mat4 } from './mat4';
 import Vec2, * as vec2 from './vec2-impl';
@@ -161,6 +162,35 @@ export function fromMat4(m4: Mat4, dst?: Mat3): Mat3 {
   dst[0] = m4[0];  dst[1] = m4[1];  dst[ 2] = m4[ 2];  dst[ 3] = 0;
   dst[4] = m4[4];  dst[5] = m4[5];  dst[ 6] = m4[ 6];  dst[ 7] = 0;
   dst[8] = m4[8];  dst[9] = m4[9];  dst[10] = m4[10];  dst[11] = 0;
+  return dst;
+}
+
+/**
+ * Creates a Mat3 rotation matrix from a quaternion
+ * @param q - quaternion to create matrix from
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns Mat3 made from q
+ */
+export function fromQuat(q: Quat, dst?: Mat3): Mat3 {
+  dst = dst || newMat3();
+
+  const x = q[0]; const y = q[1]; const z = q[2]; const w = q[3];
+  const x2 = x + x; const y2 = y + y; const z2 = z + z;
+
+  const xx = x * x2;
+  const yx = y * x2;
+  const yy = y * y2;
+  const zx = z * x2;
+  const zy = z * y2;
+  const zz = z * z2;
+  const wx = w * x2;
+  const wy = w * y2;
+  const wz = w * z2;
+
+  dst[ 0] = 1 - yy - zz;  dst[ 1] = yx + wz;      dst[ 2] = zx - wy;      dst[ 3] = 0;
+  dst[ 4] = yx - wz;      dst[ 5] = 1 - xx - zz;  dst[ 6] = zy + wx;      dst[ 7] = 0;
+  dst[ 8] = zx + wy;      dst[ 9] = zy - wx;      dst[10] = 1 - xx - yy;  dst[11] = 0;
+
   return dst;
 }
 
