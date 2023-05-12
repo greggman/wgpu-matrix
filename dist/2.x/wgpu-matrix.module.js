@@ -1,4 +1,4 @@
-/* wgpu-matrix@2.2.0, license MIT */
+/* wgpu-matrix@2.2.1, license MIT */
 var arrayLike = /*#__PURE__*/Object.freeze({
     __proto__: null
 });
@@ -908,6 +908,44 @@ function fromMat4(m4, dst) {
     return dst;
 }
 /**
+ * Creates a Mat3 rotation matrix from a quaternion
+ * @param q - quaternion to create matrix from
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns Mat3 made from q
+ */
+function fromQuat$1(q, dst) {
+    dst = dst || newMat3();
+    const x = q[0];
+    const y = q[1];
+    const z = q[2];
+    const w = q[3];
+    const x2 = x + x;
+    const y2 = y + y;
+    const z2 = z + z;
+    const xx = x * x2;
+    const yx = y * x2;
+    const yy = y * y2;
+    const zx = z * x2;
+    const zy = z * y2;
+    const zz = z * z2;
+    const wx = w * x2;
+    const wy = w * y2;
+    const wz = w * z2;
+    dst[0] = 1 - yy - zz;
+    dst[1] = yx + wz;
+    dst[2] = zx - wy;
+    dst[3] = 0;
+    dst[4] = yx - wz;
+    dst[5] = 1 - xx - zz;
+    dst[6] = zy + wx;
+    dst[7] = 0;
+    dst[8] = zx + wy;
+    dst[9] = zy - wx;
+    dst[10] = 1 - xx - yy;
+    dst[11] = 0;
+    return dst;
+}
+/**
  * Negates a matrix.
  * @param m - The matrix.
  * @param dst - matrix to hold result. If not passed a new one is created.
@@ -1397,6 +1435,7 @@ var mat3Impl = /*#__PURE__*/Object.freeze({
     setDefaultType: setDefaultType$5,
     create: create$4,
     fromMat4: fromMat4,
+    fromQuat: fromQuat$1,
     negate: negate$3,
     copy: copy$4,
     clone: clone$4,
@@ -2305,6 +2344,48 @@ function fromMat3(m3, dst) {
     dst[8] = m3[8];
     dst[9] = m3[9];
     dst[10] = m3[10];
+    dst[11] = 0;
+    dst[12] = 0;
+    dst[13] = 0;
+    dst[14] = 0;
+    dst[15] = 1;
+    return dst;
+}
+/**
+ * Creates a Mat4 from a quaternion
+ * @param q - quaternion to create matrix from
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns Mat4 made from q
+ */
+function fromQuat(q, dst) {
+    dst = dst || new MatType(16);
+    const x = q[0];
+    const y = q[1];
+    const z = q[2];
+    const w = q[3];
+    const x2 = x + x;
+    const y2 = y + y;
+    const z2 = z + z;
+    const xx = x * x2;
+    const yx = y * x2;
+    const yy = y * y2;
+    const zx = z * x2;
+    const zy = z * y2;
+    const zz = z * z2;
+    const wx = w * x2;
+    const wy = w * y2;
+    const wz = w * z2;
+    dst[0] = 1 - yy - zz;
+    dst[1] = yx + wz;
+    dst[2] = zx - wy;
+    dst[3] = 0;
+    dst[4] = yx - wz;
+    dst[5] = 1 - xx - zz;
+    dst[6] = zy + wx;
+    dst[7] = 0;
+    dst[8] = zx + wy;
+    dst[9] = zy - wx;
+    dst[10] = 1 - xx - yy;
     dst[11] = 0;
     dst[12] = 0;
     dst[13] = 0;
@@ -3542,6 +3623,7 @@ var mat4Impl = /*#__PURE__*/Object.freeze({
     setDefaultType: setDefaultType$3,
     create: create$2,
     fromMat3: fromMat3,
+    fromQuat: fromQuat,
     negate: negate$1,
     copy: copy$2,
     clone: clone$2,

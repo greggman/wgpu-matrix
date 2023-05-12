@@ -1,6 +1,7 @@
 import { ArrayLikeCtor } from './array-like';
 import { Mat3 } from './mat3';
 import { Mat4 } from './mat4';
+import { Quat } from './quat';
 import Vec3 from './vec3-impl';
 export default Mat4;
 /**
@@ -58,6 +59,13 @@ export declare function create(v0?: number, v1?: number, v2?: number, v3?: numbe
  * @returns Mat4 made from m3
  */
 export declare function fromMat3(m3: Mat3, dst?: Mat4): Mat4;
+/**
+ * Creates a Mat4 from a quaternion
+ * @param q - quaternion to create matrix from
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns Mat4 made from q
+ */
+export declare function fromQuat(q: Quat, dst?: Mat4): Mat4;
 /**
  * Negates a matrix.
  * @param m - The matrix.
