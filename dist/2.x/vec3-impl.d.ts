@@ -14,21 +14,21 @@ export declare const fromValues: typeof create;
 /**
  * Applies Math.ceil to each element of vector
  * @param v - Operand vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector that is the ceil of each element of v.
  */
 export declare function ceil(v: Vec3, dst?: Vec3): Vec3;
 /**
  * Applies Math.floor to each element of vector
  * @param v - Operand vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector that is the floor of each element of v.
  */
 export declare function floor(v: Vec3, dst?: Vec3): Vec3;
 /**
  * Applies Math.round to each element of vector
  * @param v - Operand vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector that is the round of each element of v.
  */
 export declare function round(v: Vec3, dst?: Vec3): Vec3;
@@ -37,7 +37,7 @@ export declare function round(v: Vec3, dst?: Vec3): Vec3;
  * @param v - Operand vector.
  * @param max - Min value, default 0
  * @param min - Max value, default 1
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector that the clamped value of each element of v.
  */
 export declare function clamp(v: Vec3, min?: number, max?: number, dst?: Vec3): Vec3;
@@ -45,7 +45,7 @@ export declare function clamp(v: Vec3, min?: number, max?: number, dst?: Vec3): 
  * Adds two vectors; assumes a and b have the same dimension.
  * @param a - Operand vector.
  * @param b - Operand vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector that is the sum of a and b.
  */
 export declare function add(a: Vec3, b: Vec3, dst?: Vec3): import("./array-like.js").ArrayLike;
@@ -54,7 +54,7 @@ export declare function add(a: Vec3, b: Vec3, dst?: Vec3): import("./array-like.
  * @param a - Operand vector.
  * @param b - Operand vector.
  * @param scale - Amount to scale b
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector that is the sum of a + b * scale.
  */
 export declare function addScaled(a: Vec3, b: Vec3, scale: number, dst?: Vec3): Vec3;
@@ -69,7 +69,7 @@ export declare function angle(a: Vec3, b: Vec3): number;
  * Subtracts two vectors.
  * @param a - Operand vector.
  * @param b - Operand vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector that is the difference of a and b.
  */
 export declare function subtract(a: Vec3, b: Vec3, dst?: Vec3): Vec3;
@@ -77,7 +77,7 @@ export declare function subtract(a: Vec3, b: Vec3, dst?: Vec3): Vec3;
  * Subtracts two vectors.
  * @param a - Operand vector.
  * @param b - Operand vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector that is the difference of a and b.
  */
 export declare const sub: typeof subtract;
@@ -102,7 +102,7 @@ export declare function equals(a: Vec3, b: Vec3): boolean;
  * @param a - Operand vector.
  * @param b - Operand vector.
  * @param t - Interpolation coefficient.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The linear interpolated result.
  */
 export declare function lerp(a: Vec3, b: Vec3, t: number, dst?: Vec3): Vec3;
@@ -113,7 +113,7 @@ export declare function lerp(a: Vec3, b: Vec3, t: number, dst?: Vec3): Vec3;
  * @param a - Operand vector.
  * @param b - Operand vector.
  * @param t - Interpolation coefficients vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns the linear interpolated result.
  */
 export declare function lerpV(a: Vec3, b: Vec3, t: Vec3, dst?: Vec3): Vec3;
@@ -123,7 +123,7 @@ export declare function lerpV(a: Vec3, b: Vec3, t: Vec3, dst?: Vec3): Vec3;
  * [max(a[0], b[0]), max(a[1], b[1]), max(a[2], b[2])].
  * @param a - Operand vector.
  * @param b - Operand vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The max components vector.
  */
 export declare function max(a: Vec3, b: Vec3, dst?: Vec3): Vec3;
@@ -133,7 +133,7 @@ export declare function max(a: Vec3, b: Vec3, dst?: Vec3): Vec3;
  * [min(a[0], b[0]), min(a[1], b[1]), min(a[2], b[2])].
  * @param a - Operand vector.
  * @param b - Operand vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The min components vector.
  */
 export declare function min(a: Vec3, b: Vec3, dst?: Vec3): Vec3;
@@ -141,7 +141,7 @@ export declare function min(a: Vec3, b: Vec3, dst?: Vec3): Vec3;
  * Multiplies a vector by a scalar.
  * @param v - The vector.
  * @param k - The scalar.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The scaled vector.
  */
 export declare function mulScalar(v: Vec3, k: number, dst?: Vec3): Vec3;
@@ -149,7 +149,7 @@ export declare function mulScalar(v: Vec3, k: number, dst?: Vec3): Vec3;
  * Multiplies a vector by a scalar. (same as mulScalar)
  * @param v - The vector.
  * @param k - The scalar.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The scaled vector.
  */
 export declare const scale: typeof mulScalar;
@@ -157,21 +157,21 @@ export declare const scale: typeof mulScalar;
  * Divides a vector by a scalar.
  * @param v - The vector.
  * @param k - The scalar.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The scaled vector.
  */
 export declare function divScalar(v: Vec3, k: number, dst?: Vec3): Vec3;
 /**
  * Inverse a vector.
  * @param v - The vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The inverted vector.
  */
 export declare function inverse(v: Vec3, dst?: Vec3): Vec3;
 /**
  * Invert a vector. (same as inverse)
  * @param v - The vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The inverted vector.
  */
 export declare const invert: typeof inverse;
@@ -180,7 +180,7 @@ export declare const invert: typeof inverse;
  * three entries.
  * @param a - Operand vector.
  * @param b - Operand vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The vector of a cross b.
  */
 export declare function cross(a: Vec3, b: Vec3, dst?: Vec3): Vec3;
@@ -247,28 +247,28 @@ export declare const distSq: typeof distanceSq;
 /**
  * Divides a vector by its Euclidean length and returns the quotient.
  * @param v - The vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The normalized vector.
  */
 export declare function normalize(v: Vec3, dst?: Vec3): Vec3;
 /**
  * Negates a vector.
  * @param v - The vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns -v.
  */
 export declare function negate(v: Vec3, dst?: Vec3): Vec3;
 /**
  * Copies a vector. (same as clone)
  * @param v - The vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A copy of v.
  */
 export declare function copy(v: Vec3, dst?: Vec3): Vec3;
 /**
  * Clones a vector. (same as copy)
  * @param v - The vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A copy of v.
  */
 export declare const clone: typeof copy;
@@ -277,7 +277,7 @@ export declare const clone: typeof copy;
  * b have the same length.
  * @param a - Operand vector.
  * @param b - Operand vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The vector of products of entries of a and b.
  */
 export declare function multiply(a: Vec3, b: Vec3, dst?: Vec3): Vec3;
@@ -286,7 +286,7 @@ export declare function multiply(a: Vec3, b: Vec3, dst?: Vec3): Vec3;
  * b have the same length. (same as mul)
  * @param a - Operand vector.
  * @param b - Operand vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The vector of products of entries of a and b.
  */
 export declare const mul: typeof multiply;
@@ -295,7 +295,7 @@ export declare const mul: typeof multiply;
  * b have the same length.
  * @param a - Operand vector.
  * @param b - Operand vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The vector of quotients of entries of a and b.
  */
 export declare function divide(a: Vec3, b: Vec3, dst?: Vec3): import("./array-like.js").ArrayLike;
@@ -304,20 +304,20 @@ export declare function divide(a: Vec3, b: Vec3, dst?: Vec3): import("./array-li
  * b have the same length. (same as divide)
  * @param a - Operand vector.
  * @param b - Operand vector.
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The vector of quotients of entries of a and b.
  */
 export declare const div: typeof divide;
 /**
  * Creates a random vector
  * @param scale - Default 1
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The random vector.
  */
 export declare function random(scale?: number, dst?: Vec3): Vec3;
 /**
  * Zero's a vector
- * @param dst - vector to hold result. If not new one is created.
+ * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The zeroed vector.
  */
 export declare function zero(dst?: Vec3): Vec3;
