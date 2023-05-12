@@ -33,6 +33,9 @@ export function assertLessThan(actual, expected, msg = '') {
 }
 
 export function assertEqualApproximately(actual, expected, range = 0.0000001, msg = '') {
+  if (actual.length) {
+    assertArrayEqualApproximately(actual, expected, range, msg);
+  }
   const diff = Math.abs(actual - expected);
   if (diff > range) {
     throw new Error(`${formatMsg(msg)}expected: ${actual} to be less ${range} different than: ${expected}`);
@@ -51,6 +54,47 @@ export function assertIsArray(actual, msg = '') {
   }
 }
 
+export function assertDeepEqual(actual, expected, msg = '') {
+  if (typeof actual === 'number' ||
+      typeof actual === 'string' ||
+      typeof actual === 'boolean' ||
+      Array.isArray(actual)) {
+    assertEqual(actual, expected, msg);
+  } else {
+    const actualKeys = [...Object.keys(actual)];
+    const expectedKeys = [...Object.keys(expected)];
+    const onActual = actualKeys.filter(k => !(k in expected));
+    const onExpected = expectedKeys.filter(k => !(k in actual));
+    if (actualKeys.length !== expectedKeys.length) {
+      throw new Error(`missing keys:\on  actual but not expected: ${onActual}\n  on expected but not actual ${onExpected}`);
+    }
+    for (const key of actualKeys) {
+      assertDeepEqual(actual[key], expected[key], `${msg}: for ${key}`);
+    }
+  }
+}
+
+export function assertDeepEqualApproximately(actual, expected, range = 1e7, msg = '') {
+  if (typeof actual === 'number') {
+    assertEqualApproximately(actual, expected, range, msg);
+  } else if (Array.isArray(actual) || actual.length) {
+    assertArrayEqualApproximately(actual, expected, range, msg);
+  } else if (typeof actual === 'string' ||
+             typeof actual === 'boolean') {
+    assertEqual(actual, expected, msg);
+  } else {
+    const actualKeys = [...Object.keys(actual)];
+    const expectedKeys = [...Object.keys(expected)];
+    const onActual = actualKeys.filter(k => !(k in expected));
+    const onExpected = expectedKeys.filter(k => !(k in actual));
+    if (actualKeys.length !== expectedKeys.length) {
+      throw new Error(`missing keys:\on  actual but not expected: ${onActual}\n  on expected but not actual ${onExpected}`);
+    }
+    for (const key of actualKeys) {
+      assertDeepEqualApproximately(actual[key], expected[key], range, `${msg}: for ${key}`);
+    }
+  }
+}
 export function assertEqual(actual, expected, msg = '') {
   // I'm sure this is not sufficient
   if (actual.length && expected.length) {
@@ -119,7 +163,7 @@ export function assertThrowsWith(func, expectations, msg = '') {
   if (config.throwOnError === false) {
     const origFn = console.error;
     const errors = [];
-    console.error = function(...args) {
+    console.error = function (...args) {
       errors.push(args.join(' '));
     };
     func();
@@ -152,7 +196,7 @@ export function assertIfThrowsItThrowsWith(func, expectations, msg = '') {
   if (config.throwOnError === false) {
     const origFn = console.error;
     const errors = [];
-    console.error = function(...args) {
+    console.error = function (...args) {
       errors.push(args.join(' '));
     };
     func();
@@ -191,12 +235,12 @@ function assertStringMatchesREs(actual, expectations, msg) {
       }
     }
   }
-
 }
+
 export function assertWarnsWith(func, expectations, msg = '') {
   const warnings = [];
   const origWarnFn = console.warn;
-  console.warn = function(...args) {
+  console.warn = function (...args) {
     origWarnFn.call(this, ...args);
     warnings.push(args.join(' '));
   };

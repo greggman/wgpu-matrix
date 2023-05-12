@@ -1,6 +1,7 @@
 /* global mocha */
 import './tests/mat3-test.js';
 import './tests/mat4-test.js';
+import './tests/quat-test.js';
 import './tests/vec2-test.js';
 import './tests/vec3-test.js';
 import './tests/vec4-test.js';
