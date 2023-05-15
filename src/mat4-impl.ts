@@ -158,7 +158,7 @@ export function fromMat3(m3: Mat3, dst?: Mat4): Mat4 {
 }
 
 /**
- * Creates a Mat4 from a quaternion
+ * Creates a Mat4 rotation matrix from a quaternion
  * @param q - quaternion to create matrix from
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns Mat4 made from q
