@@ -9,7 +9,6 @@ import * as utils from './utils';
 
 /**
  * Sets the type this library creates for all types
- * @remarks
  *
  * example:
  *
