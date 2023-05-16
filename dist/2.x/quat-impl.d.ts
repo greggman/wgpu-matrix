@@ -2,7 +2,7 @@ import { Quat, create, setDefaultType } from './quat';
 import { Mat3 } from './mat3.js';
 import { Mat4 } from './mat4.js';
 import { Vec3 } from './vec3.js';
-export declare type RotationOrder = 'xyz' | 'xzy' | 'yxz' | 'yzx' | 'zxy' | 'zyx';
+export type RotationOrder = 'xyz' | 'xzy' | 'yxz' | 'yzx' | 'zxy' | 'zyx';
 export default Quat;
 export { create, setDefaultType };
 /**
@@ -130,7 +130,7 @@ export declare function fromMat(m: Mat3 | Mat4, dst?: Quat): Quat;
  * @param dst - quaternion to hold result. If not passed in a new one is created.
  * @returns A quaternion representing the same rotation as the euler angles applied in the given order
  */
-export declare function fromEuler(xAngleInRadians: number, yAngleInRadians: number, zAngleInRadians: number, order: RotationOrder, dst?: Quat): import("./array-like.js").ArrayLike;
+export declare function fromEuler(xAngleInRadians: number, yAngleInRadians: number, zAngleInRadians: number, order: RotationOrder, dst?: Quat): import("./array-like").ArrayLike;
 /**
  * Copies a quaternion. (same as clone)
  * @param q - The quaternion.

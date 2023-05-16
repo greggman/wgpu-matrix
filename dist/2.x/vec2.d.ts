@@ -4,7 +4,7 @@ import { ArrayLike } from './array-like';
  * When created by the library will create the default type which is `Float32Array`
  * but can be set by calling {@link vec2.setDefaultType}.
  */
-export declare type Vec2 = ArrayLike;
+export type Vec2 = ArrayLike;
 /**
  *
  * Vec2 math functions.

@@ -281,7 +281,7 @@ export declare const mul: typeof multiply;
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The vector of quotients of entries of a and b.
  */
-export declare function divide(a: Vec4, b: Vec4, dst?: Vec4): import("./array-like.js").ArrayLike;
+export declare function divide(a: Vec4, b: Vec4, dst?: Vec4): import("./array-like").ArrayLike;
 /**
  * Divides a vector by another vector (component-wise); assumes a and
  * b have the same length. (same as divide)

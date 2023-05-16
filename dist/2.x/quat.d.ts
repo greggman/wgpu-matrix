@@ -4,7 +4,7 @@ import { ArrayLike, ArrayLikeCtor } from './array-like';
  * When created by the library will create the default type which is `Float32Array`
  * but can be set by calling {@link quat.setDefaultType}.
  */
-export declare type Quat = ArrayLike;
+export type Quat = ArrayLike;
 /**
  *
  * Quat4 math functions.

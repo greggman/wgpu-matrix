@@ -8,7 +8,6 @@ import Vec4, * as vec4 from './vec4-impl';
 import * as utils from './utils';
 /**
  * Sets the type this library creates for all types
- * @remarks
  *
  * example:
  *
