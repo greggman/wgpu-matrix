@@ -4,7 +4,6 @@
     "target": "ESNext",
     "module": "esnext",
     "outDir": "dist/2.x",
-    "declaration": true,
   },
   "files": [
     "src/wgpu-matrix.ts",
