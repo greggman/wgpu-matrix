@@ -23,6 +23,7 @@ import * as utils from './utils.js';
 import { Vec3, create, setDefaultType, VecType } from './vec3';
 import { Mat3 } from './mat3';
 import { Mat4 } from './mat4';
+import { Quat } from './quat';
 
 export default Vec3;
 export { create, setDefaultType };
@@ -686,7 +687,7 @@ export function transformMat4Upper3x3(v: Vec3, m: Mat4, dst?: Vec3): Vec3 {
 }
 
 /**
- * Transforms vec4 by 3x3 matrix
+ * Transforms vec3 by 3x3 matrix
  *
  * @param v - the vector
  * @param m - The matrix.
@@ -703,6 +704,36 @@ export function transformMat3(v: Vec3, m: Mat3, dst?: Vec3): Vec3 {
   dst[0] = x * m[0] + y * m[4] + z * m[8];
   dst[1] = x * m[1] + y * m[5] + z * m[9];
   dst[2] = x * m[2] + y * m[6] + z * m[10];
+
+  return dst;
+}
+
+/**
+ * Transforms vec3 by Quaternion
+ * @param v - the vector to transform
+ * @param q - the quaternion to transform by
+ * @param dst - optional vec3 to store result. If not passed a new one is created.
+ * @returns the transformed
+ */
+export function transformQuat(v: Vec3, q: Quat, dst?: Vec3): Vec3 {
+  dst = dst || new VecType(3);
+
+  const qx = q[0];
+  const qy = q[1];
+  const qz = q[2];
+  const w2 = q[3] * 2;
+
+  const x = v[0];
+  const y = v[1];
+  const z = v[2];
+
+  const uvX = qy * z - qz * y;
+  const uvY = qz * x - qx * z;
+  const uvZ = qx * y - qy * x;
+
+  dst[0] = x + uvX * w2 + (qy * uvZ - qz * uvY) * 2;
+  dst[1] = y + uvY * w2 + (qz * uvX - qx * uvZ) * 2;
+  dst[2] = z + uvZ * w2 + (qx * uvY - qy * uvX) * 2;
 
   return dst;
 }

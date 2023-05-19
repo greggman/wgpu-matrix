@@ -1,4 +1,4 @@
-import {vec3, utils} from '../../dist/2.x/wgpu-matrix.module.js';
+import {quat, vec3, utils} from '../../dist/2.x/wgpu-matrix.module.js';
 
 import {
   assertEqual,
@@ -432,6 +432,18 @@ function check(Type) {
       testV3WithAndWithoutDest((v, mat, dst) => {
         return vec3.transformMat4Upper3x3(v, mat, dst);
       }, expected, [2, 3, 4], m);
+    });
+
+    it('should transform by quat', () => {
+      const tests = [
+        { q: quat.fromEuler(0.1, 0.2, 0.3, 'xyz'), expected: [ 10.483466535953458, 20.99753253479091, 33.81124896860183 ], },
+        { q: quat.fromEuler(1.1, 2.2, 3.3, 'xyz'), expected: [ 31.03050528998851, 1.340347488701262, -27.005757983559995 ], },
+      ];
+      for (const {q, expected} of tests) {
+        testV3WithAndWithoutDest((v, q, dst) => {
+          return vec3.transformQuat(v, q, dst);
+        }, expected, [11, 22, 33], q);
+      }
     });
 
     it('should zero', () => {
