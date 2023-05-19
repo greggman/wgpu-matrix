@@ -146,8 +146,9 @@ export function assertArrayEqualApproximately(actual, expected, range = 0.000000
   }
   const errors = [];
   for (let i = 0; i < actual.length; ++i) {
-    if (Math.abs(actual[i] - expected[i]) > range) {
-      errors.push(`${formatMsg(msg)}expected: expected[${i}] ${expected[i]} to equal actual[${i}]: ${actual[i]}`);
+    const diff = Math.abs(actual[i] - expected[i]);
+    if (diff > range) {
+      errors.push(`${formatMsg(msg)}expected: expected[${i}] ${expected[i]} to equal actual[${i}]: ${actual[i]} within ${range} but was different by ${diff}`);
       if (errors.length === 10) {
         break;
       }

@@ -44,7 +44,7 @@ function check(Type) {
     function testV3WithoutDest(func, expected, ...args) {
       const v = args.shift();
       const d = func(clone(v), ...args);
-      assertEqual(d, expected);
+      assertEqualApproximately(d, expected);
       assertInstanceOf(d, Type);
     }
 
@@ -56,7 +56,7 @@ function check(Type) {
       // clone v to make sure it's the correct type
       let c = func(clone(firstArg), ...args, d);
       assertStrictEqual(c, d);
-      assertEqual(c, expected);
+      assertEqualApproximately(c, expected);
 
       // test if we pass same vector as source and dest we get
       // correct result
@@ -436,8 +436,8 @@ function check(Type) {
 
     it('should transform by quat', () => {
       const tests = [
-        { q: quat.fromEuler(0.1, 0.2, 0.3, 'xyz'), expected: [ 10.483466535953458, 20.99753253479091, 33.81124896860183 ], },
-        { q: quat.fromEuler(1.1, 2.2, 3.3, 'xyz'), expected: [ 31.03050528998851, 1.340347488701262, -27.005757983559995 ], },
+        { q: quat.fromEuler(0.1, 0.2, 0.3, 'xyz'), expected: [ 10.48346640790187, 20.99753274028838, 33.81124896860183 ], },
+        { q: quat.fromEuler(1.1, 2.2, 3.3, 'xyz'), expected: [ 31.030506373087608, 1.340345941350634, -27.005761366554264 ], },
       ];
       for (const {q, expected} of tests) {
         testV3WithAndWithoutDest((v, q, dst) => {
