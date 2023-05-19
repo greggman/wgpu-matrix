@@ -37,6 +37,26 @@ export { create, setDefaultType };
 export const fromValues = create;
 
 /**
+ * Sets the values of a Vec3
+ * Also see {@link vec3.create} and {@link vec3.copy}
+ *
+ * @param x first value
+ * @param y second value
+ * @param z third value
+ * @param dst - vector to hold result. If not passed in a new one is created.
+ * @returns A vector with its elements set.
+ */
+export function set(x: number, y: number, z: number, dst?: Vec3) {
+  dst = dst || new VecType(3);
+
+  dst[0] = x;
+  dst[1] = y;
+  dst[2] = z;
+
+  return dst;
+}
+
+/**
  * Applies Math.ceil to each element of vector
  * @param v - Operand vector.
  * @param dst - vector to hold result. If not passed in a new one is created.
@@ -506,7 +526,8 @@ export function negate(v: Vec3, dst?: Vec3): Vec3 {
 }
 
 /**
- * Copies a vector. (same as clone)
+ * Copies a vector. (same as {@link vec3.clone})
+ * Also see {@link vec3.create} and {@link vec3.set}
  * @param v - The vector.
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A copy of v.
@@ -522,7 +543,8 @@ export function copy(v: Vec3, dst?: Vec3): Vec3 {
 }
 
 /**
- * Clones a vector. (same as copy)
+ * Clones a vector. (same as {@link vec3.copy})
+ * Also see {@link vec3.create} and {@link vec3.set}
  * @param v - The vector.
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A copy of v.

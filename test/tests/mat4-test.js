@@ -25,25 +25,25 @@ function check(Type) {
       mat4.setDefaultType(Type);
     });
 
-    function testMat4WithoutDest(func, expected) {
-      const d = func();
+    function testMat4WithoutDest(func, expected, ...args) {
+      const d = func(...args);
       assertEqualApproximately(d, expected);
     }
 
-    function testMat4WithDest(func, expected) {
+    function testMat4WithDest(func, expected, ...args) {
       expected = new Float32Array(expected);
       const d = new Float32Array(16);
-      const c = func(d);
+      const c = func(...args, d);
       assertStrictEqual(c, d);
       assertEqualApproximately(c, expected);
     }
 
-    function testMat4WithAndWithoutDest(func, expected) {
+    function testMat4WithAndWithoutDest(func, expected, ...args) {
       if (Type === Float32Array) {
         expected = new Float32Array(expected);
       }
-      testMat4WithoutDest(func, expected);
-      testMat4WithDest(func, expected);
+      testMat4WithoutDest(func, expected, ...args);
+      testMat4WithDest(func, expected, ...args);
     }
 
     function testVec3WithoutDest(func, expected) {
@@ -140,6 +140,13 @@ function check(Type) {
         assertStrictNotEqual(result, m);
         return result;
       }, expected);
+    });
+
+    it('should set', () => {
+      const expected = [2, 3, 4, 5, 22, 33, 44, 55, 222, 333, 444, 555, 2222, 3333, 4444, 5555];
+      testMat4WithAndWithoutDest((v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, dst) => {
+        return mat4.set(v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, dst);
+      }, expected, 2, 3, 4, 5, 22, 33, 44, 55, 222, 333, 444, 555, 2222, 3333, 4444, 5555);
     });
 
     it('should make identity', () => {

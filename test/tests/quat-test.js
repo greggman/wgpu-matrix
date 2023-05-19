@@ -245,6 +245,13 @@ function check(Type) {
       }, expected, [1, 2, 3, 4]);
     });
 
+    it('should set', () => {
+      const expected = [2, 3, 4, 5];
+      testQuatWithAndWithoutDest((a, b, c, d, dst) => {
+        return quat.set(a, b, c, d, dst);
+      }, expected, 2, 3, 4, 5);
+    });
+
     it('should multiply', () => {
       const expected = [-16, -32, -48, -4];
       testQuatWithAndWithoutDest((a, b, dst) => {

@@ -28,6 +28,10 @@ function check(Type) {
       vec4.setDefaultType(Type);
     });
 
+    function clone(v) {
+      return v.length ? v.slice() : v;
+    }
+
     function elementsEqual(a, b) {
       assertStrictEqual(a.length, b.length);
       for (let i = 0; i < a.length; ++i) {
@@ -38,41 +42,43 @@ function check(Type) {
 
     function testV4WithoutDest(func, expected, ...args) {
       const v = args.shift();
-        const d = func(vec4.clone(v), ...args);
+      const d = func(clone(v), ...args);
       assertEqual(d, expected);
       assertInstanceOf(d, Type);
     }
 
     function testV4WithDest(func, expected, ...args) {
-      const v = args.shift();
+      const firstArg = args.shift();
       // clone expected so we can check it wasn't modified
       expected = vec4.clone(expected);
       let d = vec4.create();
       // clone v to make sure it's the correct type
-      let c = func(vec4.clone(v), ...args, d);
+      let c = func(clone(firstArg), ...args, d);
       assertStrictEqual(c, d);
       assertEqual(c, expected);
 
       // test if we pass same vector as source and dest we get
       // correct result
-      d = vec4.clone(v);
-      // clone args to make sure we don't overwrite first arg
-      const bOrig = args.map(b => b.slice(b));
-      c = func(d, ...args, d);
-      assertStrictEqual(c, d);
-      elementsEqual(c, expected);
-      args.forEach((b, ndx) => {
-        assertEqual(b, bOrig[ndx]);
-      });
+      if (firstArg.length) {
+        d = vec4.clone(firstArg);
+        // clone args to make sure we don't overwrite first arg
+        const bOrig = args.map(b => clone(b));
+        c = func(d, ...args, d);
+        assertStrictEqual(c, d);
+        elementsEqual(c, expected);
+        args.forEach((b, ndx) => {
+          assertEqual(b, bOrig[ndx]);
+        });
+      }
 
       // test if we pass operand as dest we get correct result
-      if (args.length > 0) {
+      if (args.length > 0 && firstArg.length) {
         d = vec4.clone(args[0]);
         // clone v to make sure it is not overwritten
-        const vOrig = vec4.clone(v);
-        c = func(v, d, d);
+        const vOrig = vec4.clone(firstArg);
+        c = func(firstArg, d, d);
         elementsEqual(c, expected);
-        assertEqual(v, vOrig);
+        assertEqual(firstArg, vOrig);
         assertStrictEqual(c, d);
      }
     }
@@ -308,6 +314,13 @@ function check(Type) {
         assertStrictNotEqual(result, v);
         return result;
       }, expected, [1, 2, 3, 4]);
+    });
+
+    it('should set', () => {
+      const expected = [2, 3, 4, 5];
+      testV4WithAndWithoutDest((a, b, c, d, dst) => {
+        return vec4.set(a, b, c, d, dst);
+      }, expected, 2, 3, 4, 5);
     });
 
     it('should multiply', () => {

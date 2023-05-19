@@ -35,25 +35,25 @@ function check(Type) {
       mat3.setDefaultType(Type);
     });
 
-    function testM3WithoutDest(func, expected) {
-      const d = func();
+    function testM3WithoutDest(func, expected, ...args) {
+      const d = func(...args);
       assertMat3EqualApproximately(d, expected);
     }
 
-    function testM3WithDest(func, expected) {
+    function testM3WithDest(func, expected, ...args) {
       expected = new Float32Array(expected);
       const d = new Float32Array(12);
-      const c = func(d);
+      const c = func(...args, d);
       assertStrictEqual(c, d);
       assertMat3EqualApproximately(c, expected);
     }
 
-    function testMat3WithAndWithoutDest(func, expected) {
+    function testMat3WithAndWithoutDest(func, expected, ...args) {
       if (Type === Float32Array) {
         expected = new Float32Array(expected);
       }
-      testM3WithoutDest(func, expected);
-      testM3WithDest(func, expected);
+      testM3WithoutDest(func, expected, ...args);
+      testM3WithDest(func, expected, ...args);
     }
 
     function testV2WithoutDest(func, expected) {
@@ -151,6 +151,13 @@ function check(Type) {
         assertStrictNotEqual(result, m);
         return result;
       }, expected);
+    });
+
+    it('should set', () => {
+      const expected = [2, 3, 4, 0, 22, 33, 44, 0, 222, 333, 444, 0];
+      testMat3WithAndWithoutDest((v0, v1, v2, v3, v4, v5, v6, v7, v8, dst) => {
+        return mat3.set(v0, v1, v2, v3, v4, v5, v6, v7, v8, dst);
+      }, expected, 2, 3, 4, 22, 33, 44, 222, 333, 444);
     });
 
     it('should make identity', () => {

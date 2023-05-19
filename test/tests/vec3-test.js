@@ -37,43 +37,49 @@ function check(Type) {
       }
     }
 
+    function clone(v) {
+      return v.length ? v.slice() : v;
+    }
+
     function testV3WithoutDest(func, expected, ...args) {
       const v = args.shift();
-        const d = func(vec3.clone(v), ...args);
+      const d = func(clone(v), ...args);
       assertEqual(d, expected);
       assertInstanceOf(d, Type);
     }
 
     function testV3WithDest(func, expected, ...args) {
-      const v = args.shift();
+      const firstArg = args.shift();
       // clone expected so we can check it wasn't modified
       expected = vec3.clone(expected);
       let d = vec3.create();
       // clone v to make sure it's the correct type
-      let c = func(vec3.clone(v), ...args, d);
+      let c = func(clone(firstArg), ...args, d);
       assertStrictEqual(c, d);
       assertEqual(c, expected);
 
       // test if we pass same vector as source and dest we get
       // correct result
-      d = vec3.clone(v);
-      // clone args to make sure we don't overwrite first arg
-      const bOrig = args.map(b => b.slice(b));
-      c = func(d, ...args, d);
-      assertStrictEqual(c, d);
-      elementsEqual(c, expected);
-      args.forEach((b, ndx) => {
-        assertEqual(b, bOrig[ndx]);
-      });
+      if (firstArg.length) {
+        d = vec3.clone(firstArg);
+        // clone args to make sure we don't overwrite first arg
+        const bOrig = args.map(b => b.slice(b));
+        c = func(d, ...args, d);
+        assertStrictEqual(c, d);
+        elementsEqual(c, expected);
+        args.forEach((b, ndx) => {
+          assertEqual(b, bOrig[ndx]);
+        });
+      }
 
       // test if we pass operand as dest we get correct result
-      if (args.length > 0) {
+      if (args.length > 0 && firstArg.length) {
         d = vec3.clone(args[0]);
         // clone v to make sure it is not overwritten
-        const vOrig = vec3.clone(v);
-        c = func(v, d, d);
+        const vOrig = vec3.clone(firstArg);
+        c = func(firstArg, d, d);
         elementsEqual(c, expected);
-        assertEqual(v, vOrig);
+        assertEqual(firstArg, vOrig);
         assertStrictEqual(c, d);
      }
     }
@@ -328,6 +334,13 @@ function check(Type) {
         assertStrictNotEqual(result, v);
         return result;
       }, expected, [1, 2, 3]);
+    });
+
+    it('should set', () => {
+      const expected = [2, 3, 4];
+      testV3WithAndWithoutDest((a, b, c, dst) => {
+        return vec3.set(a, b, c, dst);
+      }, expected, 2, 3, 4);
     });
 
     it('should multiply', () => {

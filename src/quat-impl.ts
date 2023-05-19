@@ -42,6 +42,28 @@ export { create, setDefaultType };
 export const fromValues = create;
 
 /**
+ * Sets the values of a Quat
+ * Also see {@link quat.create} and {@link quat.copy}
+ *
+ * @param x first value
+ * @param y second value
+ * @param z third value
+ * @param w fourth value
+ * @param dst - vector to hold result. If not passed in a new one is created.
+ * @returns A vector with its elements set.
+ */
+export function set(x: number, y: number, z: number, w: number, dst?: Quat) {
+  dst = dst || new QuatType(4);
+
+  dst[0] = x;
+  dst[1] = y;
+  dst[2] = z;
+  dst[3] = w;
+
+  return dst;
+}
+
+/**
  * Sets a quaternion from the given angle and  axis,
  * then returns it.
  *
@@ -462,7 +484,8 @@ export function fromEuler(
 }
 
 /**
- * Copies a quaternion. (same as clone)
+ * Copies a quaternion. (same as {@link quat.clone})
+ * Also see {@link quat.create} and {@link quat.set}
  * @param q - The quaternion.
  * @param dst - quaternion to hold result. If not passed in a new one is created.
  * @returns A quaternion that is a copy of q
@@ -479,7 +502,8 @@ export function copy(q: Quat, dst?: Quat): Quat {
 }
 
 /**
- * Clones a quaternion. (same as copy)
+ * Clones a quaternion. (same as {@link quat.copy})
+ * Also see {@link quat.create} and {@link quat.set}
  * @param q - The quaternion.
  * @param dst - quaternion to hold result. If not passed in a new one is created.
  * @returns A copy of q.
