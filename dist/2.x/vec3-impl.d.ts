@@ -1,6 +1,7 @@
 import { Vec3, create, setDefaultType } from './vec3';
 import { Mat3 } from './mat3';
 import { Mat4 } from './mat4';
+import { Quat } from './quat';
 export default Vec3;
 export { create, setDefaultType };
 /**
@@ -11,6 +12,17 @@ export { create, setDefaultType };
  * @returns the created vector
  */
 export declare const fromValues: typeof create;
+/**
+ * Sets the values of a Vec3
+ * Also see {@link vec3.create} and {@link vec3.copy}
+ *
+ * @param x first value
+ * @param y second value
+ * @param z third value
+ * @param dst - vector to hold result. If not passed in a new one is created.
+ * @returns A vector with its elements set.
+ */
+export declare function set(x: number, y: number, z: number, dst?: Vec3): import("./array-like").ArrayLike;
 /**
  * Applies Math.ceil to each element of vector
  * @param v - Operand vector.
@@ -259,14 +271,16 @@ export declare function normalize(v: Vec3, dst?: Vec3): Vec3;
  */
 export declare function negate(v: Vec3, dst?: Vec3): Vec3;
 /**
- * Copies a vector. (same as clone)
+ * Copies a vector. (same as {@link vec3.clone})
+ * Also see {@link vec3.create} and {@link vec3.set}
  * @param v - The vector.
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A copy of v.
  */
 export declare function copy(v: Vec3, dst?: Vec3): Vec3;
 /**
- * Clones a vector. (same as copy)
+ * Clones a vector. (same as {@link vec3.copy})
+ * Also see {@link vec3.create} and {@link vec3.set}
  * @param v - The vector.
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A copy of v.
@@ -338,7 +352,7 @@ export declare function transformMat4(v: Vec3, m: Mat4, dst?: Vec3): Vec3;
  */
 export declare function transformMat4Upper3x3(v: Vec3, m: Mat4, dst?: Vec3): Vec3;
 /**
- * Transforms vec4 by 3x3 matrix
+ * Transforms vec3 by 3x3 matrix
  *
  * @param v - the vector
  * @param m - The matrix.
@@ -346,6 +360,14 @@ export declare function transformMat4Upper3x3(v: Vec3, m: Mat4, dst?: Vec3): Vec
  * @returns the transformed vector
  */
 export declare function transformMat3(v: Vec3, m: Mat3, dst?: Vec3): Vec3;
+/**
+ * Transforms vec3 by Quaternion
+ * @param v - the vector to transform
+ * @param q - the quaternion to transform by
+ * @param dst - optional vec3 to store result. If not passed a new one is created.
+ * @returns the transformed
+ */
+export declare function transformQuat(v: Vec3, q: Quat, dst?: Vec3): Vec3;
 /**
  * Returns the translation component of a 4-by-4 matrix as a vector with 3
  * entries.

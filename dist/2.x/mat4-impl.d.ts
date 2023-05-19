@@ -53,6 +53,30 @@ export declare function setDefaultType(ctor: new (n: number) => Mat4): ArrayLike
  */
 export declare function create(v0?: number, v1?: number, v2?: number, v3?: number, v4?: number, v5?: number, v6?: number, v7?: number, v8?: number, v9?: number, v10?: number, v11?: number, v12?: number, v13?: number, v14?: number, v15?: number): Mat4;
 /**
+ * Sets the values of a Mat4
+ * Also see {@link mat4.create} and {@link mat4.copy}
+ *
+ * @param v0 - value for element 0
+ * @param v1 - value for element 1
+ * @param v2 - value for element 2
+ * @param v3 - value for element 3
+ * @param v4 - value for element 4
+ * @param v5 - value for element 5
+ * @param v6 - value for element 6
+ * @param v7 - value for element 7
+ * @param v8 - value for element 8
+ * @param v9 - value for element 9
+ * @param v10 - value for element 10
+ * @param v11 - value for element 11
+ * @param v12 - value for element 12
+ * @param v13 - value for element 13
+ * @param v14 - value for element 14
+ * @param v15 - value for element 15
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns Mat4 created from values.
+ */
+export declare function set(v0: number, v1: number, v2: number, v3: number, v4: number, v5: number, v6: number, v7: number, v8: number, v9: number, v10: number, v11: number, v12: number, v13: number, v14: number, v15: number, dst?: Mat4): Mat4;
+/**
  * Creates a Mat4 from a Mat3
  * @param m3 - source matrix
  * @param dst - matrix to hold result. If not passed a new one is created.
@@ -74,14 +98,16 @@ export declare function fromQuat(q: Quat, dst?: Mat4): Mat4;
  */
 export declare function negate(m: Mat4, dst?: Mat4): Mat4;
 /**
- * Copies a matrix.
+ * Copies a matrix. (same as {@link mat4.clone})
+ * Also see {@link mat4.create} and {@link mat4.set}
  * @param m - The matrix.
  * @param dst - The matrix. If not passed a new one is created.
  * @returns A copy of m.
  */
 export declare function copy(m: Mat4, dst?: Mat4): Mat4;
 /**
- * Copies a matrix (same as copy)
+ * Copies a matrix (same as {@link mat4.copy})
+ * Also see {@link mat4.create} and {@link mat4.set}
  * @param m - The matrix.
  * @param dst - The matrix. If not passed a new one is created.
  * @returns A copy of m.

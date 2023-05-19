@@ -11,6 +11,16 @@ export { create, setDefaultType };
  */
 export declare const fromValues: typeof create;
 /**
+ * Sets the values of a Vec2
+ * Also see {@link vec2.create} and {@link vec2.copy}
+ *
+ * @param x first value
+ * @param y second value
+ * @param dst - vector to hold result. If not passed in a new one is created.
+ * @returns A vector with its elements set.
+ */
+export declare function set(x: number, y: number, dst?: Vec2): import("./array-like").ArrayLike;
+/**
  * Applies Math.ceil to each element of vector
  * @param v - Operand vector.
  * @param dst - vector to hold result. If not passed in a new one is created.
@@ -258,14 +268,16 @@ export declare function normalize(v: Vec2, dst?: Vec2): Vec2;
  */
 export declare function negate(v: Vec2, dst?: Vec2): Vec2;
 /**
- * Copies a vector. (same as clone)
+ * Copies a vector. (same as {@link vec2.clone})
+ * Also see {@link vec2.create} and {@link vec2.set}
  * @param v - The vector.
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A copy of v.
  */
 export declare function copy(v: Vec2, dst?: Vec2): Vec2;
 /**
- * Clones a vector. (same as copy)
+ * Clones a vector. (same as {@link vec2.copy})
+ * Also see {@link vec2.create} and {@link vec2.set}
  * @param v - The vector.
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A copy of v.

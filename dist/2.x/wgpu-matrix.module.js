@@ -1,4 +1,4 @@
-/* wgpu-matrix@2.2.2, license MIT */
+/* wgpu-matrix@2.3.0, license MIT */
 var arrayLike = /*#__PURE__*/Object.freeze({
     __proto__: null
 });
@@ -205,6 +205,21 @@ function create$5(x = 0, y = 0) {
  * @returns the created vector
  */
 const fromValues$3 = create$5;
+/**
+ * Sets the values of a Vec2
+ * Also see {@link vec2.create} and {@link vec2.copy}
+ *
+ * @param x first value
+ * @param y second value
+ * @param dst - vector to hold result. If not passed in a new one is created.
+ * @returns A vector with its elements set.
+ */
+function set$5(x, y, dst) {
+    dst = dst || new VecType$2(2);
+    dst[0] = x;
+    dst[1] = y;
+    return dst;
+}
 /**
  * Applies Math.ceil to each element of vector
  * @param v - Operand vector.
@@ -582,7 +597,8 @@ function negate$4(v, dst) {
     return dst;
 }
 /**
- * Copies a vector. (same as clone)
+ * Copies a vector. (same as {@link vec2.clone})
+ * Also see {@link vec2.create} and {@link vec2.set}
  * @param v - The vector.
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A copy of v.
@@ -594,7 +610,8 @@ function copy$5(v, dst) {
     return dst;
 }
 /**
- * Clones a vector. (same as copy)
+ * Clones a vector. (same as {@link vec2.copy})
+ * Also see {@link vec2.create} and {@link vec2.set}
  * @param v - The vector.
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A copy of v.
@@ -743,6 +760,7 @@ var vec2Impl = /*#__PURE__*/Object.freeze({
     random: random$1,
     round: round$2,
     scale: scale$5,
+    set: set$5,
     setDefaultType: setDefaultType$6,
     sub: sub$3,
     subtract: subtract$3,
@@ -886,6 +904,38 @@ function create$4(v0, v1, v2, v3, v4, v5, v6, v7, v8) {
     return dst;
 }
 /**
+ * Sets the values of a Mat3
+ * Also see {@link mat3.create} and {@link mat3.copy}
+ *
+ * @param v0 - value for element 0
+ * @param v1 - value for element 1
+ * @param v2 - value for element 2
+ * @param v3 - value for element 3
+ * @param v4 - value for element 4
+ * @param v5 - value for element 5
+ * @param v6 - value for element 6
+ * @param v7 - value for element 7
+ * @param v8 - value for element 8
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns Mat3 set from values.
+ */
+function set$4(v0, v1, v2, v3, v4, v5, v6, v7, v8, dst) {
+    dst = dst || newMat3();
+    dst[0] = v0;
+    dst[1] = v1;
+    dst[2] = v2;
+    dst[3] = 0;
+    dst[4] = v3;
+    dst[5] = v4;
+    dst[6] = v5;
+    dst[7] = 0;
+    dst[8] = v6;
+    dst[9] = v7;
+    dst[10] = v8;
+    dst[11] = 0;
+    return dst;
+}
+/**
  * Creates a Mat3 from the upper left 3x3 part of a Mat4
  * @param m4 - source matrix
  * @param dst - matrix to hold result. If not passed a new one is created.
@@ -965,7 +1015,8 @@ function negate$3(m, dst) {
     return dst;
 }
 /**
- * Copies a matrix.
+ * Copies a matrix. (same as {@link mat3.clone})
+ * Also see {@link mat3.create} and {@link mat3.set}
  * @param m - The matrix.
  * @param dst - The matrix. If not passed a new one is created.
  * @returns A copy of m.
@@ -984,7 +1035,8 @@ function copy$4(m, dst) {
     return dst;
 }
 /**
- * Copies a matrix (same as copy)
+ * Copies a matrix (same as {@link mat3.copy})
+ * Also see {@link mat3.create} and {@link mat3.set}
  * @param m - The matrix.
  * @param dst - The matrix. If not passed a new one is created.
  * @returns A copy of m.
@@ -1453,6 +1505,7 @@ var mat3Impl = /*#__PURE__*/Object.freeze({
     rotation: rotation$1,
     scale: scale$4,
     scaling: scaling$1,
+    set: set$4,
     setAxis: setAxis$1,
     setDefaultType: setDefaultType$5,
     setTranslation: setTranslation$1,
@@ -1544,6 +1597,23 @@ function create$3(x, y, z) {
  * @returns the created vector
  */
 const fromValues$2 = create$3;
+/**
+ * Sets the values of a Vec3
+ * Also see {@link vec3.create} and {@link vec3.copy}
+ *
+ * @param x first value
+ * @param y second value
+ * @param z third value
+ * @param dst - vector to hold result. If not passed in a new one is created.
+ * @returns A vector with its elements set.
+ */
+function set$3(x, y, z, dst) {
+    dst = dst || new VecType$1(3);
+    dst[0] = x;
+    dst[1] = y;
+    dst[2] = z;
+    return dst;
+}
 /**
  * Applies Math.ceil to each element of vector
  * @param v - Operand vector.
@@ -1947,7 +2017,8 @@ function negate$2(v, dst) {
     return dst;
 }
 /**
- * Copies a vector. (same as clone)
+ * Copies a vector. (same as {@link vec3.clone})
+ * Also see {@link vec3.create} and {@link vec3.set}
  * @param v - The vector.
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A copy of v.
@@ -1960,7 +2031,8 @@ function copy$3(v, dst) {
     return dst;
 }
 /**
- * Clones a vector. (same as copy)
+ * Clones a vector. (same as {@link vec3.copy})
+ * Also see {@link vec3.create} and {@link vec3.set}
  * @param v - The vector.
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A copy of v.
@@ -2078,7 +2150,7 @@ function transformMat4Upper3x3(v, m, dst) {
     return dst;
 }
 /**
- * Transforms vec4 by 3x3 matrix
+ * Transforms vec3 by 3x3 matrix
  *
  * @param v - the vector
  * @param m - The matrix.
@@ -2093,6 +2165,30 @@ function transformMat3(v, m, dst) {
     dst[0] = x * m[0] + y * m[4] + z * m[8];
     dst[1] = x * m[1] + y * m[5] + z * m[9];
     dst[2] = x * m[2] + y * m[6] + z * m[10];
+    return dst;
+}
+/**
+ * Transforms vec3 by Quaternion
+ * @param v - the vector to transform
+ * @param q - the quaternion to transform by
+ * @param dst - optional vec3 to store result. If not passed a new one is created.
+ * @returns the transformed
+ */
+function transformQuat(v, q, dst) {
+    dst = dst || new VecType$1(3);
+    const qx = q[0];
+    const qy = q[1];
+    const qz = q[2];
+    const w2 = q[3] * 2;
+    const x = v[0];
+    const y = v[1];
+    const z = v[2];
+    const uvX = qy * z - qz * y;
+    const uvY = qz * x - qx * z;
+    const uvZ = qx * y - qy * x;
+    dst[0] = x + uvX * w2 + (qy * uvZ - qz * uvY) * 2;
+    dst[1] = y + uvY * w2 + (qz * uvX - qx * uvZ) * 2;
+    dst[2] = z + uvZ * w2 + (qx * uvY - qy * uvX) * 2;
     return dst;
 }
 /**
@@ -2189,12 +2285,14 @@ var vec3Impl = /*#__PURE__*/Object.freeze({
     random: random,
     round: round$1,
     scale: scale$3,
+    set: set$3,
     setDefaultType: setDefaultType$4,
     sub: sub$2,
     subtract: subtract$2,
     transformMat3: transformMat3,
     transformMat4: transformMat4$1,
     transformMat4Upper3x3: transformMat4Upper3x3,
+    transformQuat: transformQuat,
     zero: zero$1
 });
 
@@ -2326,6 +2424,49 @@ function create$2(v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v1
     return dst;
 }
 /**
+ * Sets the values of a Mat4
+ * Also see {@link mat4.create} and {@link mat4.copy}
+ *
+ * @param v0 - value for element 0
+ * @param v1 - value for element 1
+ * @param v2 - value for element 2
+ * @param v3 - value for element 3
+ * @param v4 - value for element 4
+ * @param v5 - value for element 5
+ * @param v6 - value for element 6
+ * @param v7 - value for element 7
+ * @param v8 - value for element 8
+ * @param v9 - value for element 9
+ * @param v10 - value for element 10
+ * @param v11 - value for element 11
+ * @param v12 - value for element 12
+ * @param v13 - value for element 13
+ * @param v14 - value for element 14
+ * @param v15 - value for element 15
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns Mat4 created from values.
+ */
+function set$2(v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, dst) {
+    dst = dst || new MatType(16);
+    dst[0] = v0;
+    dst[1] = v1;
+    dst[2] = v2;
+    dst[3] = v3;
+    dst[4] = v4;
+    dst[5] = v5;
+    dst[6] = v6;
+    dst[7] = v7;
+    dst[8] = v8;
+    dst[9] = v9;
+    dst[10] = v10;
+    dst[11] = v11;
+    dst[12] = v12;
+    dst[13] = v13;
+    dst[14] = v14;
+    dst[15] = v15;
+    return dst;
+}
+/**
  * Creates a Mat4 from a Mat3
  * @param m3 - source matrix
  * @param dst - matrix to hold result. If not passed a new one is created.
@@ -2420,7 +2561,8 @@ function negate$1(m, dst) {
     return dst;
 }
 /**
- * Copies a matrix.
+ * Copies a matrix. (same as {@link mat4.clone})
+ * Also see {@link mat4.create} and {@link mat4.set}
  * @param m - The matrix.
  * @param dst - The matrix. If not passed a new one is created.
  * @returns A copy of m.
@@ -2446,7 +2588,8 @@ function copy$2(m, dst) {
     return dst;
 }
 /**
- * Copies a matrix (same as copy)
+ * Copies a matrix (same as {@link mat4.copy})
+ * Also see {@link mat4.create} and {@link mat4.set}
  * @param m - The matrix.
  * @param dst - The matrix. If not passed a new one is created.
  * @returns A copy of m.
@@ -3655,6 +3798,7 @@ var mat4Impl = /*#__PURE__*/Object.freeze({
     rotationZ: rotationZ,
     scale: scale$2,
     scaling: scaling,
+    set: set$2,
     setAxis: setAxis,
     setDefaultType: setDefaultType$3,
     setTranslation: setTranslation,
@@ -3751,6 +3895,25 @@ function create$1(x, y, z, w) {
  * @returns the created vector
  */
 const fromValues$1 = create$1;
+/**
+ * Sets the values of a Quat
+ * Also see {@link quat.create} and {@link quat.copy}
+ *
+ * @param x first value
+ * @param y second value
+ * @param z third value
+ * @param w fourth value
+ * @param dst - vector to hold result. If not passed in a new one is created.
+ * @returns A vector with its elements set.
+ */
+function set$1(x, y, z, w, dst) {
+    dst = dst || new QuatType(4);
+    dst[0] = x;
+    dst[1] = y;
+    dst[2] = z;
+    dst[3] = w;
+    return dst;
+}
 /**
  * Sets a quaternion from the given angle and  axis,
  * then returns it.
@@ -4099,7 +4262,8 @@ function fromEuler(xAngleInRadians, yAngleInRadians, zAngleInRadians, order, dst
     return dst;
 }
 /**
- * Copies a quaternion. (same as clone)
+ * Copies a quaternion. (same as {@link quat.clone})
+ * Also see {@link quat.create} and {@link quat.set}
  * @param q - The quaternion.
  * @param dst - quaternion to hold result. If not passed in a new one is created.
  * @returns A quaternion that is a copy of q
@@ -4113,7 +4277,8 @@ function copy$1(q, dst) {
     return dst;
 }
 /**
- * Clones a quaternion. (same as copy)
+ * Clones a quaternion. (same as {@link quat.copy})
+ * Also see {@link quat.create} and {@link quat.set}
  * @param q - The quaternion.
  * @param dst - quaternion to hold result. If not passed in a new one is created.
  * @returns A copy of q.
@@ -4415,6 +4580,7 @@ var quatImpl = /*#__PURE__*/Object.freeze({
     rotateZ: rotateZ,
     rotationTo: rotationTo,
     scale: scale$1,
+    set: set$1,
     setDefaultType: setDefaultType$2,
     slerp: slerp,
     sqlerp: sqlerp,
@@ -4511,6 +4677,25 @@ function create(x, y, z, w) {
  * @returns the created vector
  */
 const fromValues = create;
+/**
+ * Sets the values of a Vec4
+ * Also see {@link vec4.create} and {@link vec4.copy}
+ *
+ * @param x first value
+ * @param y second value
+ * @param z third value
+ * @param w fourth value
+ * @param dst - vector to hold result. If not passed in a new one is created.
+ * @returns A vector with its elements set.
+ */
+function set(x, y, z, w, dst) {
+    dst = dst || new VecType(4);
+    dst[0] = x;
+    dst[1] = y;
+    dst[2] = z;
+    dst[3] = w;
+    return dst;
+}
 /**
  * Applies Math.ceil to each element of vector
  * @param v - Operand vector.
@@ -4900,7 +5085,8 @@ function negate(v, dst) {
     return dst;
 }
 /**
- * Copies a vector. (same as clone)
+ * Copies a vector. (same as {@link vec4.clone})
+ * Also see {@link vec4.create} and {@link vec4.set}
  * @param v - The vector.
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A copy of v.
@@ -4914,7 +5100,8 @@ function copy(v, dst) {
     return dst;
 }
 /**
- * Clones a vector. (same as copy)
+ * Clones a vector. (same as {@link vec4.copy})
+ * Also see {@link vec4.create} and {@link vec4.set}
  * @param v - The vector.
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A copy of v.
@@ -5041,6 +5228,7 @@ var vec4Impl = /*#__PURE__*/Object.freeze({
     normalize: normalize,
     round: round,
     scale: scale,
+    set: set,
     setDefaultType: setDefaultType$1,
     sub: sub,
     subtract: subtract,

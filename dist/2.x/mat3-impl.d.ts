@@ -46,6 +46,23 @@ export declare function setDefaultType(ctor: new (n: number) => Mat3): ArrayLike
  */
 export declare function create(v0?: number, v1?: number, v2?: number, v3?: number, v4?: number, v5?: number, v6?: number, v7?: number, v8?: number): Mat3;
 /**
+ * Sets the values of a Mat3
+ * Also see {@link mat3.create} and {@link mat3.copy}
+ *
+ * @param v0 - value for element 0
+ * @param v1 - value for element 1
+ * @param v2 - value for element 2
+ * @param v3 - value for element 3
+ * @param v4 - value for element 4
+ * @param v5 - value for element 5
+ * @param v6 - value for element 6
+ * @param v7 - value for element 7
+ * @param v8 - value for element 8
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns Mat3 set from values.
+ */
+export declare function set(v0: number, v1: number, v2: number, v3: number, v4: number, v5: number, v6: number, v7: number, v8: number, dst?: Mat3): import("./array-like").ArrayLike;
+/**
  * Creates a Mat3 from the upper left 3x3 part of a Mat4
  * @param m4 - source matrix
  * @param dst - matrix to hold result. If not passed a new one is created.
@@ -67,14 +84,16 @@ export declare function fromQuat(q: Quat, dst?: Mat3): Mat3;
  */
 export declare function negate(m: Mat3, dst?: Mat3): Mat3;
 /**
- * Copies a matrix.
+ * Copies a matrix. (same as {@link mat3.clone})
+ * Also see {@link mat3.create} and {@link mat3.set}
  * @param m - The matrix.
  * @param dst - The matrix. If not passed a new one is created.
  * @returns A copy of m.
  */
 export declare function copy(m: Mat3, dst?: Mat3): Mat3;
 /**
- * Copies a matrix (same as copy)
+ * Copies a matrix (same as {@link mat3.copy})
+ * Also see {@link mat3.create} and {@link mat3.set}
  * @param m - The matrix.
  * @param dst - The matrix. If not passed a new one is created.
  * @returns A copy of m.
