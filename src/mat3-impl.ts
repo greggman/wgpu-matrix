@@ -20,7 +20,6 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-import { ArrayLikeCtor } from './array-like';
 import * as utils from './utils.js';
 import { Quat } from './quat';
 import { Mat3 } from './mat3';
@@ -28,6 +27,8 @@ import { Mat4 } from './mat4';
 import Vec2, * as vec2 from './vec2-impl';
 
 export default Mat3;
+
+export type Mat3LikeCtor = new (n: number) => Mat3;
 
 /**
  * 3x3 Matrix math math functions.
@@ -52,12 +53,12 @@ export default Mat3;
  *     mat3.multiply(mat, trans, mat);  // Multiplies mat * trans and puts result in mat.
  *
  */
-let MatType: ArrayLikeCtor = Float32Array;
+let MatType: Mat3LikeCtor = Float32Array;
 
 // This mess is because with Mat3 we have 3 unused elements.
 // For Float32Array and Float64Array that's not an issue
 // but for Array it's troublesome
-const ctorMap = new Map<ArrayLikeCtor,() => Mat3>([
+const ctorMap = new Map<Mat3LikeCtor,() => Mat3>([
   [Float32Array, () => new Float32Array(12)],
   [Float64Array, () => new Float64Array(12)],
   [Array, () => new Array(12).fill(0)],

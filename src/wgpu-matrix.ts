@@ -1,4 +1,3 @@
-import * as types from './array-like';
 import Mat3, * as mat3 from './mat3-impl';
 import Mat4, * as mat4 from './mat4-impl';
 import Quat, * as quat from './quat-impl';
@@ -34,7 +33,6 @@ export {
   mat4,
   Quat,
   quat,
-  types,  // for docs
   utils,
   Vec2,
   vec2,

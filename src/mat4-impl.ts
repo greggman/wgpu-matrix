@@ -1,5 +1,4 @@
 
-import { ArrayLikeCtor } from './array-like';
 import { Mat3 } from './mat3';
 import { Mat4 } from './mat4';
 import { Quat } from './quat';
@@ -7,6 +6,8 @@ import Vec3, * as vec3 from './vec3-impl';
 import * as utils from './utils';
 
 export default Mat4;
+
+export type Mat4LikeCtor = new (n: number) => Mat4;
 
 /**
  * 4x4 Matrix math math functions.
@@ -31,7 +32,7 @@ export default Mat4;
  *     mat4.multiply(mat, trans, mat);  // Multiplies mat * trans and puts result in mat.
  *
  */
-let MatType: ArrayLikeCtor = Float32Array;
+let MatType: Mat4LikeCtor = Float32Array;
 
 /**
  * Sets the type this library creates for a Mat4

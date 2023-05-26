@@ -19,14 +19,13 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
-import { ArrayLike } from './array-like';
 
 /**
  * A JavaScript array with 2 values, Float32Array with 2 values, or a Float64Array with 2 values.
  * When created by the library will create the default type which is `Float32Array`
  * but can be set by calling {@link vec2.setDefaultType}.
  */
-export type Vec2 = ArrayLike;
+export type Vec2 = number[] | Float32Array | Float64Array;
 
 /**
  *

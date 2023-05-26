@@ -19,14 +19,15 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
-import { ArrayLike, ArrayLikeCtor } from './array-like';
 
 /**
  * A JavaScript array with 4 values, Float32Array with 4 values, or a Float64Array with 4 values.
  * When created by the library will create the default type which is `Float32Array`
  * but can be set by calling {@link quat.setDefaultType}.
  */
-export type Quat = ArrayLike;
+export type Quat = number[] | Float32Array | Float64Array;
+
+export type QuatLikeCtor = new (n: number) => Quat;
 
 /**
  *
@@ -51,7 +52,7 @@ export type Quat = ArrayLike;
  *
  */
 
-export let QuatType: ArrayLikeCtor = Float32Array;
+export let QuatType: QuatLikeCtor = Float32Array;
 
 /**
  * Sets the type this library creates for a Quat4

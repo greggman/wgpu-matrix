@@ -19,14 +19,15 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
-import { ArrayLike, ArrayLikeCtor } from './array-like';
 
 /**
  * A JavaScript array with 4 values, Float32Array with 4 values, or a Float64Array with 4 values.
  * When created by the library will create the default type which is `Float32Array`
  * but can be set by calling {@link vec4.setDefaultType}.
  */
-export type Vec4 = ArrayLike;
+export type Vec4 = number[] | Float32Array | Float64Array;
+
+export type Vec4LikeCtor = new (n: number) => Vec4;
 
 /**
  *
@@ -51,7 +52,7 @@ export type Vec4 = ArrayLike;
  *
  */
 
-export let VecType: ArrayLikeCtor = Float32Array;
+export let VecType: Vec4LikeCtor = Float32Array;
 
 /**
  * Sets the type this library creates for a Vec4
