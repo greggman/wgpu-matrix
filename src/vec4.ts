@@ -27,8 +27,6 @@
  */
 export type Vec4 = number[] | Float32Array | Float64Array;
 
-export type Vec4LikeCtor = new (n: number) => Vec4;
-
 /**
  *
  * Vec4 math functions.
@@ -52,7 +50,7 @@ export type Vec4LikeCtor = new (n: number) => Vec4;
  *
  */
 
-export let VecType: Vec4LikeCtor = Float32Array;
+export let VecType: new (n: number) => Vec4 = Float32Array;
 
 /**
  * Sets the type this library creates for a Vec4

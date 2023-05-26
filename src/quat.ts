@@ -27,8 +27,6 @@
  */
 export type Quat = number[] | Float32Array | Float64Array;
 
-export type QuatLikeCtor = new (n: number) => Quat;
-
 /**
  *
  * Quat4 math functions.
@@ -52,7 +50,7 @@ export type QuatLikeCtor = new (n: number) => Quat;
  *
  */
 
-export let QuatType: QuatLikeCtor = Float32Array;
+export let QuatType: new (n: number) => Quat = Float32Array;
 
 /**
  * Sets the type this library creates for a Quat4
