@@ -1,10 +1,9 @@
-import { ArrayLike, ArrayLikeCtor } from './array-like';
 /**
  * A JavaScript array with 4 values, Float32Array with 4 values, or a Float64Array with 4 values.
  * When created by the library will create the default type which is `Float32Array`
  * but can be set by calling {@link quat.setDefaultType}.
  */
-export type Quat = ArrayLike;
+export type Quat = number[] | Float32Array | Float64Array;
 /**
  *
  * Quat4 math functions.
@@ -27,13 +26,13 @@ export type Quat = ArrayLike;
  *     quat4.cross(v1, v2, v1);  // Puts the cross product of v1 x v2 in v1
  *
  */
-export declare let QuatType: ArrayLikeCtor;
+export declare let QuatType: new (n: number) => Quat;
 /**
  * Sets the type this library creates for a Quat4
  * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`
  * @returns previous constructor for Quat4
  */
-export declare function setDefaultType(ctor: new (n: number) => Quat): ArrayLikeCtor;
+export declare function setDefaultType(ctor: new (n: number) => Quat): new (n: number) => Quat;
 /**
  * Creates a quat4; may be called with x, y, z to set initial values.
  * @param x - Initial x value.

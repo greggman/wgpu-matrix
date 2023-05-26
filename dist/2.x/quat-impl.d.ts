@@ -25,7 +25,7 @@ export declare const fromValues: typeof create;
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector with its elements set.
  */
-export declare function set(x: number, y: number, z: number, w: number, dst?: Quat): import("./array-like").ArrayLike;
+export declare function set(x: number, y: number, z: number, w: number, dst?: Quat): Quat;
 /**
  * Sets a quaternion from the given angle and  axis,
  * then returns it.
@@ -142,7 +142,7 @@ export declare function fromMat(m: Mat3 | Mat4, dst?: Quat): Quat;
  * @param dst - quaternion to hold result. If not passed in a new one is created.
  * @returns A quaternion representing the same rotation as the euler angles applied in the given order
  */
-export declare function fromEuler(xAngleInRadians: number, yAngleInRadians: number, zAngleInRadians: number, order: RotationOrder, dst?: Quat): import("./array-like").ArrayLike;
+export declare function fromEuler(xAngleInRadians: number, yAngleInRadians: number, zAngleInRadians: number, order: RotationOrder, dst?: Quat): Quat;
 /**
  * Copies a quaternion. (same as {@link quat.clone})
  * Also see {@link quat.create} and {@link quat.set}

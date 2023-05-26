@@ -1,15 +1,15 @@
-import { ArrayLikeCtor } from './array-like';
 import { Mat3 } from './mat3';
 import { Mat4 } from './mat4';
 import { Quat } from './quat';
 import Vec3 from './vec3-impl';
 export default Mat4;
+export type Mat4LikeCtor = new (n: number) => Mat4;
 /**
  * Sets the type this library creates for a Mat4
  * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`
  * @returns previous constructor for Mat4
  */
-export declare function setDefaultType(ctor: new (n: number) => Mat4): ArrayLikeCtor;
+export declare function setDefaultType(ctor: new (n: number) => Mat4): Mat4LikeCtor;
 /**
  * Create a Mat4 from values
  *

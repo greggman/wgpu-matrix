@@ -22,7 +22,7 @@ export declare const fromValues: typeof create;
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector with its elements set.
  */
-export declare function set(x: number, y: number, z: number, w: number, dst?: Vec4): import("./array-like").ArrayLike;
+export declare function set(x: number, y: number, z: number, w: number, dst?: Vec4): Vec4;
 /**
  * Applies Math.ceil to each element of vector
  * @param v - Operand vector.
@@ -295,7 +295,7 @@ export declare const mul: typeof multiply;
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The vector of quotients of entries of a and b.
  */
-export declare function divide(a: Vec4, b: Vec4, dst?: Vec4): import("./array-like").ArrayLike;
+export declare function divide(a: Vec4, b: Vec4, dst?: Vec4): Vec4;
 /**
  * Divides a vector by another vector (component-wise); assumes a and
  * b have the same length. (same as divide)

@@ -1,10 +1,9 @@
-import { ArrayLike } from './array-like';
 /**
  * A JavaScript array with 2 values, Float32Array with 2 values, or a Float64Array with 2 values.
  * When created by the library will create the default type which is `Float32Array`
  * but can be set by calling {@link vec2.setDefaultType}.
  */
-export type Vec2 = ArrayLike;
+export type Vec2 = number[] | Float32Array | Float64Array;
 /**
  *
  * Vec2 math functions.
@@ -33,7 +32,7 @@ export declare let VecType: new (n: number) => Vec2;
  * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`
  * @returns previous constructor for Vec2
  */
-export declare function setDefaultType(ctor: new (n: number) => Vec2): new (n: number) => ArrayLike;
+export declare function setDefaultType(ctor: new (n: number) => Vec2): new (n: number) => Vec2;
 /**
  * Creates a Vec2; may be called with x, y, z to set initial values.
  *

@@ -19,7 +19,7 @@ export declare const fromValues: typeof create;
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector with its elements set.
  */
-export declare function set(x: number, y: number, dst?: Vec2): import("./array-like").ArrayLike;
+export declare function set(x: number, y: number, dst?: Vec2): Vec2;
 /**
  * Applies Math.ceil to each element of vector
  * @param v - Operand vector.
@@ -66,7 +66,7 @@ export declare function add(a: Vec2, b: Vec2, dst?: Vec2): Vec2;
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector that is the sum of a + b * scale.
  */
-export declare function addScaled(a: Vec2, b: Vec2, scale: number, dst?: Vec2): import("./array-like").ArrayLike;
+export declare function addScaled(a: Vec2, b: Vec2, scale: number, dst?: Vec2): Vec2;
 /**
  * Returns the angle in radians between two vectors.
  * @param a - Operand vector.
@@ -291,7 +291,7 @@ export declare const clone: typeof copy;
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The vector of products of entries of a and b.
  */
-export declare function multiply(a: Vec2, b: Vec2, dst?: Vec2): import("./array-like").ArrayLike;
+export declare function multiply(a: Vec2, b: Vec2, dst?: Vec2): Vec2;
 /**
  * Multiplies a vector by another vector (component-wise); assumes a and
  * b have the same length. (same as mul)

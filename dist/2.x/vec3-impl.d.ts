@@ -22,7 +22,7 @@ export declare const fromValues: typeof create;
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector with its elements set.
  */
-export declare function set(x: number, y: number, z: number, dst?: Vec3): import("./array-like").ArrayLike;
+export declare function set(x: number, y: number, z: number, dst?: Vec3): Vec3;
 /**
  * Applies Math.ceil to each element of vector
  * @param v - Operand vector.
@@ -60,7 +60,7 @@ export declare function clamp(v: Vec3, min?: number, max?: number, dst?: Vec3): 
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector that is the sum of a and b.
  */
-export declare function add(a: Vec3, b: Vec3, dst?: Vec3): import("./array-like").ArrayLike;
+export declare function add(a: Vec3, b: Vec3, dst?: Vec3): Vec3;
 /**
  * Adds two vectors, scaling the 2nd; assumes a and b have the same dimension.
  * @param a - Operand vector.
@@ -312,7 +312,7 @@ export declare const mul: typeof multiply;
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The vector of quotients of entries of a and b.
  */
-export declare function divide(a: Vec3, b: Vec3, dst?: Vec3): import("./array-like").ArrayLike;
+export declare function divide(a: Vec3, b: Vec3, dst?: Vec3): Vec3;
 /**
  * Divides a vector by another vector (component-wise); assumes a and
  * b have the same length. (same as divide)
@@ -375,17 +375,17 @@ export declare function transformQuat(v: Vec3, q: Quat, dst?: Vec3): Vec3;
  * @param dst - vector to hold result. If not passed a new one is created.
  * @returns The translation component of m.
  */
-export declare function getTranslation(m: Mat3, dst?: Vec3): import("./array-like").ArrayLike;
+export declare function getTranslation(m: Mat3, dst?: Vec3): Vec3;
 /**
  * Returns an axis of a 4x4 matrix as a vector with 3 entries
  * @param m - The matrix.
  * @param axis - The axis 0 = x, 1 = y, 2 = z;
  * @returns The axis component of m.
  */
-export declare function getAxis(m: Mat4, axis: number, dst?: Vec3): import("./array-like").ArrayLike;
+export declare function getAxis(m: Mat4, axis: number, dst?: Vec3): Vec3;
 /**
  * Returns the scaling component of the matrix
  * @param m - The Matrix
  * @param dst - The vector to set. If not passed a new one is created.
  */
-export declare function getScaling(m: Mat4, dst: Vec3): import("./array-like").ArrayLike;
+export declare function getScaling(m: Mat4, dst: Vec3): Vec3;

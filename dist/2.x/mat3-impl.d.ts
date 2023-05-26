@@ -1,15 +1,15 @@
-import { ArrayLikeCtor } from './array-like';
 import { Quat } from './quat';
 import { Mat3 } from './mat3';
 import { Mat4 } from './mat4';
 import Vec2 from './vec2-impl';
 export default Mat3;
+export type Mat3LikeCtor = new (n: number) => Mat3;
 /**
  * Sets the type this library creates for a Mat3
  * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`
  * @returns previous constructor for Mat3
  */
-export declare function setDefaultType(ctor: new (n: number) => Mat3): ArrayLikeCtor;
+export declare function setDefaultType(ctor: new (n: number) => Mat3): Mat3LikeCtor;
 /**
  * Create a Mat3 from values
  *
@@ -61,7 +61,7 @@ export declare function create(v0?: number, v1?: number, v2?: number, v3?: numbe
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns Mat3 set from values.
  */
-export declare function set(v0: number, v1: number, v2: number, v3: number, v4: number, v5: number, v6: number, v7: number, v8: number, dst?: Mat3): import("./array-like").ArrayLike;
+export declare function set(v0: number, v1: number, v2: number, v3: number, v4: number, v5: number, v6: number, v7: number, v8: number, dst?: Mat3): Mat3;
 /**
  * Creates a Mat3 from the upper left 3x3 part of a Mat4
  * @param m4 - source matrix

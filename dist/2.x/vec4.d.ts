@@ -1,10 +1,9 @@
-import { ArrayLike, ArrayLikeCtor } from './array-like';
 /**
  * A JavaScript array with 4 values, Float32Array with 4 values, or a Float64Array with 4 values.
  * When created by the library will create the default type which is `Float32Array`
  * but can be set by calling {@link vec4.setDefaultType}.
  */
-export type Vec4 = ArrayLike;
+export type Vec4 = number[] | Float32Array | Float64Array;
 /**
  *
  * Vec4 math functions.
@@ -27,13 +26,13 @@ export type Vec4 = ArrayLike;
  *     vec4.cross(v1, v2, v1);  // Puts the cross product of v1 x v2 in v1
  *
  */
-export declare let VecType: ArrayLikeCtor;
+export declare let VecType: new (n: number) => Vec4;
 /**
  * Sets the type this library creates for a Vec4
  * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`
  * @returns previous constructor for Vec4
  */
-export declare function setDefaultType(ctor: new (n: number) => Vec4): ArrayLikeCtor;
+export declare function setDefaultType(ctor: new (n: number) => Vec4): new (n: number) => Vec4;
 /**
  * Creates a vec4; may be called with x, y, z to set initial values.
  * @param x - Initial x value.

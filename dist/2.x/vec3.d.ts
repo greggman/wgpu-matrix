@@ -1,10 +1,9 @@
-import { ArrayLike } from './array-like';
 /**
  * A JavaScript array with 3 values, Float32Array with 3 values, or a Float64Array with 3 values.
  * When created by the library will create the default type which is `Float32Array`
  * but can be set by calling {@link vec3.setDefaultType}.
  */
-export type Vec3 = ArrayLike;
+export type Vec3 = number[] | Float32Array | Float64Array;
 /**
  *
  * Vec3 math functions.
@@ -33,7 +32,7 @@ export declare let VecType: new (n: number) => Vec3;
  * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`
  * @returns previous constructor for Vec3
  */
-export declare function setDefaultType(ctor: new (n: number) => Vec3): new (n: number) => ArrayLike;
+export declare function setDefaultType(ctor: new (n: number) => Vec3): new (n: number) => Vec3;
 /**
  * Creates a vec3; may be called with x, y, z to set initial values.
  * @param x - Initial x value.
