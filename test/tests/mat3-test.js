@@ -218,32 +218,50 @@ function check(Type) {
     });
 
     function testInverse(fn) {
-      const m = [
-        2, 1, 3, 0,
-        1, 2, 1, 0,
-        3, 1, 2, 0,
+      const tests = [
+        {
+          m: [
+            2, 1, 3, 0,
+            1, 2, 1, 0,
+            3, 1, 2, 0,
+          ],
+          expected: [
+            -0.375, -0.125,  0.625, 0,
+            -0.125,  0.625, -0.125, 0,
+             0.625, -0.125, -0.375, 0,
+            -1.625, -1.875,  0.375, 0,
+          ],
+        },
+        {
+          m: [
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            2, 3, 4, 0,
+          ],
+          expected: [
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            -0.5, -0.75, 0.25, 0,
+          ],
+        },
+        {
+          m: [
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            -0.5, -0.75, 0.25, 0,
+          ],
+          expected: [
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            2, 3, 4, 0,
+          ],
+        },
       ];
-      const expected = [
-        -0.375,
-        -0.125,
-        0.625,
-        -0,
-        -0.125,
-        0.625,
-        -0.125,
-        -0,
-        0.625,
-        -0.125,
-        -0.375,
-        -0,
-        -1.625,
-        -1.875,
-        0.375,
-        1,
-      ];
-      testMat3WithAndWithoutDest((dst) => {
-        return fn(m, dst);
-      }, expected);
+      for (const {m, expected} of tests) {
+        testMat3WithAndWithoutDest((dst) => {
+          return fn(m, dst);
+        }, expected);
+      }
     }
 
     it('should inverse', () => {
