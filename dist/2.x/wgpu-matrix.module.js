@@ -1,4 +1,4 @@
-/* wgpu-matrix@2.4.0, license MIT */
+/* wgpu-matrix@2.4.1, license MIT */
 /*
  * Copyright 2022 Gregg Tavares
  *
@@ -1173,24 +1173,19 @@ function inverse$4(m, dst) {
     const m20 = m[2 * 4 + 0];
     const m21 = m[2 * 4 + 1];
     const m22 = m[2 * 4 + 2];
-    const m11_x_m22 = m11 * m22;
-    const m21_x_m12 = m21 * m12;
-    const m01_x_m22 = m01 * m22;
-    const m21_x_m02 = m21 * m02;
-    const m01_x_m12 = m01 * m12;
-    const m11_x_m02 = m11 * m02;
-    const invDet = 1 / (m00 * (m11_x_m22 - m21_x_m12) -
-        m10 * (m01_x_m22 - m21_x_m02) +
-        m20 * (m01_x_m12 - m11_x_m02));
-    dst[0] = +(m11_x_m22 - m21_x_m12) * invDet;
-    dst[1] = -(m10 * m22 - m20 * m12) * invDet;
-    dst[2] = +(m10 * m21 - m20 * m11) * invDet;
-    dst[4] = -(m01_x_m22 - m21_x_m02) * invDet;
-    dst[5] = +(m00 * m22 - m20 * m02) * invDet;
-    dst[6] = -(m00 * m21 - m20 * m01) * invDet;
-    dst[8] = +(m01_x_m12 - m11_x_m02) * invDet;
-    dst[9] = -(m00 * m12 - m10 * m02) * invDet;
-    dst[10] = +(m00 * m11 - m10 * m01) * invDet;
+    const b01 = m22 * m11 - m12 * m21;
+    const b11 = -m22 * m10 + m12 * m20;
+    const b21 = m21 * m10 - m11 * m20;
+    const invDet = 1 / (m00 * b01 + m01 * b11 + m02 * b21);
+    dst[0] = b01 * invDet;
+    dst[1] = (-m22 * m01 + m02 * m21) * invDet;
+    dst[2] = (m12 * m01 - m02 * m11) * invDet;
+    dst[4] = b11 * invDet;
+    dst[5] = (m22 * m00 - m02 * m20) * invDet;
+    dst[6] = (-m12 * m00 + m02 * m10) * invDet;
+    dst[8] = b21 * invDet;
+    dst[9] = (-m21 * m00 + m01 * m20) * invDet;
+    dst[10] = (m11 * m00 - m01 * m10) * invDet;
     return dst;
 }
 /**
