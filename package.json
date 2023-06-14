@@ -6,6 +6,7 @@
   "module": "dist/2.x/wgpu-matrix.module.js",
   "types": "dist/2.x/wgpu-matrix.d.ts",
   "type": "module",
+  "sideEffects": false,
   "directories": {
     "test": "test"
   },
