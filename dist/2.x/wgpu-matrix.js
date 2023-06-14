@@ -1,4 +1,4 @@
-/* wgpu-matrix@2.4.1, license MIT */
+/* wgpu-matrix@2.4.2, license MIT */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
     typeof define === 'function' && define.amd ? define(['exports'], factory) :
