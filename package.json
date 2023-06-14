@@ -18,7 +18,7 @@
     "check-ci": "npm run pre-push",
     "docs": "typedoc --disableSources src/wgpu-matrix.ts",
     "lint": "eslint \"src/**/*.{js,ts,tsx}\"",
-    "pre-push": "npm run lint && npm run test && npm run build-min && npm run docs",
+    "pre-push": "npm run lint && npm run build && npm run test && npm run docs",
     "rollup-watch": "rollup -c -w",
     "start": "rollup -c rollup.config.js -w",
     "test": "mocha test/tests"
