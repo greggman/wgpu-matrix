@@ -3,7 +3,7 @@ import { Mat4 } from './mat4';
 import { Quat } from './quat';
 import Vec3 from './vec3-impl';
 export default Mat4;
-export type Mat4LikeCtor = new (n: number) => Mat4;
+export declare type Mat4LikeCtor = new (n: number) => Mat4;
 /**
  * Sets the type this library creates for a Mat4
  * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`
@@ -450,3 +450,18 @@ export declare function scaling(v: Vec3, dst?: Mat4): Mat4;
  * @returns The scaled matrix.
  */
 export declare function scale(m: Mat4, v: Vec3, dst?: Mat4): Mat4;
+/**
+ * Creates a 4-by-4 matrix which scales a uniform amount in each dimension.
+ * @param s - the amount to scale
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The scaling matrix.
+ */
+export declare function uniformScaling(s: number, dst?: Mat4): Mat4;
+/**
+ * Scales the given 4-by-4 matrix in each dimension by a uniform scale.
+ * @param m - The matrix to be modified.
+ * @param s - The amount to scale.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The scaled matrix.
+ */
+export declare function uniformScale(m: Mat4, s: number, dst?: Mat4): Mat4;

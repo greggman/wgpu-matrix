@@ -3,7 +3,7 @@ import { Mat3 } from './mat3';
 import { Mat4 } from './mat4';
 import Vec2 from './vec2-impl';
 export default Mat3;
-export type Mat3LikeCtor = new (n: number) => Mat3;
+export declare type Mat3LikeCtor = new (n: number) => Mat3;
 /**
  * Sets the type this library creates for a Mat3
  * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`
@@ -253,3 +253,19 @@ export declare function scaling(v: Vec2, dst?: Mat3): Mat3;
  * @returns The scaled matrix.
  */
 export declare function scale(m: Mat3, v: Vec2, dst?: Mat3): Mat3;
+/**
+ * Creates a 3-by-3 matrix which scales uniformly in each dimension
+ * @param s - Amount to scale
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The scaling matrix.
+ */
+export declare function uniformScaling(s: number, dst?: Mat3): Mat3;
+/**
+ * Scales the given 3-by-3 matrix in each dimension by an amount
+ * given.
+ * @param m - The matrix to be modified.
+ * @param s - Amount to scale.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The scaled matrix.
+ */
+export declare function uniformScale(m: Mat3, s: number, dst?: Mat3): Mat3;

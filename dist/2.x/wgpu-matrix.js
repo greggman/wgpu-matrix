@@ -1,4 +1,4 @@
-/* wgpu-matrix@2.4.2, license MIT */
+/* wgpu-matrix@2.5.0, license MIT */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
     typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -100,12 +100,12 @@
     var utils = /*#__PURE__*/Object.freeze({
         __proto__: null,
         get EPSILON () { return EPSILON; },
+        setEpsilon: setEpsilon,
         degToRad: degToRad,
-        euclideanModulo: euclideanModulo,
-        inverseLerp: inverseLerp,
-        lerp: lerp$4,
         radToDeg: radToDeg,
-        setEpsilon: setEpsilon
+        lerp: lerp$4,
+        inverseLerp: inverseLerp,
+        euclideanModulo: euclideanModulo
     });
 
     /*
@@ -744,52 +744,52 @@
 
     var vec2Impl = /*#__PURE__*/Object.freeze({
         __proto__: null,
+        create: create$5,
+        setDefaultType: setDefaultType$6,
+        fromValues: fromValues$3,
+        set: set$5,
+        ceil: ceil$2,
+        floor: floor$2,
+        round: round$2,
+        clamp: clamp$2,
         add: add$3,
         addScaled: addScaled$2,
         angle: angle$2,
-        ceil: ceil$2,
-        clamp: clamp$2,
-        clone: clone$5,
-        copy: copy$5,
-        create: create$5,
-        cross: cross$1,
-        dist: dist$2,
-        distSq: distSq$2,
-        distance: distance$2,
-        distanceSq: distanceSq$2,
-        div: div$2,
-        divScalar: divScalar$3,
-        divide: divide$2,
-        dot: dot$3,
-        equals: equals$5,
+        subtract: subtract$3,
+        sub: sub$3,
         equalsApproximately: equalsApproximately$5,
-        floor: floor$2,
-        fromValues: fromValues$3,
-        inverse: inverse$5,
-        invert: invert$4,
-        len: len$3,
-        lenSq: lenSq$3,
-        length: length$3,
-        lengthSq: lengthSq$3,
+        equals: equals$5,
         lerp: lerp$3,
         lerpV: lerpV$2,
         max: max$2,
         min: min$2,
-        mul: mul$5,
         mulScalar: mulScalar$3,
-        multiply: multiply$5,
-        negate: negate$4,
-        normalize: normalize$3,
-        random: random$1,
-        round: round$2,
         scale: scale$5,
-        set: set$5,
-        setDefaultType: setDefaultType$6,
-        sub: sub$3,
-        subtract: subtract$3,
-        transformMat3: transformMat3$1,
+        divScalar: divScalar$3,
+        inverse: inverse$5,
+        invert: invert$4,
+        cross: cross$1,
+        dot: dot$3,
+        length: length$3,
+        len: len$3,
+        lengthSq: lengthSq$3,
+        lenSq: lenSq$3,
+        distance: distance$2,
+        dist: dist$2,
+        distanceSq: distanceSq$2,
+        distSq: distSq$2,
+        normalize: normalize$3,
+        negate: negate$4,
+        copy: copy$5,
+        clone: clone$5,
+        multiply: multiply$5,
+        mul: mul$5,
+        divide: divide$2,
+        div: div$2,
+        random: random$1,
+        zero: zero$2,
         transformMat4: transformMat4$2,
-        zero: zero$2
+        transformMat3: transformMat3$1
     });
 
     /*
@@ -1499,37 +1499,81 @@
         }
         return dst;
     }
+    /**
+     * Creates a 3-by-3 matrix which scales uniformly in each dimension
+     * @param s - Amount to scale
+     * @param dst - matrix to hold result. If not passed a new one is created.
+     * @returns The scaling matrix.
+     */
+    function uniformScaling$1(s, dst) {
+        dst = dst || newMat3();
+        dst[0] = s;
+        dst[1] = 0;
+        dst[2] = 0;
+        dst[4] = 0;
+        dst[5] = s;
+        dst[6] = 0;
+        dst[8] = 0;
+        dst[9] = 0;
+        dst[10] = 1;
+        return dst;
+    }
+    /**
+     * Scales the given 3-by-3 matrix in each dimension by an amount
+     * given.
+     * @param m - The matrix to be modified.
+     * @param s - Amount to scale.
+     * @param dst - matrix to hold result. If not passed a new one is created.
+     * @returns The scaled matrix.
+     */
+    function uniformScale$1(m, s, dst) {
+        dst = dst || newMat3();
+        dst[0] = s * m[0 * 4 + 0];
+        dst[1] = s * m[0 * 4 + 1];
+        dst[2] = s * m[0 * 4 + 2];
+        dst[4] = s * m[1 * 4 + 0];
+        dst[5] = s * m[1 * 4 + 1];
+        dst[6] = s * m[1 * 4 + 2];
+        if (m !== dst) {
+            dst[8] = m[8];
+            dst[9] = m[9];
+            dst[10] = m[10];
+        }
+        return dst;
+    }
 
     var mat3Impl = /*#__PURE__*/Object.freeze({
         __proto__: null,
-        clone: clone$4,
-        copy: copy$4,
+        setDefaultType: setDefaultType$5,
         create: create$4,
-        determinant: determinant$1,
-        equals: equals$4,
-        equalsApproximately: equalsApproximately$4,
+        set: set$4,
         fromMat4: fromMat4,
         fromQuat: fromQuat$1,
-        getAxis: getAxis$2,
-        getScaling: getScaling$2,
-        getTranslation: getTranslation$2,
-        identity: identity$2,
-        inverse: inverse$4,
-        invert: invert$3,
-        mul: mul$4,
-        multiply: multiply$4,
         negate: negate$3,
-        rotate: rotate$1,
-        rotation: rotation$1,
-        scale: scale$4,
-        scaling: scaling$1,
-        set: set$4,
-        setAxis: setAxis$1,
-        setDefaultType: setDefaultType$5,
+        copy: copy$4,
+        clone: clone$4,
+        equalsApproximately: equalsApproximately$4,
+        equals: equals$4,
+        identity: identity$2,
+        transpose: transpose$1,
+        inverse: inverse$4,
+        determinant: determinant$1,
+        invert: invert$3,
+        multiply: multiply$4,
+        mul: mul$4,
         setTranslation: setTranslation$1,
-        translate: translate$1,
+        getTranslation: getTranslation$2,
+        getAxis: getAxis$2,
+        setAxis: setAxis$1,
+        getScaling: getScaling$2,
         translation: translation$1,
-        transpose: transpose$1
+        translate: translate$1,
+        rotation: rotation$1,
+        rotate: rotate$1,
+        scaling: scaling$1,
+        scale: scale$4,
+        uniformScaling: uniformScaling$1,
+        uniformScale: uniformScale$1
     });
 
     /*
@@ -2282,57 +2326,57 @@
 
     var vec3Impl = /*#__PURE__*/Object.freeze({
         __proto__: null,
+        create: create$3,
+        setDefaultType: setDefaultType$4,
+        fromValues: fromValues$2,
+        set: set$3,
+        ceil: ceil$1,
+        floor: floor$1,
+        round: round$1,
+        clamp: clamp$1,
         add: add$2,
         addScaled: addScaled$1,
         angle: angle$1,
-        ceil: ceil$1,
-        clamp: clamp$1,
-        clone: clone$3,
-        copy: copy$3,
-        create: create$3,
-        cross: cross,
-        dist: dist$1,
-        distSq: distSq$1,
-        distance: distance$1,
-        distanceSq: distanceSq$1,
-        div: div$1,
-        divScalar: divScalar$2,
-        divide: divide$1,
-        dot: dot$2,
-        equals: equals$3,
+        subtract: subtract$2,
+        sub: sub$2,
         equalsApproximately: equalsApproximately$3,
-        floor: floor$1,
-        fromValues: fromValues$2,
-        getAxis: getAxis$1,
-        getScaling: getScaling$1,
-        getTranslation: getTranslation$1,
-        inverse: inverse$3,
-        invert: invert$2,
-        len: len$2,
-        lenSq: lenSq$2,
-        length: length$2,
-        lengthSq: lengthSq$2,
+        equals: equals$3,
         lerp: lerp$2,
         lerpV: lerpV$1,
         max: max$1,
         min: min$1,
-        mul: mul$3,
         mulScalar: mulScalar$2,
-        multiply: multiply$3,
-        negate: negate$2,
-        normalize: normalize$2,
-        random: random,
-        round: round$1,
         scale: scale$3,
-        set: set$3,
-        setDefaultType: setDefaultType$4,
-        sub: sub$2,
-        subtract: subtract$2,
-        transformMat3: transformMat3,
+        divScalar: divScalar$2,
+        inverse: inverse$3,
+        invert: invert$2,
+        cross: cross,
+        dot: dot$2,
+        length: length$2,
+        len: len$2,
+        lengthSq: lengthSq$2,
+        lenSq: lenSq$2,
+        distance: distance$1,
+        dist: dist$1,
+        distanceSq: distanceSq$1,
+        distSq: distSq$1,
+        normalize: normalize$2,
+        negate: negate$2,
+        copy: copy$3,
+        clone: clone$3,
+        multiply: multiply$3,
+        mul: mul$3,
+        divide: divide$1,
+        div: div$1,
+        random: random,
+        zero: zero$1,
         transformMat4: transformMat4$1,
         transformMat4Upper3x3: transformMat4Upper3x3,
+        transformMat3: transformMat3,
         transformQuat: transformQuat,
-        zero: zero$1
+        getTranslation: getTranslation$1,
+        getAxis: getAxis$1,
+        getScaling: getScaling$1
     });
 
     /**
@@ -3799,51 +3843,108 @@
         }
         return dst;
     }
+    /**
+     * Creates a 4-by-4 matrix which scales a uniform amount in each dimension.
+     * @param s - the amount to scale
+     * @param dst - matrix to hold result. If not passed a new one is created.
+     * @returns The scaling matrix.
+     */
+    function uniformScaling(s, dst) {
+        dst = dst || new MatType(16);
+        dst[0] = s;
+        dst[1] = 0;
+        dst[2] = 0;
+        dst[3] = 0;
+        dst[4] = 0;
+        dst[5] = s;
+        dst[6] = 0;
+        dst[7] = 0;
+        dst[8] = 0;
+        dst[9] = 0;
+        dst[10] = s;
+        dst[11] = 0;
+        dst[12] = 0;
+        dst[13] = 0;
+        dst[14] = 0;
+        dst[15] = 1;
+        return dst;
+    }
+    /**
+     * Scales the given 4-by-4 matrix in each dimension by a uniform scale.
+     * @param m - The matrix to be modified.
+     * @param s - The amount to scale.
+     * @param dst - matrix to hold result. If not passed a new one is created.
+     * @returns The scaled matrix.
+     */
+    function uniformScale(m, s, dst) {
+        dst = dst || new MatType(16);
+        dst[0] = s * m[0 * 4 + 0];
+        dst[1] = s * m[0 * 4 + 1];
+        dst[2] = s * m[0 * 4 + 2];
+        dst[3] = s * m[0 * 4 + 3];
+        dst[4] = s * m[1 * 4 + 0];
+        dst[5] = s * m[1 * 4 + 1];
+        dst[6] = s * m[1 * 4 + 2];
+        dst[7] = s * m[1 * 4 + 3];
+        dst[8] = s * m[2 * 4 + 0];
+        dst[9] = s * m[2 * 4 + 1];
+        dst[10] = s * m[2 * 4 + 2];
+        dst[11] = s * m[2 * 4 + 3];
+        if (m !== dst) {
+            dst[12] = m[12];
+            dst[13] = m[13];
+            dst[14] = m[14];
+            dst[15] = m[15];
+        }
+        return dst;
+    }
 
     var mat4Impl = /*#__PURE__*/Object.freeze({
         __proto__: null,
-        aim: aim,
-        axisRotate: axisRotate,
-        axisRotation: axisRotation,
-        cameraAim: cameraAim,
-        clone: clone$2,
-        copy: copy$2,
+        setDefaultType: setDefaultType$3,
         create: create$2,
-        determinant: determinant,
-        equals: equals$2,
-        equalsApproximately: equalsApproximately$2,
+        set: set$2,
         fromMat3: fromMat3,
         fromQuat: fromQuat,
-        frustum: frustum,
-        getAxis: getAxis,
-        getScaling: getScaling,
-        getTranslation: getTranslation,
-        identity: identity$1,
-        inverse: inverse$2,
-        invert: invert$1,
-        lookAt: lookAt,
-        mul: mul$2,
-        multiply: multiply$2,
         negate: negate$1,
-        ortho: ortho,
-        perspective: perspective,
-        rotate: rotate,
-        rotateX: rotateX$1,
-        rotateY: rotateY$1,
-        rotateZ: rotateZ$1,
-        rotation: rotation,
-        rotationX: rotationX,
-        rotationY: rotationY,
-        rotationZ: rotationZ,
-        scale: scale$2,
-        scaling: scaling,
-        set: set$2,
-        setAxis: setAxis,
-        setDefaultType: setDefaultType$3,
+        copy: copy$2,
+        clone: clone$2,
+        equalsApproximately: equalsApproximately$2,
+        equals: equals$2,
+        identity: identity$1,
+        transpose: transpose,
+        inverse: inverse$2,
+        determinant: determinant,
+        invert: invert$1,
+        multiply: multiply$2,
+        mul: mul$2,
         setTranslation: setTranslation,
-        translate: translate,
+        getTranslation: getTranslation,
+        getAxis: getAxis,
+        setAxis: setAxis,
+        getScaling: getScaling,
+        perspective: perspective,
+        ortho: ortho,
+        frustum: frustum,
+        aim: aim,
+        cameraAim: cameraAim,
+        lookAt: lookAt,
         translation: translation,
-        transpose: transpose
+        translate: translate,
+        rotationX: rotationX,
+        rotateX: rotateX$1,
+        rotationY: rotationY,
+        rotateY: rotateY$1,
+        rotationZ: rotationZ,
+        rotateZ: rotateZ$1,
+        axisRotation: axisRotation,
+        rotation: rotation,
+        axisRotate: axisRotate,
+        rotate: rotate,
+        scaling: scaling,
+        scale: scale$2,
+        uniformScaling: uniformScaling,
+        uniformScale: uniformScale
     });
 
     /*
@@ -4610,43 +4711,43 @@
 
     var quatImpl = /*#__PURE__*/Object.freeze({
         __proto__: null,
-        add: add$1,
-        angle: angle,
-        clone: clone$1,
-        conjugate: conjugate,
-        copy: copy$1,
         create: create$1,
-        divScalar: divScalar$1,
-        dot: dot$1,
-        equals: equals$1,
-        equalsApproximately: equalsApproximately$1,
-        fromAxisAngle: fromAxisAngle,
-        fromEuler: fromEuler,
-        fromMat: fromMat,
+        setDefaultType: setDefaultType$2,
         fromValues: fromValues$1,
-        identity: identity,
-        inverse: inverse$1,
-        len: len$1,
-        lenSq: lenSq$1,
-        length: length$1,
-        lengthSq: lengthSq$1,
-        lerp: lerp$1,
-        mul: mul$1,
-        mulScalar: mulScalar$1,
+        set: set$1,
+        fromAxisAngle: fromAxisAngle,
+        toAxisAngle: toAxisAngle,
+        angle: angle,
         multiply: multiply$1,
-        normalize: normalize$1,
+        mul: mul$1,
         rotateX: rotateX,
         rotateY: rotateY,
         rotateZ: rotateZ,
-        rotationTo: rotationTo,
-        scale: scale$1,
-        set: set$1,
-        setDefaultType: setDefaultType$2,
         slerp: slerp,
-        sqlerp: sqlerp,
-        sub: sub$1,
+        inverse: inverse$1,
+        conjugate: conjugate,
+        fromMat: fromMat,
+        fromEuler: fromEuler,
+        copy: copy$1,
+        clone: clone$1,
+        add: add$1,
         subtract: subtract$1,
-        toAxisAngle: toAxisAngle
+        sub: sub$1,
+        mulScalar: mulScalar$1,
+        scale: scale$1,
+        divScalar: divScalar$1,
+        dot: dot$1,
+        lerp: lerp$1,
+        length: length$1,
+        len: len$1,
+        lengthSq: lengthSq$1,
+        lenSq: lenSq$1,
+        normalize: normalize$1,
+        equalsApproximately: equalsApproximately$1,
+        equals: equals$1,
+        identity: identity,
+        rotationTo: rotationTo,
+        sqlerp: sqlerp
     });
 
     /*
@@ -5273,48 +5374,48 @@
 
     var vec4Impl = /*#__PURE__*/Object.freeze({
         __proto__: null,
+        create: create,
+        setDefaultType: setDefaultType$1,
+        fromValues: fromValues,
+        set: set,
+        ceil: ceil,
+        floor: floor,
+        round: round,
+        clamp: clamp,
         add: add,
         addScaled: addScaled,
-        ceil: ceil,
-        clamp: clamp,
-        clone: clone,
-        copy: copy,
-        create: create,
-        dist: dist,
-        distSq: distSq,
-        distance: distance,
-        distanceSq: distanceSq,
-        div: div,
-        divScalar: divScalar,
-        divide: divide,
-        dot: dot,
-        equals: equals,
+        subtract: subtract,
+        sub: sub,
         equalsApproximately: equalsApproximately,
-        floor: floor,
-        fromValues: fromValues,
-        inverse: inverse,
-        invert: invert,
-        len: len,
-        lenSq: lenSq,
-        length: length,
-        lengthSq: lengthSq,
+        equals: equals,
         lerp: lerp,
         lerpV: lerpV,
         max: max,
         min: min,
-        mul: mul,
         mulScalar: mulScalar,
-        multiply: multiply,
-        negate: negate,
-        normalize: normalize,
-        round: round,
         scale: scale,
-        set: set,
-        setDefaultType: setDefaultType$1,
-        sub: sub,
-        subtract: subtract,
-        transformMat4: transformMat4,
-        zero: zero
+        divScalar: divScalar,
+        inverse: inverse,
+        invert: invert,
+        dot: dot,
+        length: length,
+        len: len,
+        lengthSq: lengthSq,
+        lenSq: lenSq,
+        distance: distance,
+        dist: dist,
+        distanceSq: distanceSq,
+        distSq: distSq,
+        normalize: normalize,
+        negate: negate,
+        copy: copy,
+        clone: clone,
+        multiply: multiply,
+        mul: mul,
+        divide: divide,
+        div: div,
+        zero: zero,
+        transformMat4: transformMat4
     });
 
     /**
