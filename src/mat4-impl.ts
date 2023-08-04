@@ -1449,3 +1449,53 @@ export function scale(m: Mat4, v: Vec3, dst?: Mat4): Mat4 {
 
   return dst;
 }
+
+/**
+ * Creates a 4-by-4 matrix which scales a uniform amount in each dimension.
+ * @param s - the amount to scale
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The scaling matrix.
+ */
+export function uniformScaling(s: number, dst?: Mat4): Mat4 {
+  dst = dst || new MatType(16);
+
+  dst[ 0] = s;  dst[ 1] = 0;  dst[ 2] = 0;  dst[ 3] = 0;
+  dst[ 4] = 0;  dst[ 5] = s;  dst[ 6] = 0;  dst[ 7] = 0;
+  dst[ 8] = 0;  dst[ 9] = 0;  dst[10] = s;  dst[11] = 0;
+  dst[12] = 0;  dst[13] = 0;  dst[14] = 0;  dst[15] = 1;
+
+  return dst;
+}
+
+/**
+ * Scales the given 4-by-4 matrix in each dimension by a uniform scale.
+ * @param m - The matrix to be modified.
+ * @param s - The amount to scale.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The scaled matrix.
+ */
+export function uniformScale(m: Mat4, s: number, dst?: Mat4): Mat4 {
+  dst = dst || new MatType(16);
+
+  dst[ 0] = s * m[0 * 4 + 0];
+  dst[ 1] = s * m[0 * 4 + 1];
+  dst[ 2] = s * m[0 * 4 + 2];
+  dst[ 3] = s * m[0 * 4 + 3];
+  dst[ 4] = s * m[1 * 4 + 0];
+  dst[ 5] = s * m[1 * 4 + 1];
+  dst[ 6] = s * m[1 * 4 + 2];
+  dst[ 7] = s * m[1 * 4 + 3];
+  dst[ 8] = s * m[2 * 4 + 0];
+  dst[ 9] = s * m[2 * 4 + 1];
+  dst[10] = s * m[2 * 4 + 2];
+  dst[11] = s * m[2 * 4 + 3];
+
+  if (m !== dst) {
+    dst[12] = m[12];
+    dst[13] = m[13];
+    dst[14] = m[14];
+    dst[15] = m[15];
+  }
+
+  return dst;
+}

@@ -909,6 +909,30 @@ function check(Type) {
       }, expected);
     });
 
+    it('should make uniform scaling matrix', () => {
+      const expected = [
+        2, 0, 0, 0,
+        0, 2, 0, 0,
+        0, 0, 2, 0,
+        0, 0, 0, 1,
+      ];
+      testMat4WithAndWithoutDest((dst) => {
+        return mat4.uniformScaling(2, dst);
+      }, expected);
+    });
+
+    it('should uniformly scale', () => {
+      const expected = [
+         0,  2,  4,  6,
+         8, 10, 12, 14,
+        16, 18, 20, 22,
+        12, 13, 14, 15,
+      ];
+      testMat4WithAndWithoutDest((dst) => {
+        return mat4.uniformScale(m, 2, dst);
+      }, expected);
+    });
+
     it('should make a mat4 from mat3', () => {
       const expected = [
         1, 2, 3, 0,

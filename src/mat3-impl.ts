@@ -735,3 +735,46 @@ export function scale(m: Mat3, v: Vec2, dst?: Mat3): Mat3 {
   return dst;
 }
 
+/**
+ * Creates a 3-by-3 matrix which scales uniformly in each dimension
+ * @param s - Amount to scale
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The scaling matrix.
+ */
+export function uniformScaling(s: number, dst?: Mat3): Mat3 {
+  dst = dst || newMat3();
+
+  dst[ 0] = s;  dst[ 1] = 0;  dst[ 2] = 0;
+  dst[ 4] = 0;  dst[ 5] = s;  dst[ 6] = 0;
+  dst[ 8] = 0;  dst[ 9] = 0;  dst[10] = 1;
+
+  return dst;
+}
+
+/**
+ * Scales the given 3-by-3 matrix in each dimension by an amount
+ * given.
+ * @param m - The matrix to be modified.
+ * @param s - Amount to scale.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The scaled matrix.
+ */
+export function uniformScale(m: Mat3, s: number, dst?: Mat3): Mat3 {
+  dst = dst || newMat3();
+
+  dst[ 0] = s * m[0 * 4 + 0];
+  dst[ 1] = s * m[0 * 4 + 1];
+  dst[ 2] = s * m[0 * 4 + 2];
+
+  dst[ 4] = s * m[1 * 4 + 0];
+  dst[ 5] = s * m[1 * 4 + 1];
+  dst[ 6] = s * m[1 * 4 + 2];
+
+  if (m !== dst) {
+    dst[ 8] = m[ 8];
+    dst[ 9] = m[ 9];
+    dst[10] = m[10];
+  }
+
+  return dst;
+}

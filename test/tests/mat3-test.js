@@ -441,6 +441,28 @@ function check(Type) {
       }, expected);
     });
 
+    it('should make uniform scaling matrix', () => {
+      const expected = [
+        2, 0, 0, 0,
+        0, 2, 0, 0,
+        0, 0, 1, 0,
+      ];
+      testMat3WithAndWithoutDest((dst) => {
+        return mat3.uniformScaling(2, dst);
+      }, expected);
+    });
+
+    it('should uniformly scale', () => {
+      const expected = [
+         0,  2,  4,  0,
+         8, 10, 12,  0,
+         8,  9, 10,  0,
+      ];
+      testMat3WithAndWithoutDest((dst) => {
+        return mat3.uniformScale(m, 2, dst);
+      }, expected);
+    });
+
     it('should make a mat3 from mat4', () => {
       const expected = [
         1, 2, 3, 0,
