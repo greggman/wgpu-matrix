@@ -1,6 +1,7 @@
 import { Mat3 } from './mat3';
 import { Mat4 } from './mat4';
 import { Vec2, create, setDefaultType } from './vec2';
+import { Vec3 } from './vec3';
 export default Vec2;
 export { create, setDefaultType };
 /**
@@ -192,7 +193,7 @@ export declare const invert: typeof inverse;
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The vector of a cross b.
  */
-export declare function cross(a: Vec2, b: Vec2, dst?: Vec2): Vec2;
+export declare function cross(a: Vec2, b: Vec2, dst?: Vec3): Vec3;
 /**
  * Computes the dot product of two vectors; assumes both vectors have
  * three entries.

@@ -1,4 +1,4 @@
-/* wgpu-matrix@2.5.0, license MIT */
+/* wgpu-matrix@2.5.1, license MIT */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
     typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -195,6 +195,81 @@
             dst[0] = x;
             if (y !== undefined) {
                 dst[1] = y;
+            }
+        }
+        return dst;
+    }
+
+    /*
+     * Copyright 2022 Gregg Tavares
+     *
+     * Permission is hereby granted, free of charge, to any person obtaining a
+     * copy of this software and associated documentation files (the "Software"),
+     * to deal in the Software without restriction, including without limitation
+     * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+     * and/or sell copies of the Software, and to permit persons to whom the
+     * Software is furnished to do so, subject to the following conditions:
+     *
+     * The above copyright notice and this permission notice shall be included in
+     * all copies or substantial portions of the Software.
+     *
+     * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+     * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+     * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+     * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+     * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+     * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+     * DEALINGS IN THE SOFTWARE.
+     */
+    /**
+     *
+     * Vec3 math functions.
+     *
+     * Almost all functions take an optional `dst` argument. If it is not passed in the
+     * functions will create a new `Vec3`. In other words you can do this
+     *
+     *     const v = vec3.cross(v1, v2);  // Creates a new Vec3 with the cross product of v1 x v2.
+     *
+     * or
+     *
+     *     const v = vec3.create();
+     *     vec3.cross(v1, v2, v);  // Puts the cross product of v1 x v2 in v
+     *
+     * The first style is often easier but depending on where it's used it generates garbage where
+     * as there is almost never allocation with the second style.
+     *
+     * It is always safe to pass any vector as the destination. So for example
+     *
+     *     vec3.cross(v1, v2, v1);  // Puts the cross product of v1 x v2 in v1
+     *
+     */
+    let VecType$1 = Float32Array;
+    /**
+     * Sets the type this library creates for a Vec3
+     * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`
+     * @returns previous constructor for Vec3
+     */
+    function setDefaultType$5(ctor) {
+        const oldType = VecType$1;
+        VecType$1 = ctor;
+        return oldType;
+    }
+    /**
+     * Creates a vec3; may be called with x, y, z to set initial values.
+     * @param x - Initial x value.
+     * @param y - Initial y value.
+     * @param z - Initial z value.
+     * @returns the created vector
+     */
+    function create$4(x, y, z) {
+        const dst = new VecType$1(3);
+        if (x !== undefined) {
+            dst[0] = x;
+            if (y !== undefined) {
+                dst[1] = y;
+                if (z !== undefined) {
+                    dst[2] = z;
+                }
             }
         }
         return dst;
@@ -501,7 +576,7 @@
      * @returns The vector of a cross b.
      */
     function cross$1(a, b, dst) {
-        dst = dst || new VecType$2(3);
+        dst = dst || new VecType$1(3);
         const z = a[0] * b[1] - a[1] * b[0];
         dst[0] = 0;
         dst[1] = 0;
@@ -851,7 +926,7 @@
      * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`
      * @returns previous constructor for Mat3
      */
-    function setDefaultType$5(ctor) {
+    function setDefaultType$4(ctor) {
         const oldType = MatType$1;
         MatType$1 = ctor;
         newMat3 = ctorMap.get(ctor);
@@ -891,7 +966,7 @@
      * @param v8 - value for element 8
      * @returns matrix created from values.
      */
-    function create$4(v0, v1, v2, v3, v4, v5, v6, v7, v8) {
+    function create$3(v0, v1, v2, v3, v4, v5, v6, v7, v8) {
         const dst = newMat3();
         // to make the array homogenous
         dst[3] = 0;
@@ -1544,8 +1619,8 @@
 
     var mat3Impl = /*#__PURE__*/Object.freeze({
         __proto__: null,
-        setDefaultType: setDefaultType$5,
-        create: create$4,
+        setDefaultType: setDefaultType$4,
+        create: create$3,
         set: set$4,
         fromMat4: fromMat4,
         fromQuat: fromQuat$1,
@@ -1598,88 +1673,13 @@
      * DEALINGS IN THE SOFTWARE.
      */
     /**
-     *
-     * Vec3 math functions.
-     *
-     * Almost all functions take an optional `dst` argument. If it is not passed in the
-     * functions will create a new `Vec3`. In other words you can do this
-     *
-     *     const v = vec3.cross(v1, v2);  // Creates a new Vec3 with the cross product of v1 x v2.
-     *
-     * or
-     *
-     *     const v = vec3.create();
-     *     vec3.cross(v1, v2, v);  // Puts the cross product of v1 x v2 in v
-     *
-     * The first style is often easier but depending on where it's used it generates garbage where
-     * as there is almost never allocation with the second style.
-     *
-     * It is always safe to pass any vector as the destination. So for example
-     *
-     *     vec3.cross(v1, v2, v1);  // Puts the cross product of v1 x v2 in v1
-     *
-     */
-    let VecType$1 = Float32Array;
-    /**
-     * Sets the type this library creates for a Vec3
-     * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`
-     * @returns previous constructor for Vec3
-     */
-    function setDefaultType$4(ctor) {
-        const oldType = VecType$1;
-        VecType$1 = ctor;
-        return oldType;
-    }
-    /**
-     * Creates a vec3; may be called with x, y, z to set initial values.
-     * @param x - Initial x value.
-     * @param y - Initial y value.
-     * @param z - Initial z value.
-     * @returns the created vector
-     */
-    function create$3(x, y, z) {
-        const dst = new VecType$1(3);
-        if (x !== undefined) {
-            dst[0] = x;
-            if (y !== undefined) {
-                dst[1] = y;
-                if (z !== undefined) {
-                    dst[2] = z;
-                }
-            }
-        }
-        return dst;
-    }
-
-    /*
-     * Copyright 2022 Gregg Tavares
-     *
-     * Permission is hereby granted, free of charge, to any person obtaining a
-     * copy of this software and associated documentation files (the "Software"),
-     * to deal in the Software without restriction, including without limitation
-     * the rights to use, copy, modify, merge, publish, distribute, sublicense,
-     * and/or sell copies of the Software, and to permit persons to whom the
-     * Software is furnished to do so, subject to the following conditions:
-     *
-     * The above copyright notice and this permission notice shall be included in
-     * all copies or substantial portions of the Software.
-     *
-     * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-     * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-     * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
-     * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-     * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-     * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-     * DEALINGS IN THE SOFTWARE.
-     */
-    /**
      * Creates a vec3; may be called with x, y, z to set initial values. (same as create)
      * @param x - Initial x value.
      * @param y - Initial y value.
      * @param z - Initial z value.
      * @returns the created vector
      */
-    const fromValues$2 = create$3;
+    const fromValues$2 = create$4;
     /**
      * Sets the values of a Vec3
      * Also see {@link vec3.create} and {@link vec3.copy}
@@ -2326,8 +2326,8 @@
 
     var vec3Impl = /*#__PURE__*/Object.freeze({
         __proto__: null,
-        create: create$3,
-        setDefaultType: setDefaultType$4,
+        create: create$4,
+        setDefaultType: setDefaultType$5,
         fromValues: fromValues$2,
         set: set$3,
         ceil: ceil$1,
@@ -3059,7 +3059,7 @@
      * @returns The translation component of m.
      */
     function getTranslation(m, dst) {
-        dst = dst || create$3();
+        dst = dst || create$4();
         dst[0] = m[12];
         dst[1] = m[13];
         dst[2] = m[14];
@@ -3072,7 +3072,7 @@
      * @returns The axis component of m.
      */
     function getAxis(m, axis, dst) {
-        dst = dst || create$3();
+        dst = dst || create$4();
         const off = axis * 4;
         dst[0] = m[off + 0];
         dst[1] = m[off + 1];
@@ -3103,7 +3103,7 @@
      * @param dst - The vector to set. If not passed a new one is created.
      */
     function getScaling(m, dst) {
-        dst = dst || create$3();
+        dst = dst || create$4();
         const xx = m[0];
         const xy = m[1];
         const xz = m[2];
@@ -3266,9 +3266,9 @@
      */
     function aim(position, target, up, dst) {
         dst = dst || new MatType(16);
-        xAxis = xAxis || create$3();
-        yAxis = yAxis || create$3();
-        zAxis = zAxis || create$3();
+        xAxis = xAxis || create$4();
+        yAxis = yAxis || create$4();
+        zAxis = zAxis || create$4();
         normalize$2(subtract$2(target, position, zAxis), zAxis);
         normalize$2(cross(up, zAxis, xAxis), xAxis);
         normalize$2(cross(zAxis, xAxis, yAxis), yAxis);
@@ -3306,9 +3306,9 @@
      */
     function cameraAim(eye, target, up, dst) {
         dst = dst || new MatType(16);
-        xAxis = xAxis || create$3();
-        yAxis = yAxis || create$3();
-        zAxis = zAxis || create$3();
+        xAxis = xAxis || create$4();
+        yAxis = yAxis || create$4();
+        zAxis = zAxis || create$4();
         normalize$2(subtract$2(eye, target, zAxis), zAxis);
         normalize$2(cross(up, zAxis, xAxis), xAxis);
         normalize$2(cross(zAxis, xAxis, yAxis), yAxis);
@@ -3344,9 +3344,9 @@
      */
     function lookAt(eye, target, up, dst) {
         dst = dst || new MatType(16);
-        xAxis = xAxis || create$3();
-        yAxis = yAxis || create$3();
-        zAxis = zAxis || create$3();
+        xAxis = xAxis || create$4();
+        yAxis = yAxis || create$4();
+        zAxis = zAxis || create$4();
         normalize$2(subtract$2(eye, target, zAxis), zAxis);
         normalize$2(cross(up, zAxis, xAxis), xAxis);
         normalize$2(cross(zAxis, xAxis, yAxis), yAxis);
@@ -4101,7 +4101,7 @@
      * @return angle and axis
      */
     function toAxisAngle(q, dst) {
-        dst = dst || create$3(4);
+        dst = dst || create$4(4);
         const angle = Math.acos(q[3]) * 2;
         const s = Math.sin(angle * 0.5);
         if (s > EPSILON) {
@@ -4658,9 +4658,9 @@
      */
     function rotationTo(aUnit, bUnit, dst) {
         dst = dst || new QuatType(4);
-        tempVec3 = tempVec3 || create$3();
-        xUnitVec3 = xUnitVec3 || create$3(1, 0, 0);
-        yUnitVec3 = yUnitVec3 || create$3(0, 1, 0);
+        tempVec3 = tempVec3 || create$4();
+        xUnitVec3 = xUnitVec3 || create$4(1, 0, 0);
+        yUnitVec3 = yUnitVec3 || create$4(0, 1, 0);
         const dot = dot$2(aUnit, bUnit);
         if (dot < -0.999999) {
             cross(xUnitVec3, aUnit, tempVec3);
@@ -5430,11 +5430,11 @@
      * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`
      */
     function setDefaultType(ctor) {
-        setDefaultType$5(ctor);
+        setDefaultType$4(ctor);
         setDefaultType$3(ctor);
         setDefaultType$2(ctor);
         setDefaultType$6(ctor);
-        setDefaultType$4(ctor);
+        setDefaultType$5(ctor);
         setDefaultType$1(ctor);
     }
 
