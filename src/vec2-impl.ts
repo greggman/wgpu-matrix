@@ -23,6 +23,7 @@ import * as utils from './utils.js';
 import { Mat3 } from './mat3';
 import { Mat4 } from './mat4';
 import { Vec2, create, setDefaultType, VecType } from './vec2';
+import { Vec3, VecType as Vec3Type } from './vec3';
 
 export default Vec2;
 export { create, setDefaultType };
@@ -359,7 +360,7 @@ export const invert = inverse;
  * @returns The vector of a cross b.
  */
 export function cross(a: Vec2, b: Vec2, dst?: Vec3): Vec3 {
-  dst = dst || new VecType(3);
+  dst = dst || new Vec3Type(3);
   const z = a[0] * b[1] - a[1] * b[0];
   dst[0] = 0;
   dst[1] = 0;
