@@ -358,7 +358,7 @@ export const invert = inverse;
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The vector of a cross b.
  */
-export function cross(a: Vec2, b: Vec2, dst?: Vec2): Vec2 {
+export function cross(a: Vec2, b: Vec2, dst?: Vec3): Vec3 {
   dst = dst || new VecType(3);
   const z = a[0] * b[1] - a[1] * b[0];
   dst[0] = 0;
