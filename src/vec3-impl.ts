@@ -790,7 +790,7 @@ export function getScaling(m: Mat4, dst: Vec3) {
 
 /**
  * Rotate a 3D vector around the x-axis
- * 
+ *
  * @param {ReadonlyVec3} a The vec3 point to rotate
  * @param {ReadonlyVec3} b The origin of the rotation
  * @param {Number} rad The angle of rotation in radians
@@ -799,8 +799,9 @@ export function getScaling(m: Mat4, dst: Vec3) {
  */
 export function rotateX(a: Vec3, b: Vec3, rad: number, dst?: Vec3) {
   dst = dst || new VecType(3);
-  let p = [],
-    r = [];
+  const p = [];
+  const r = [];
+
   //Translate point to the origin
   p[0] = a[0] - b[0];
   p[1] = a[1] - b[1];
@@ -821,7 +822,7 @@ export function rotateX(a: Vec3, b: Vec3, rad: number, dst?: Vec3) {
 
 /**
  * Rotate a 3D vector around the y-axis
- * 
+ *
  * @param {ReadonlyVec3} a The vec3 point to rotate
  * @param {ReadonlyVec3} b The origin of the rotation
  * @param {Number} rad The angle of rotation in radians
@@ -830,8 +831,9 @@ export function rotateX(a: Vec3, b: Vec3, rad: number, dst?: Vec3) {
  */
 export function rotateY(a: Vec3, b: Vec3, rad: number, dst?: Vec3) {
   dst = dst || new VecType(3);
-  let p = [],
-    r = [];
+  const p = [];
+  const r = [];
+
   // translate point to the origin
   p[0] = a[0] - b[0];
   p[1] = a[1] - b[1];
@@ -852,7 +854,7 @@ export function rotateY(a: Vec3, b: Vec3, rad: number, dst?: Vec3) {
 
 /**
  * Rotate a 3D vector around the z-axis
- * 
+ *
  * @param {ReadonlyVec3} a The vec3 point to rotate
  * @param {ReadonlyVec3} b The origin of the rotation
  * @param {Number} rad The angle of rotation in radians
@@ -861,8 +863,9 @@ export function rotateY(a: Vec3, b: Vec3, rad: number, dst?: Vec3) {
  */
 export function rotateZ(a: Vec3, b: Vec3, rad: number, dst?: Vec3) {
   dst = dst || new VecType(3);
-  let p = [],
-    r = [];
+  const p = [];
+  const r = [];
+
   // translate point to the origin
   p[0] = a[0] - b[0];
   p[1] = a[1] - b[1];

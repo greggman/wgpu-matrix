@@ -646,7 +646,7 @@ export function transformMat3(v: Vec2, m: Mat3, dst?: Vec2): Vec2 {
 
 /**
  * Rotate a 2D vector
- * 
+ *
  * @param a The vec2 point to rotate
  * @param b The origin of the rotation
  * @param rad The angle of rotation in radians
@@ -656,10 +656,10 @@ export function rotate(a: Vec2, b: Vec2, rad: number, dst?: Vec2) {
   dst = dst || new VecType(2);
 
   // Translate point to the origin
-  const p0 = a[0] - b[0],
-    p1 = a[1] - b[1],
-    sinC = Math.sin(rad),
-    cosC = Math.cos(rad);
+  const p0 = a[0] - b[0];
+  const p1 = a[1] - b[1];
+  const sinC = Math.sin(rad);
+  const cosC = Math.cos(rad);
 
   //perform rotation and translate to correct position
   dst[0] = p0 * cosC - p1 * sinC + b[0];
