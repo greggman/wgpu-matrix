@@ -389,3 +389,33 @@ export declare function getAxis(m: Mat4, axis: number, dst?: Vec3): Vec3;
  * @param dst - The vector to set. If not passed a new one is created.
  */
 export declare function getScaling(m: Mat4, dst: Vec3): Vec3;
+/**
+ * Rotate a 3D vector around the x-axis
+ *
+ * @param {ReadonlyVec3} a The vec3 point to rotate
+ * @param {ReadonlyVec3} b The origin of the rotation
+ * @param {Number} rad The angle of rotation in radians
+ * @param dst - The vector to set. If not passed a new one is created.
+ * @returns the rotated vector
+ */
+export declare function rotateX(a: Vec3, b: Vec3, rad: number, dst?: Vec3): Vec3;
+/**
+ * Rotate a 3D vector around the y-axis
+ *
+ * @param {ReadonlyVec3} a The vec3 point to rotate
+ * @param {ReadonlyVec3} b The origin of the rotation
+ * @param {Number} rad The angle of rotation in radians
+ * @param dst - The vector to set. If not passed a new one is created.
+ * @returns the rotated vector
+ */
+export declare function rotateY(a: Vec3, b: Vec3, rad: number, dst?: Vec3): Vec3;
+/**
+ * Rotate a 3D vector around the z-axis
+ *
+ * @param {ReadonlyVec3} a The vec3 point to rotate
+ * @param {ReadonlyVec3} b The origin of the rotation
+ * @param {Number} rad The angle of rotation in radians
+ * @param dst - The vector to set. If not passed a new one is created.
+ * @returns {vec3} out
+ */
+export declare function rotateZ(a: Vec3, b: Vec3, rad: number, dst?: Vec3): Vec3;

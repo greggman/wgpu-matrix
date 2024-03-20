@@ -471,5 +471,30 @@ describe('vec2', () => {
   check(Float32Array);
   check(Float64Array);
 
+  describe('rotate', function() {
+    describe('rotation around world origin [0, 0, 0]', function() {
+      let vecA, vecB, result;
+      beforeEach(function () {
+        vecA = [0, 1];
+        vecB = [0, 0];
+        result = vec2.rotate(vecA, vecB, Math.PI);
+      });
+      it("should return the rotated vector", function () {
+        assertEqualApproximately(result, [0, -1]);
+      });
+    });
+    describe('rotation around an arbitrary origin', function () {
+      let vecA, vecB, result;
+      beforeEach(function () {
+        vecA = [6, -5];
+        vecB = [0, -5];
+        result = vec2.rotate(vecA, vecB, Math.PI);
+      });
+      it("should return the rotated vector", function () {
+        assertEqualApproximately(result, [-6, -5]);
+      });
+    });
+  });
+
 });
 

@@ -3,7 +3,7 @@
  * When created by the library will create the default type which is `Float32Array`
  * but can be set by calling {@link quat.setDefaultType}.
  */
-export declare type Quat = number[] | Float32Array | Float64Array;
+export type Quat = number[] | Float32Array | Float64Array;
 /**
  *
  * Quat4 math functions.

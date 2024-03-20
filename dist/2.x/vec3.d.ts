@@ -3,7 +3,7 @@
  * When created by the library will create the default type which is `Float32Array`
  * but can be set by calling {@link vec3.setDefaultType}.
  */
-export declare type Vec3 = number[] | Float32Array | Float64Array;
+export type Vec3 = number[] | Float32Array | Float64Array;
 /**
  *
  * Vec3 math functions.

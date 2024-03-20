@@ -3,4 +3,4 @@
  * When created by the library will create the default type which is `Float32Array`
  * but can be set by calling {@link mat3.setDefaultType}.
  */
-export declare type Mat3 = number[] | Float32Array | Float64Array;
+export type Mat3 = number[] | Float32Array | Float64Array;

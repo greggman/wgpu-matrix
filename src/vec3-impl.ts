@@ -787,3 +787,96 @@ export function getScaling(m: Mat4, dst: Vec3) {
     dst[2] = Math.sqrt(zx * zx + zy * zy + zz * zz);
     return dst;
 }
+
+/**
+ * Rotate a 3D vector around the x-axis
+ * 
+ * @param {ReadonlyVec3} a The vec3 point to rotate
+ * @param {ReadonlyVec3} b The origin of the rotation
+ * @param {Number} rad The angle of rotation in radians
+ * @param dst - The vector to set. If not passed a new one is created.
+ * @returns the rotated vector
+ */
+export function rotateX(a: Vec3, b: Vec3, rad: number, dst?: Vec3) {
+  dst = dst || new VecType(3);
+  let p = [],
+    r = [];
+  //Translate point to the origin
+  p[0] = a[0] - b[0];
+  p[1] = a[1] - b[1];
+  p[2] = a[2] - b[2];
+
+  //perform rotation
+  r[0] = p[0];
+  r[1] = p[1] * Math.cos(rad) - p[2] * Math.sin(rad);
+  r[2] = p[1] * Math.sin(rad) + p[2] * Math.cos(rad);
+
+  //translate to correct position
+  dst[0] = r[0] + b[0];
+  dst[1] = r[1] + b[1];
+  dst[2] = r[2] + b[2];
+
+  return dst;
+}
+
+/**
+ * Rotate a 3D vector around the y-axis
+ * 
+ * @param {ReadonlyVec3} a The vec3 point to rotate
+ * @param {ReadonlyVec3} b The origin of the rotation
+ * @param {Number} rad The angle of rotation in radians
+ * @param dst - The vector to set. If not passed a new one is created.
+ * @returns the rotated vector
+ */
+export function rotateY(a: Vec3, b: Vec3, rad: number, dst?: Vec3) {
+  dst = dst || new VecType(3);
+  let p = [],
+    r = [];
+  // translate point to the origin
+  p[0] = a[0] - b[0];
+  p[1] = a[1] - b[1];
+  p[2] = a[2] - b[2];
+
+  // perform rotation
+  r[0] = p[2] * Math.sin(rad) + p[0] * Math.cos(rad);
+  r[1] = p[1];
+  r[2] = p[2] * Math.cos(rad) - p[0] * Math.sin(rad);
+
+  // translate to correct position
+  dst[0] = r[0] + b[0];
+  dst[1] = r[1] + b[1];
+  dst[2] = r[2] + b[2];
+
+  return dst;
+}
+
+/**
+ * Rotate a 3D vector around the z-axis
+ * 
+ * @param {ReadonlyVec3} a The vec3 point to rotate
+ * @param {ReadonlyVec3} b The origin of the rotation
+ * @param {Number} rad The angle of rotation in radians
+ * @param dst - The vector to set. If not passed a new one is created.
+ * @returns {vec3} out
+ */
+export function rotateZ(a: Vec3, b: Vec3, rad: number, dst?: Vec3) {
+  dst = dst || new VecType(3);
+  let p = [],
+    r = [];
+  // translate point to the origin
+  p[0] = a[0] - b[0];
+  p[1] = a[1] - b[1];
+  p[2] = a[2] - b[2];
+
+  // perform rotation
+  r[0] = p[0] * Math.cos(rad) - p[1] * Math.sin(rad);
+  r[1] = p[0] * Math.sin(rad) + p[1] * Math.cos(rad);
+  r[2] = p[2];
+
+  // translate to correct position
+  dst[0] = r[0] + b[0];
+  dst[1] = r[1] + b[1];
+  dst[2] = r[2] + b[2];
+
+  return dst;
+}

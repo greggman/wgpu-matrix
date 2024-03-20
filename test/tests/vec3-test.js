@@ -480,5 +480,76 @@ describe('vec3', () => {
   check(Float32Array);
   check(Float64Array);
 
+  let vecA, vecB, result;
+
+  describe('rotateX', function () {
+    describe('rotation around world origin [0, 0, 0]', function () {
+      beforeEach(function () {
+        vecA = [0, 1, 0];
+        vecB = [0, 0, 0];
+        result = vec3.rotateX(vecA, vecB, Math.PI);
+      });
+      it("should return the rotated vector", function () {
+        assertEqualApproximately(result, [0, -1, 0]);
+      });
+    });
+
+    describe('rotation around an arbitrary origin', function () {
+      beforeEach(function () {
+        vecA = [2, 7, 0];
+        vecB = [2, 5, 0];
+        result = vec3.rotateX(vecA, vecB, Math.PI);
+      });
+      it("should return the rotated vector", function () {
+        assertEqualApproximately(result, [2, 3, 0]);
+      });
+    });
+  });
+
+  describe('rotateY', function () {
+    describe('rotation around world origin [0, 0, 0]', function () {
+        beforeEach(function() {
+          vecA = [1, 0, 0];
+          vecB = [0, 0, 0];
+          result = vec3.rotateY(vecA, vecB, Math.PI);
+        });
+        it("should return the rotated vector", function () {
+          assertEqualApproximately(result, [-1, 0, 0]);
+        });
+    });
+    describe('rotation around an arbitrary origin', function () {
+        beforeEach(function () {
+          vecA = [-2, 3, 10];
+          vecB = [-4, 3, 10];
+          result = vec3.rotateY(vecA, vecB, Math.PI);
+        });
+        it("should return the rotated vector", function () {
+          assertEqualApproximately(result, [-6, 3, 10]);
+        });
+    });
+  });
+
+  describe('rotateZ', function () {
+    describe('rotation around world origin [0, 0, 0]', function () {
+        beforeEach(function () {
+          vecA = [0, 1, 0];
+          vecB = [0, 0, 0];
+          result = vec3.rotateZ(vecA, vecB, Math.PI);
+        });
+        it("should return the rotated vector", function () {
+          assertEqualApproximately(result, [0, -1, 0]);
+        });
+    });
+    describe('rotation around an arbitrary origin', function () {
+        beforeEach(function () {
+          vecA = [0, 6, -5];
+          vecB = [0, 0, -5];
+          result = vec3.rotateZ(vecA, vecB, Math.PI);
+        });
+        it("should return the rotated vector", function () {
+          assertEqualApproximately(result, [0, -6, -5]);
+        });
+    });
+  });
 });
 
