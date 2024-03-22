@@ -13,11 +13,13 @@
   "scripts": {
     "build": "npm run build-min",
     "build-normal": "rollup -c && tsc --emitDeclarationOnly --declaration",
-    "build-min": "npm run build-normal && google-closure-compiler --warning_level=VERBOSE --jscomp_off=globalThis --jscomp_off=checkTypes --externs build/externs.js --language_in=ECMASCRIPT_2019 --language_out=ECMASCRIPT_2019 --js dist/2.x/wgpu-matrix.js --js_output_file dist/2.x/wgpu-matrix.min.js && node ./build/append-banner.js dist/2.x/wgpu-matrix.min.js",
+    "build-min": "npm run build-normal && google-closure-compiler --warning_level=VERBOSE --jscomp_off=globalThis --jscomp_off=checkTypes --externs build/externs.js --language_in=ECMASCRIPT_2019 --language_out=ECMASCRIPT_2019 --js dist/2.x/wgpu-matrix.js --js_output_file dist/2.x/wgpu-matrix.min.js && node ./build/tools/append-banner.js dist/2.x/wgpu-matrix.min.js",
+    "build-ci": "npm run pre-push && npm build/tools/prep-for-deploy.js",
     "check": "npm run lint",
     "check-ci": "npm run pre-push",
     "docs": "typedoc --disableSources src/wgpu-matrix.ts",
     "lint": "eslint \"src/**/*.{js,ts,tsx}\"",
+    "makeindex": "node build/tools/makeindex.js",
     "pre-push": "npm run lint && npm run build && npm run test && npm run docs",
     "rollup-watch": "rollup -c -w",
     "start": "rollup -c rollup.config.js -w",
@@ -59,6 +61,7 @@
     "google-closure-compiler": "^20230228.0.0",
     "mocha": "^10.2.0",
     "rollup": "^3.21.7",
+    "showdown": "^2.1.0",
     "tslib": "^2.5.0",
     "typedoc": "^0.24.7",
     "typescript": "^5.0.4"
