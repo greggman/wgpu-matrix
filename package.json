@@ -14,7 +14,7 @@
     "build": "npm run build-min",
     "build-normal": "rollup -c && tsc --emitDeclarationOnly --declaration",
     "build-min": "npm run build-normal && google-closure-compiler --warning_level=VERBOSE --jscomp_off=globalThis --jscomp_off=checkTypes --externs build/externs.js --language_in=ECMASCRIPT_2019 --language_out=ECMASCRIPT_2019 --js dist/2.x/wgpu-matrix.js --js_output_file dist/2.x/wgpu-matrix.min.js && node ./build/tools/append-banner.js dist/2.x/wgpu-matrix.min.js",
-    "build-ci": "npm run pre-push && npm build/tools/prep-for-deploy.js",
+    "build-ci": "npm run pre-push && node build/tools/prep-for-deploy.js",
     "check": "npm run lint",
     "check-ci": "npm run pre-push",
     "docs": "typedoc --disableSources src/wgpu-matrix.ts",
