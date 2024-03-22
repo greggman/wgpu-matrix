@@ -3,7 +3,7 @@ import { Mat4 } from './mat4';
 import { Quat } from './quat';
 import Vec3 from './vec3-impl';
 export default Mat4;
-export declare type Mat4LikeCtor = new (n: number) => Mat4;
+export type Mat4LikeCtor = new (n: number) => Mat4;
 /**
  * Sets the type this library creates for a Mat4
  * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`

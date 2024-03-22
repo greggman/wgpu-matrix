@@ -1,0 +1,253 @@
+* {
+    box-sizing: border-box;
+}
+
+iframe {
+  border: none;
+  display: block;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+body {
+    margin: 0;
+    font-family: Helvetica, Arial, sanf-serif;
+    line-height: 1.5em;
+}
+html {
+    background-color: rgb(51, 102, 204);
+}
+
+.nav ul {
+  list-style: none;
+  background-color: #444;
+  padding: 0;
+  margin: 0;
+}
+.nav li {
+  line-height: 2em;
+  font-family: sans-serif;
+  font-size: 1.2em;
+  border-bottom: 1px solid #888;
+}
+
+.nav a {
+  padding-left: 1em;
+  padding-right: 1em;
+  text-decoration: none;
+  color: #fff;
+  display: block;
+  transition: .3s background-color;
+}
+
+.nav a:hover {
+  background-color: #8AF;
+  color: #000;
+}
+
+.nav a.active {
+  background-color: #fff;
+  color: #444;
+  cursor: default;
+}
+
+@media screen and (min-width: 600px) {
+  .nav li {
+    border-bottom: none;
+    font-size: 1.4em;
+  }
+
+  /* Option 1 - Display Inline */
+  .nav li {
+    display: inline-block;
+    margin-right: -4px;
+  }
+}
+
+
+@media screen and (max-width: 400px) {
+  ul {
+      padding-left: 1em;
+  }
+}
+
+h1 {
+    line-height: 1.5em;
+    position: relative;
+}
+h2,h3 {
+    margin-top: 1.5em;
+}
+
+#pronounce {
+    position: absolute;
+    font-size: xx-small;
+    bottom: 0em;
+    left: 0px;
+    line-height: 1em;
+    height: 1em;
+    display: block;
+}
+
+#frame {
+    margin: 10px;
+    max-width: 800px;
+    margin: auto;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+#content {
+    padding: 20px;
+}
+
+code {
+    background-color: #DDD;
+    color: black;
+    font-family: monospace;
+    font-size: larger;
+    padding: 0.2em;
+}
+
+pre {
+    background-color: #CCC;
+    overflow-x: auto;
+    font-size: small;
+}
+
+.lang-javascript {
+    font-size: small;
+    background-color: #CCC;
+    display: block;
+    padding: 1em;
+    line-height: 1.2em;
+    border: 1px solid #000;
+    box-shadow: 3px 3px 10px #ccc;
+    font-family: "Lucida Console", Monaco, monospace;
+}
+
+/* --- Prettify --- */
+pre.prettyprint .nocode { background-color: none; color: #000 }
+pre.prettyprint .str { color: #080 } /* string          */
+pre.prettyprint .kwd { color: #008 } /* keyword         */
+pre.prettyprint .com { color: #800 } /* comment         */
+pre.prettyprint .typ { color: #606 } /* type            */
+pre.prettyprint .lit { color: #066 } /* literal         */
+pre.prettyprint .pun { color: #660 } /* punctuation     */
+pre.prettyprint .pln { color: #000 } /* plaintext       */
+pre.prettyprint .tag { color: #008 } /* html/xml tag    */
+pre.prettyprint .atn { color: #606 } /* attribute name  */
+pre.prettyprint .atv { color: #080 } /* attribute value */
+pre.prettyprint .dec { color: #606 } /* decimal         */
+pre.prettyprint .var { color: #606 } /* variable name   */
+pre.prettyprint .fun { color: #F00 } /* function name   */
+
+pre.prettyprint ul.modifiedlines {
+    list-style-type: none;
+    padding-left: 0;
+}
+pre.prettyprint ul.modifiedlines li.linemodified {
+    list-style-type: none;
+    background-color: #A1EAF6;
+}
+pre.prettyprint ul.modifiedlines li.linedeleted {
+    list-style-type: none;
+    background-color: #F0B9B9;
+    text-decoration: line-through;
+}
+
+pre.prettyprint ul.modifiedlines li.lineadded {
+    list-style-type: none;
+    background-color: #A2EDC9;
+}
+
+
+pre.prettyprint, code.prettyprint {
+    color: #000;
+    background: #ddd;
+    border: 1px solid #000;
+    box-shadow: 3px 3px 10px #ccc;
+    font-family: "Lucida Console", Monaco, monospace;
+    width: 95%;
+    margin: auto;
+    padding: 1em;
+    text-align: left;           /* override justify on body */
+    goverflow: auto;             /* allow scroll bar in case of long lines - goes together with white-space: nowrap! */
+    white-space: pre;        /* was nowrap, prevent line wrapping */
+    line-height: 1.2em;
+}
+@media print{
+    pre.prettyprint .str, code.prettyprint .str{color:#060}
+    pre.prettyprint .kwd, code.prettyprint .kwd{color:#006;font-weight:bold}
+    pre.prettyprint .com, code.prettyprint .com{color:#600;font-style:italic}
+    pre.prettyprint .typ, code.prettyprint .typ{color:#404;font-weight:bold}
+    pre.prettyprint .lit, code.prettyprint .lit{color:#044}
+    pre.prettyprint .pun, code.prettyprint .pun{color:#440}
+    pre.prettyprint .pln, code.prettyprint .pln{color:#000}
+    pre.prettyprint .tag, code.prettyprint .tag{color:#006;font-weight:bold}
+    pre.prettyprint .atn, code.prettyprint .atn{color:#404}
+    pre.prettyprint .atv, code.prettyprint .atv{color:#060}
+pre.prettyprint, code.prettyprint {
+    color: #000;
+    background: #EEE;
+    font-size: 8pt;
+    font-family: "Lucida Console", Monaco, monospace;
+    width: 95%;
+    margin: auto;
+    padding: 6px 3px 13px 3px;  /* padding-bottom solves hor. scrollbar hiding single line of code in IE6 but causes vert. scrollbar... */
+    text-align: left;           /* override justify on body */
+    goverflow: auto;             /* allow scroll bar in case of long lines - goes together with white-space: nowrap! */
+    white-space: pre;        /* was nowrap, prevent line wrapping */
+    line-height: 10pt;
+}
+}
+
+@media (prefers-color-scheme: dark) {
+  #frame {
+      background-color: rgba(0, 0, 0, 0.7);
+      color: #ddd;
+  }
+
+  a {
+    color: #8AF;
+  }
+
+  a:visited {
+    color: #CAF;
+  }
+
+  code {
+      background-color: #444;
+      color: #ddd;
+  }
+
+  pre {
+      background-color: #CCC;
+  }
+
+  .lang-javascript {
+      background-color: #CCC;
+  }
+
+  pre.prettyprint, code.prettyprint {
+    color: #CCC;
+    background: #333;
+    box-shadow: 3px 3px 10px #000;
+  }
+
+  pre.prettyprint .str { color: #b9ca4a } /* string          */
+  pre.prettyprint .kwd { color: #c397d8 } /* keyword         */
+  pre.prettyprint .com { color: #f3efb2 } /* comment         */
+  pre.prettyprint .typ { color: #7aa6da } /* type            */
+  pre.prettyprint .lit { color: #45e7a6 } /* literal         */
+  pre.prettyprint .pun { color: #7ecce0 } /* punctuation     */
+  pre.prettyprint .pln { color: #eaeaea } /* plaintext       */
+  pre.prettyprint .tag { color: #d54e53 } /* html/xml tag    */
+  pre.prettyprint .atn { color: #e78c45 } /* attribute name  */
+  pre.prettyprint .atv { color: #70c0b1 } /* attribute value */
+  pre.prettyprint .dec { color: #e78c45 } /* decimal         */
+  pre.prettyprint .var { color: #d54e53 } /* variable name   */
+  pre.prettyprint .fun { color: #7aa6da } /* function name   */
+}

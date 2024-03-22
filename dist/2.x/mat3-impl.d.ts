@@ -3,7 +3,7 @@ import { Mat3 } from './mat3';
 import { Mat4 } from './mat4';
 import Vec2 from './vec2-impl';
 export default Mat3;
-export declare type Mat3LikeCtor = new (n: number) => Mat3;
+export type Mat3LikeCtor = new (n: number) => Mat3;
 /**
  * Sets the type this library creates for a Mat3
  * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`

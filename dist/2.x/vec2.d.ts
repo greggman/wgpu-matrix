@@ -3,7 +3,7 @@
  * When created by the library will create the default type which is `Float32Array`
  * but can be set by calling {@link vec2.setDefaultType}.
  */
-export declare type Vec2 = number[] | Float32Array | Float64Array;
+export type Vec2 = number[] | Float32Array | Float64Array;
 /**
  *
  * Vec2 math functions.

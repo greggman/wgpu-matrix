@@ -350,3 +350,12 @@ export declare function transformMat4(v: Vec2, m: Mat4, dst?: Vec2): Vec2;
  * @returns the transformed vector
  */
 export declare function transformMat3(v: Vec2, m: Mat3, dst?: Vec2): Vec2;
+/**
+ * Rotate a 2D vector
+ *
+ * @param a The vec2 point to rotate
+ * @param b The origin of the rotation
+ * @param rad The angle of rotation in radians
+ * @returns the rotated vector
+ */
+export declare function rotate(a: Vec2, b: Vec2, rad: number, dst?: Vec2): Vec2;

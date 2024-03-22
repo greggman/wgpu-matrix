@@ -2,7 +2,7 @@ import { Quat, create, setDefaultType } from './quat';
 import { Mat3 } from './mat3.js';
 import { Mat4 } from './mat4.js';
 import { Vec3 } from './vec3.js';
-export declare type RotationOrder = 'xyz' | 'xzy' | 'yxz' | 'yzx' | 'zxy' | 'zyx';
+export type RotationOrder = 'xyz' | 'xzy' | 'yxz' | 'yzx' | 'zxy' | 'zyx';
 export default Quat;
 export { create, setDefaultType };
 /**
