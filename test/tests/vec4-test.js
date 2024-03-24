@@ -7,6 +7,7 @@ import {
   assertStrictEqual,
   assertStrictNotEqual,
   assertIsArray,
+  assertEqualApproximately,
   assertTruthy,
   assertFalsy,
 } from '../assert.js';
@@ -403,6 +404,20 @@ describe('vec4', () => {
   check(Array);
   check(Float32Array);
   check(Float64Array);
+
+  describe('setLength', function() {
+    describe('set the length of a provided direction vector', function() {
+      let vecA, result;
+      beforeEach(function () {
+        vecA = [1, 1, 1, 1];
+        result = vec4.setLength(vecA, 14.6);
+      });
+      it("should return the rotated vector", function () {
+        assertEqualApproximately(result, [7.3, 7.3, 7.3, 7.3]);
+        assertEqualApproximately(vec4.length(result), 14.6);
+      });
+    });
+  });
 
 });
 
