@@ -887,7 +887,7 @@ export function rotateZ(a: Vec3, b: Vec3, rad: number, dst?: Vec3) {
 /**
  * Treat a 3D vector as a direction and set it's length
  *
- * @param a The vec3 to length
+ * @param a The vec3 to lengthen
  * @param len The length of the resulting vector
  * @returns The lengthened vector
  */

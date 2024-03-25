@@ -671,7 +671,7 @@ export function rotate(a: Vec2, b: Vec2, rad: number, dst?: Vec2) {
 /**
  * Treat a 2D vector as a direction and set it's length
  *
- * @param a The vec2 to length
+ * @param a The vec2 to lengthen
  * @param len The length of the resulting vector
  * @returns The lengthened vector
  */

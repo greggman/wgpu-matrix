@@ -637,7 +637,7 @@ export function transformMat4(v: Vec4, m: Mat4, dst?: Vec4): Vec4 {
 /**
  * Treat a 4D vector as a direction and set it's length
  *
- * @param a The vec3 to length
+ * @param a The vec3 to lengthen
  * @param len The length of the resulting vector
  * @returns The lengthened vector
  */

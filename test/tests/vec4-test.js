@@ -412,7 +412,7 @@ describe('vec4', () => {
         vecA = [1, 1, 1, 1];
         result = vec4.setLength(vecA, 14.6);
       });
-      it("should return the rotated vector", function () {
+      it("should return the lengthened vector", function () {
         assertEqualApproximately(result, [7.3, 7.3, 7.3, 7.3]);
         assertEqualApproximately(vec4.length(result), 14.6);
       });
