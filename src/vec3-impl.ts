@@ -883,3 +883,16 @@ export function rotateZ(a: Vec3, b: Vec3, rad: number, dst?: Vec3) {
 
   return dst;
 }
+
+/**
+ * Treat a 3D vector as a direction and set it's length
+ *
+ * @param a The vec3 to lengthen
+ * @param len The length of the resulting vector
+ * @returns The lengthened vector
+ */
+export function setLength(a: Vec3, len: number, dst?: Vec3) {
+  dst = dst || new VecType(3);
+  normalize(a, dst);
+  return mulScalar(dst, len, dst);
+}
