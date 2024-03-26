@@ -657,9 +657,10 @@ export function setLength(a: Vec4, len: number, dst?: Vec4) {
 export function truncate(a: Vec4, maxLen: number, dst?: Vec4) {
   dst = dst || new VecType(4);
 
-  if (length(a) > maxLen)
+  if (length(a) > maxLen) {
     return setLength(a, maxLen, dst);
-  
+  }
+
   return copy(a, dst);
 }
 

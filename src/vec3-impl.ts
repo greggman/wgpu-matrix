@@ -907,9 +907,10 @@ export function setLength(a: Vec3, len: number, dst?: Vec3) {
 export function truncate(a: Vec3, maxLen: number, dst?: Vec3) {
   dst = dst || new VecType(3);
 
-  if (length(a) > maxLen)
+  if (length(a) > maxLen) {
     return setLength(a, maxLen, dst);
-  
+  }
+
   return copy(a, dst);
 }
 
