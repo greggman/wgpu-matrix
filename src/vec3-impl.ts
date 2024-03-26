@@ -896,3 +896,31 @@ export function setLength(a: Vec3, len: number, dst?: Vec3) {
   normalize(a, dst);
   return mulScalar(dst, len, dst);
 }
+
+/**
+ * Ensure a vector is not longer than a max length
+ *
+ * @param a The vec3 to limit
+ * @param maxLen The longest length of the resulting vector
+ * @returns The vector, shortened to maxLen if it's too long
+ */
+export function truncate(a: Vec3, maxLen: number, dst?: Vec3) {
+  dst = dst || new VecType(3);
+
+  if (length(a) > maxLen)
+    return setLength(a, maxLen, dst);
+  
+  return copy(a, dst);
+}
+
+/**
+ * Return the vector exactly between 2 endpoint vectors
+ *
+ * @param a Endpoint 1
+ * @param b Endpoint 2
+ * @returns The vector exactly residing between endpoints 1 and 2
+ */
+export function midpoint(a: Vec3, b: Vec3, dst?: Vec3) {
+  dst = dst || new VecType(3);
+  return lerp(a, b, 0.5, dst);
+}
