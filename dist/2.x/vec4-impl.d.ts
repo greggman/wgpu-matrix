@@ -319,3 +319,11 @@ export declare function zero(dst?: Vec4): Vec4;
  * @returns the transformed vector
  */
 export declare function transformMat4(v: Vec4, m: Mat4, dst?: Vec4): Vec4;
+/**
+ * Treat a 4D vector as a direction and set it's length
+ *
+ * @param a The vec4 to lengthen
+ * @param len The length of the resulting vector
+ * @returns The lengthened vector
+ */
+export declare function setLength(a: Vec4, len: number, dst?: Vec4): Vec4;

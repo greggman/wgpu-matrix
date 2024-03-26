@@ -496,5 +496,19 @@ describe('vec2', () => {
     });
   });
 
+  describe('setLength', function() {
+    describe('set the length of a provided direction vector', function() {
+      let vecA, result;
+      beforeEach(function () {
+        vecA = [1, 1];
+        result = vec2.setLength(vecA, 14.6);
+      });
+      it("should return the lengthend vector", function () {
+        assertEqualApproximately(result, [10.323759005323593, 10.323759005323593]);
+        assertEqualApproximately(vec2.length(result), 14.6);
+      });
+    });
+  });
+
 });
 

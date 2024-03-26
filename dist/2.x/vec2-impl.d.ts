@@ -359,3 +359,11 @@ export declare function transformMat3(v: Vec2, m: Mat3, dst?: Vec2): Vec2;
  * @returns the rotated vector
  */
 export declare function rotate(a: Vec2, b: Vec2, rad: number, dst?: Vec2): Vec2;
+/**
+ * Treat a 2D vector as a direction and set it's length
+ *
+ * @param a The vec2 to lengthen
+ * @param len The length of the resulting vector
+ * @returns The lengthened vector
+ */
+export declare function setLength(a: Vec2, len: number, dst?: Vec2): Vec2;

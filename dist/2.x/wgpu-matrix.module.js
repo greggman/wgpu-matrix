@@ -1,4 +1,4 @@
-/* wgpu-matrix@2.6.1, license MIT */
+/* wgpu-matrix@2.7.0, license MIT */
 /*
  * Copyright 2022 Gregg Tavares
  *
@@ -830,6 +830,18 @@ function rotate$2(a, b, rad, dst) {
     dst[1] = p0 * sinC + p1 * cosC + b[1];
     return dst;
 }
+/**
+ * Treat a 2D vector as a direction and set it's length
+ *
+ * @param a The vec2 to lengthen
+ * @param len The length of the resulting vector
+ * @returns The lengthened vector
+ */
+function setLength$2(a, len, dst) {
+    dst = dst || new VecType$2(2);
+    normalize$3(a, dst);
+    return mulScalar$3(dst, len, dst);
+}
 
 var vec2Impl = /*#__PURE__*/Object.freeze({
     __proto__: null,
@@ -875,6 +887,7 @@ var vec2Impl = /*#__PURE__*/Object.freeze({
     scale: scale$5,
     set: set$5,
     setDefaultType: setDefaultType$6,
+    setLength: setLength$2,
     sub: sub$3,
     subtract: subtract$3,
     transformMat3: transformMat3$1,
@@ -2419,6 +2432,18 @@ function rotateZ$2(a, b, rad, dst) {
     dst[2] = r[2] + b[2];
     return dst;
 }
+/**
+ * Treat a 3D vector as a direction and set it's length
+ *
+ * @param a The vec3 to lengthen
+ * @param len The length of the resulting vector
+ * @returns The lengthened vector
+ */
+function setLength$1(a, len, dst) {
+    dst = dst || new VecType$1(3);
+    normalize$2(a, dst);
+    return mulScalar$2(dst, len, dst);
+}
 
 var vec3Impl = /*#__PURE__*/Object.freeze({
     __proto__: null,
@@ -2469,6 +2494,7 @@ var vec3Impl = /*#__PURE__*/Object.freeze({
     scale: scale$3,
     set: set$3,
     setDefaultType: setDefaultType$5,
+    setLength: setLength$1,
     sub: sub$2,
     subtract: subtract$2,
     transformMat3: transformMat3,
@@ -5470,6 +5496,18 @@ function transformMat4(v, m, dst) {
     dst[3] = m[3] * x + m[7] * y + m[11] * z + m[15] * w;
     return dst;
 }
+/**
+ * Treat a 4D vector as a direction and set it's length
+ *
+ * @param a The vec4 to lengthen
+ * @param len The length of the resulting vector
+ * @returns The lengthened vector
+ */
+function setLength(a, len, dst) {
+    dst = dst || new VecType(4);
+    normalize(a, dst);
+    return mulScalar(dst, len, dst);
+}
 
 var vec4Impl = /*#__PURE__*/Object.freeze({
     __proto__: null,
@@ -5511,6 +5549,7 @@ var vec4Impl = /*#__PURE__*/Object.freeze({
     scale: scale,
     set: set,
     setDefaultType: setDefaultType$1,
+    setLength: setLength,
     sub: sub,
     subtract: subtract,
     transformMat4: transformMat4,

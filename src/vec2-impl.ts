@@ -667,3 +667,16 @@ export function rotate(a: Vec2, b: Vec2, rad: number, dst?: Vec2) {
 
   return dst;
 }
+
+/**
+ * Treat a 2D vector as a direction and set it's length
+ *
+ * @param a The vec2 to lengthen
+ * @param len The length of the resulting vector
+ * @returns The lengthened vector
+ */
+export function setLength(a: Vec2, len: number, dst?: Vec2) {
+  dst = dst || new VecType(2);
+  normalize(a, dst);
+  return mulScalar(dst, len, dst);
+}

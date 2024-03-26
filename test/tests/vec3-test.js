@@ -551,5 +551,20 @@ describe('vec3', () => {
         });
     });
   });
+
+  describe('setLength', function() {
+    describe('set the length of a provided direction vector', function() {
+      let vecA, result;
+      beforeEach(function () {
+        vecA = [1, 1, 1];
+        result = vec3.setLength(vecA, 14.6);
+      });
+      it("should return the lengthened vector", function () {
+        assertEqualApproximately(result, [8.429313930168536, 8.429313930168536, 8.429313930168536]);
+        assertEqualApproximately(vec3.length(result), 14.6);
+      });
+    });
+  });
+
 });
 
