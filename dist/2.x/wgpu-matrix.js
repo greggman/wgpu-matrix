@@ -1,4 +1,4 @@
-/* wgpu-matrix@2.7.0, license MIT */
+/* wgpu-matrix@2.8.0, license MIT */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
     typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -848,6 +848,31 @@
         normalize$3(a, dst);
         return mulScalar$3(dst, len, dst);
     }
+    /**
+     * Ensure a vector is not longer than a max length
+     *
+     * @param a The vec2 to limit
+     * @param maxLen The longest length of the resulting vector
+     * @returns The vector, shortened to maxLen if it's too long
+     */
+    function truncate$2(a, maxLen, dst) {
+        dst = dst || new VecType$2(2);
+        if (length$3(a) > maxLen) {
+            return setLength$2(a, maxLen, dst);
+        }
+        return copy$5(a, dst);
+    }
+    /**
+     * Return the vector exactly between 2 endpoint vectors
+     *
+     * @param a Endpoint 1
+     * @param b Endpoint 2
+     * @returns The vector exactly residing between endpoints 1 and 2
+     */
+    function midpoint$2(a, b, dst) {
+        dst = dst || new VecType$2(2);
+        return lerp$3(a, b, 0.5, dst);
+    }
 
     var vec2Impl = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -881,6 +906,7 @@
         lerp: lerp$3,
         lerpV: lerpV$2,
         max: max$2,
+        midpoint: midpoint$2,
         min: min$2,
         mul: mul$5,
         mulScalar: mulScalar$3,
@@ -898,6 +924,7 @@
         subtract: subtract$3,
         transformMat3: transformMat3$1,
         transformMat4: transformMat4$2,
+        truncate: truncate$2,
         zero: zero$2
     });
 
@@ -2450,6 +2477,31 @@
         normalize$2(a, dst);
         return mulScalar$2(dst, len, dst);
     }
+    /**
+     * Ensure a vector is not longer than a max length
+     *
+     * @param a The vec3 to limit
+     * @param maxLen The longest length of the resulting vector
+     * @returns The vector, shortened to maxLen if it's too long
+     */
+    function truncate$1(a, maxLen, dst) {
+        dst = dst || new VecType$1(3);
+        if (length$2(a) > maxLen) {
+            return setLength$1(a, maxLen, dst);
+        }
+        return copy$3(a, dst);
+    }
+    /**
+     * Return the vector exactly between 2 endpoint vectors
+     *
+     * @param a Endpoint 1
+     * @param b Endpoint 2
+     * @returns The vector exactly residing between endpoints 1 and 2
+     */
+    function midpoint$1(a, b, dst) {
+        dst = dst || new VecType$1(3);
+        return lerp$2(a, b, 0.5, dst);
+    }
 
     var vec3Impl = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -2486,6 +2538,7 @@
         lerp: lerp$2,
         lerpV: lerpV$1,
         max: max$1,
+        midpoint: midpoint$1,
         min: min$1,
         mul: mul$3,
         mulScalar: mulScalar$2,
@@ -2507,6 +2560,7 @@
         transformMat4: transformMat4$1,
         transformMat4Upper3x3: transformMat4Upper3x3,
         transformQuat: transformQuat,
+        truncate: truncate$1,
         zero: zero$1
     });
 
@@ -5514,6 +5568,31 @@
         normalize(a, dst);
         return mulScalar(dst, len, dst);
     }
+    /**
+     * Ensure a vector is not longer than a max length
+     *
+     * @param a The vec4 to limit
+     * @param maxLen The longest length of the resulting vector
+     * @returns The vector, shortened to maxLen if it's too long
+     */
+    function truncate(a, maxLen, dst) {
+        dst = dst || new VecType(4);
+        if (length(a) > maxLen) {
+            return setLength(a, maxLen, dst);
+        }
+        return copy(a, dst);
+    }
+    /**
+     * Return the vector exactly between 2 endpoint vectors
+     *
+     * @param a Endpoint 1
+     * @param b Endpoint 2
+     * @returns The vector exactly residing between endpoints 1 and 2
+     */
+    function midpoint(a, b, dst) {
+        dst = dst || new VecType(4);
+        return lerp(a, b, 0.5, dst);
+    }
 
     var vec4Impl = /*#__PURE__*/Object.freeze({
         __proto__: null,
@@ -5545,6 +5624,7 @@
         lerp: lerp,
         lerpV: lerpV,
         max: max,
+        midpoint: midpoint,
         min: min,
         mul: mul,
         mulScalar: mulScalar,
@@ -5559,6 +5639,7 @@
         sub: sub,
         subtract: subtract,
         transformMat4: transformMat4,
+        truncate: truncate,
         zero: zero
     });
 

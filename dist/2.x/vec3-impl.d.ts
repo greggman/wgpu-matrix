@@ -427,3 +427,19 @@ export declare function rotateZ(a: Vec3, b: Vec3, rad: number, dst?: Vec3): Vec3
  * @returns The lengthened vector
  */
 export declare function setLength(a: Vec3, len: number, dst?: Vec3): Vec3;
+/**
+ * Ensure a vector is not longer than a max length
+ *
+ * @param a The vec3 to limit
+ * @param maxLen The longest length of the resulting vector
+ * @returns The vector, shortened to maxLen if it's too long
+ */
+export declare function truncate(a: Vec3, maxLen: number, dst?: Vec3): Vec3;
+/**
+ * Return the vector exactly between 2 endpoint vectors
+ *
+ * @param a Endpoint 1
+ * @param b Endpoint 2
+ * @returns The vector exactly residing between endpoints 1 and 2
+ */
+export declare function midpoint(a: Vec3, b: Vec3, dst?: Vec3): Vec3;

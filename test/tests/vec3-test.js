@@ -566,5 +566,47 @@ describe('vec3', () => {
     });
   });
 
+  describe('truncate', function() {
+    describe('limit a vector to a max length', function() {
+      let vecA;
+
+      beforeEach(function () {
+        vecA = [8.429313930168536, 8.429313930168536, 8.429313930168536];
+      });
+
+      it("should shorten the vector", function () {
+        const result = vec3.truncate(vecA, 4.0);
+        assertEqualApproximately(result, [2.309401076758503, 2.309401076758503, 2.309401076758503]);
+        assertEqualApproximately(vec3.length(result), 4.0);
+      });
+
+      it("should preserve the vector when shorter than maxLen", function () {
+        const result = vec3.truncate(vecA, 18.0);
+        assertEqualApproximately(result, [8.429313930168536, 8.429313930168536, 8.429313930168536]);
+        assertEqualApproximately(vec3.length(result), 14.6);
+      });
+    });
+  });
+
+  describe('midpoint', function() {
+    describe('return the midpoint between 2 vectors', function() {
+
+      it("should return the midpoint", function () {
+        const vecA = [ 0, 0, 0 ]
+        const vecB = [ 10, 10, 10 ]
+        const result = vec3.midpoint(vecA, vecB);
+        assertEqualApproximately(result, [ 5, 5, 5 ]);
+      });
+
+      it("should handle negatives", function () {
+        const vecA = [ -10, -10, -10 ]
+        const vecB = [ 10, 10, 10 ]
+        const result = vec3.midpoint(vecA, vecB);
+        assertEqualApproximately(result, [ 0, 0, 0 ]);
+      });
+
+    });
+  });
+
 });
 

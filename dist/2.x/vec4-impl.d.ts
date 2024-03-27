@@ -327,3 +327,19 @@ export declare function transformMat4(v: Vec4, m: Mat4, dst?: Vec4): Vec4;
  * @returns The lengthened vector
  */
 export declare function setLength(a: Vec4, len: number, dst?: Vec4): Vec4;
+/**
+ * Ensure a vector is not longer than a max length
+ *
+ * @param a The vec4 to limit
+ * @param maxLen The longest length of the resulting vector
+ * @returns The vector, shortened to maxLen if it's too long
+ */
+export declare function truncate(a: Vec4, maxLen: number, dst?: Vec4): Vec4;
+/**
+ * Return the vector exactly between 2 endpoint vectors
+ *
+ * @param a Endpoint 1
+ * @param b Endpoint 2
+ * @returns The vector exactly residing between endpoints 1 and 2
+ */
+export declare function midpoint(a: Vec4, b: Vec4, dst?: Vec4): Vec4;
