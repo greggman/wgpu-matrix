@@ -102,7 +102,7 @@ function check(Type) {
         { a: [1, 0, 0], b: [ 0, 1, 0], expected: Math.PI / 2, },
         { a: [1, 0, 0], b: [-1, 0, 0], expected: Math.PI, },
         { a: [1, 0, 0], b: [ 1, 0, 0], expected: 0, },
-        { a: [1, 2, 3], b: [ 4, 5, 6], expected: 0.225726 },
+        { a: [1, 2, 3], b: [ 4, 5, 6], expected: 0.2257261 },
         { a: [1, 0, 0], b: [ 0, Number.POSITIVE_INFINITY, 0], expected: Math.PI / 2, },
       ];
       for (const {a, b, expected} of tests) {
