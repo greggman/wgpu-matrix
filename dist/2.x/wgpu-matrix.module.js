@@ -1,4 +1,4 @@
-/* wgpu-matrix@2.8.0, license MIT */
+/* wgpu-matrix@2.8.1, license MIT */
 /*
  * Copyright 2022 Gregg Tavares
  *
@@ -398,8 +398,8 @@ function addScaled$2(a, b, scale, dst) {
 function angle$2(a, b) {
     const ax = a[0];
     const ay = a[1];
-    const bx = a[0];
-    const by = a[1];
+    const bx = b[0];
+    const by = b[1];
     const mag1 = Math.sqrt(ax * ax + ay * ay);
     const mag2 = Math.sqrt(bx * bx + by * by);
     const mag = mag1 * mag2;
@@ -1845,9 +1845,9 @@ function angle$1(a, b) {
     const ax = a[0];
     const ay = a[1];
     const az = a[2];
-    const bx = a[0];
-    const by = a[1];
-    const bz = a[2];
+    const bx = b[0];
+    const by = b[1];
+    const bz = b[2];
     const mag1 = Math.sqrt(ax * ax + ay * ay + az * az);
     const mag2 = Math.sqrt(bx * bx + by * by + bz * bz);
     const mag = mag1 * mag2;

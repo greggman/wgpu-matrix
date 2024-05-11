@@ -158,8 +158,8 @@ export function addScaled(a: Vec2, b: Vec2, scale: number, dst?: Vec2) {
 export function angle(a: Vec2, b: Vec2): number {
   const ax = a[0];
   const ay = a[1];
-  const bx = a[0];
-  const by = a[1];
+  const bx = b[0];
+  const by = b[1];
   const mag1 = Math.sqrt(ax * ax + ay * ay);
   const mag2 = Math.sqrt(bx * bx + by * by);
   const mag = mag1 * mag2;
