@@ -1,6 +1,6 @@
 {
   "name": "wgpu-matrix",
-  "version": "2.8.1",
+  "version": "2.8.2",
   "description": "fast matrix math library for WebGPU",
   "main": "dist/2.x/wgpu-matrix.module.js",
   "module": "dist/2.x/wgpu-matrix.module.js",
@@ -48,8 +48,8 @@
   },
   "homepage": "https://github.com/greggman/wgpu-matrix#readme",
   "devDependencies": {
-    "@rollup/plugin-typescript": "^11.1.1",
-    "@tsconfig/recommended": "^1.0.2",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@tsconfig/recommended": "^1.0.6",
     "@typescript-eslint/eslint-plugin": "^5.59.6",
     "@typescript-eslint/parser": "^5.59.6",
     "eslint": "^8.40.0",
@@ -57,13 +57,13 @@
     "eslint-plugin-one-variable-per-var": "^0.0.3",
     "eslint-plugin-optional-comma-spacing": "^0.0.4",
     "eslint-plugin-require-trailing-comma": "^0.0.1",
-    "express": "^4.18.2",
+    "express": "^4.19.2",
     "google-closure-compiler": "^20230228.0.0",
-    "mocha": "^10.2.0",
-    "rollup": "^3.21.7",
+    "mocha": "^10.4.0",
+    "rollup": "^4.17.2",
     "showdown": "^2.1.0",
-    "tslib": "^2.5.0",
-    "typedoc": "^0.24.7",
-    "typescript": "^5.0.4"
+    "tslib": "^2.6.2",
+    "typedoc": "^0.25.13",
+    "typescript": "^5.4.5"
   }
 }

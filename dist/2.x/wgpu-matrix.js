@@ -1,4 +1,4 @@
-/* wgpu-matrix@2.8.1, license MIT */
+/* wgpu-matrix@2.8.2, license MIT */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
     typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -97,7 +97,7 @@
         return ((n % m) + m) % m;
     }
 
-    var utils = /*#__PURE__*/Object.freeze({
+    var utils = {
         __proto__: null,
         get EPSILON () { return EPSILON; },
         degToRad: degToRad,
@@ -106,7 +106,7 @@
         lerp: lerp$4,
         radToDeg: radToDeg,
         setEpsilon: setEpsilon
-    });
+    };
 
     /*
      * Copyright 2022 Gregg Tavares
@@ -874,7 +874,7 @@
         return lerp$3(a, b, 0.5, dst);
     }
 
-    var vec2Impl = /*#__PURE__*/Object.freeze({
+    var vec2Impl = {
         __proto__: null,
         add: add$3,
         addScaled: addScaled$2,
@@ -926,7 +926,7 @@
         transformMat4: transformMat4$2,
         truncate: truncate$2,
         zero: zero$2
-    });
+    };
 
     /*
      * Copyright 2022 Gregg Tavares
@@ -1678,7 +1678,7 @@
         return dst;
     }
 
-    var mat3Impl = /*#__PURE__*/Object.freeze({
+    var mat3Impl = {
         __proto__: null,
         clone: clone$4,
         copy: copy$4,
@@ -1710,7 +1710,7 @@
         transpose: transpose$1,
         uniformScale: uniformScale$1,
         uniformScaling: uniformScaling$1
-    });
+    };
 
     /*
      * Copyright 2022 Gregg Tavares
@@ -2503,7 +2503,7 @@
         return lerp$2(a, b, 0.5, dst);
     }
 
-    var vec3Impl = /*#__PURE__*/Object.freeze({
+    var vec3Impl = {
         __proto__: null,
         add: add$2,
         addScaled: addScaled$1,
@@ -2562,7 +2562,7 @@
         transformQuat: transformQuat,
         truncate: truncate$1,
         zero: zero$1
-    });
+    };
 
     /**
      * 4x4 Matrix math math functions.
@@ -4084,7 +4084,7 @@
         return dst;
     }
 
-    var mat4Impl = /*#__PURE__*/Object.freeze({
+    var mat4Impl = {
         __proto__: null,
         aim: aim,
         axisRotate: axisRotate,
@@ -4130,7 +4130,7 @@
         transpose: transpose,
         uniformScale: uniformScale,
         uniformScaling: uniformScaling
-    });
+    };
 
     /*
      * Copyright 2022 Gregg Tavares
@@ -4894,7 +4894,7 @@
         return dst;
     }
 
-    var quatImpl = /*#__PURE__*/Object.freeze({
+    var quatImpl = {
         __proto__: null,
         add: add$1,
         angle: angle,
@@ -4933,7 +4933,7 @@
         sub: sub$1,
         subtract: subtract$1,
         toAxisAngle: toAxisAngle
-    });
+    };
 
     /*
      * Copyright 2022 Gregg Tavares
@@ -5594,7 +5594,7 @@
         return lerp(a, b, 0.5, dst);
     }
 
-    var vec4Impl = /*#__PURE__*/Object.freeze({
+    var vec4Impl = {
         __proto__: null,
         add: add,
         addScaled: addScaled,
@@ -5641,7 +5641,7 @@
         transformMat4: transformMat4,
         truncate: truncate,
         zero: zero
-    });
+    };
 
     /**
      * Sets the type this library creates for all types

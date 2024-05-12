@@ -1,4 +1,4 @@
-/* wgpu-matrix@2.8.1, license MIT */
+/* wgpu-matrix@2.8.2, license MIT */
 /*
  * Copyright 2022 Gregg Tavares
  *
@@ -91,7 +91,7 @@ function euclideanModulo(n, m) {
     return ((n % m) + m) % m;
 }
 
-var utils = /*#__PURE__*/Object.freeze({
+var utils = {
     __proto__: null,
     get EPSILON () { return EPSILON; },
     degToRad: degToRad,
@@ -100,7 +100,7 @@ var utils = /*#__PURE__*/Object.freeze({
     lerp: lerp$4,
     radToDeg: radToDeg,
     setEpsilon: setEpsilon
-});
+};
 
 /*
  * Copyright 2022 Gregg Tavares
@@ -868,7 +868,7 @@ function midpoint$2(a, b, dst) {
     return lerp$3(a, b, 0.5, dst);
 }
 
-var vec2Impl = /*#__PURE__*/Object.freeze({
+var vec2Impl = {
     __proto__: null,
     add: add$3,
     addScaled: addScaled$2,
@@ -920,7 +920,7 @@ var vec2Impl = /*#__PURE__*/Object.freeze({
     transformMat4: transformMat4$2,
     truncate: truncate$2,
     zero: zero$2
-});
+};
 
 /*
  * Copyright 2022 Gregg Tavares
@@ -1672,7 +1672,7 @@ function uniformScale$1(m, s, dst) {
     return dst;
 }
 
-var mat3Impl = /*#__PURE__*/Object.freeze({
+var mat3Impl = {
     __proto__: null,
     clone: clone$4,
     copy: copy$4,
@@ -1704,7 +1704,7 @@ var mat3Impl = /*#__PURE__*/Object.freeze({
     transpose: transpose$1,
     uniformScale: uniformScale$1,
     uniformScaling: uniformScaling$1
-});
+};
 
 /*
  * Copyright 2022 Gregg Tavares
@@ -2497,7 +2497,7 @@ function midpoint$1(a, b, dst) {
     return lerp$2(a, b, 0.5, dst);
 }
 
-var vec3Impl = /*#__PURE__*/Object.freeze({
+var vec3Impl = {
     __proto__: null,
     add: add$2,
     addScaled: addScaled$1,
@@ -2556,7 +2556,7 @@ var vec3Impl = /*#__PURE__*/Object.freeze({
     transformQuat: transformQuat,
     truncate: truncate$1,
     zero: zero$1
-});
+};
 
 /**
  * 4x4 Matrix math math functions.
@@ -4078,7 +4078,7 @@ function uniformScale(m, s, dst) {
     return dst;
 }
 
-var mat4Impl = /*#__PURE__*/Object.freeze({
+var mat4Impl = {
     __proto__: null,
     aim: aim,
     axisRotate: axisRotate,
@@ -4124,7 +4124,7 @@ var mat4Impl = /*#__PURE__*/Object.freeze({
     transpose: transpose,
     uniformScale: uniformScale,
     uniformScaling: uniformScaling
-});
+};
 
 /*
  * Copyright 2022 Gregg Tavares
@@ -4888,7 +4888,7 @@ function sqlerp(a, b, c, d, t, dst) {
     return dst;
 }
 
-var quatImpl = /*#__PURE__*/Object.freeze({
+var quatImpl = {
     __proto__: null,
     add: add$1,
     angle: angle,
@@ -4927,7 +4927,7 @@ var quatImpl = /*#__PURE__*/Object.freeze({
     sub: sub$1,
     subtract: subtract$1,
     toAxisAngle: toAxisAngle
-});
+};
 
 /*
  * Copyright 2022 Gregg Tavares
@@ -5588,7 +5588,7 @@ function midpoint(a, b, dst) {
     return lerp(a, b, 0.5, dst);
 }
 
-var vec4Impl = /*#__PURE__*/Object.freeze({
+var vec4Impl = {
     __proto__: null,
     add: add,
     addScaled: addScaled,
@@ -5635,7 +5635,7 @@ var vec4Impl = /*#__PURE__*/Object.freeze({
     transformMat4: transformMat4,
     truncate: truncate,
     zero: zero
-});
+};
 
 /**
  * Sets the type this library creates for all types
