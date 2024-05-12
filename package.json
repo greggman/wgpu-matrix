@@ -48,7 +48,7 @@
   },
   "homepage": "https://github.com/greggman/wgpu-matrix#readme",
   "devDependencies": {
-    "@rollup/plugin-typescript": "^11.1.1",
+    "@rollup/plugin-typescript": "^11.1.6",
     "@tsconfig/recommended": "^1.0.2",
     "@typescript-eslint/eslint-plugin": "^5.59.6",
     "@typescript-eslint/parser": "^5.59.6",
@@ -60,7 +60,7 @@
     "express": "^4.18.2",
     "google-closure-compiler": "^20230228.0.0",
     "mocha": "^10.2.0",
-    "rollup": "^3.21.7",
+    "rollup": "^4.17.2",
     "showdown": "^2.1.0",
     "tslib": "^2.5.0",
     "typedoc": "^0.24.7",
