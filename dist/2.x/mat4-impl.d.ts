@@ -209,7 +209,7 @@ export declare function getAxis(m: Mat4, axis: number, dst?: Vec3): Vec3;
  * @param dst - The matrix to set. If not passed a new one is created.
  * @returns The matrix with axis set.
  */
-export declare function setAxis(a: Mat4, v: Vec3, axis: number, dst: Mat4): Mat4;
+export declare function setAxis(m: Mat4, v: Vec3, axis: number, dst: Mat4): Mat4;
 /**
  * Returns the scaling component of the matrix
  * @param m - The Matrix

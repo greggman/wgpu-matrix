@@ -692,9 +692,9 @@ export function getAxis(m: Mat4, axis: number, dst?: Vec3): Vec3 {
  * @param dst - The matrix to set. If not passed a new one is created.
  * @returns The matrix with axis set.
  */
-export function setAxis(a: Mat4, v: Vec3, axis: number, dst: Mat4): Mat4 {
-  if (dst !== a) {
-    dst = copy(a, dst);
+export function setAxis(m: Mat4, v: Vec3, axis: number, dst: Mat4): Mat4 {
+  if (dst !== m) {
+    dst = copy(m, dst);
   }
   const off = axis * 4;
   dst[off + 0] = v[0];

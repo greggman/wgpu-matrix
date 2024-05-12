@@ -1,4 +1,4 @@
-/* wgpu-matrix@2.8.2, license MIT */
+/* wgpu-matrix@2.8.3, license MIT */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
     typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -3272,9 +3272,9 @@
      * @param dst - The matrix to set. If not passed a new one is created.
      * @returns The matrix with axis set.
      */
-    function setAxis(a, v, axis, dst) {
-        if (dst !== a) {
-            dst = copy$2(a, dst);
+    function setAxis(m, v, axis, dst) {
+        if (dst !== m) {
+            dst = copy$2(m, dst);
         }
         const off = axis * 4;
         dst[off + 0] = v[0];
