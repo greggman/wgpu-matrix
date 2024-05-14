@@ -243,6 +243,27 @@ export declare function getScaling(m: Mat4, dst?: Vec3): Vec3;
  */
 export declare function perspective(fieldOfViewYInRadians: number, aspect: number, zNear: number, zFar: number, dst?: Mat4): Mat4;
 /**
+ * Computes a 4-by-4 reverse-z perspective transformation matrix given the angular height
+ * of the frustum, the aspect ratio, and the near and far clipping planes.  The
+ * arguments define a frustum extending in the negative z direction.  The given
+ * angle is the vertical angle of the frustum, and the horizontal angle is
+ * determined to produce the given aspect ratio.  The arguments near and far are
+ * the distances to the near and far clipping planes.  Note that near and far
+ * are not z coordinates, but rather they are distances along the negative
+ * z-axis.  The matrix generated sends the viewing frustum to the unit box.
+ * We assume a unit box extending from -1 to 1 in the x and y dimensions and
+ * from 1 (at -zNear) to 0 (at -zFar) in the z dimension.
+ *
+ * @param fieldOfViewYInRadians - The camera angle from top to bottom (in radians).
+ * @param aspect - The aspect ratio width / height.
+ * @param zNear - The depth (negative z coordinate)
+ *     of the near clipping plane.
+ * @param zFar - The depth (negative z coordinate)
+ *     of the far clipping plane. (default = Infinity)
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The perspective matrix.
+ */ export declare function perspectiveReverseZ(fieldOfViewYInRadians: number, aspect: number, zNear: number, zFar?: number, dst?: Mat4): Mat4;
+/**
  * Computes a 4-by-4 orthogonal transformation matrix that transforms from
  * the given the left, right, bottom, and top dimensions to -1 +1 in x, and y
  * and 0 to +1 in z.
@@ -277,6 +298,25 @@ export declare function ortho(left: number, right: number, bottom: number, top: 
  * @returns The perspective projection matrix.
  */
 export declare function frustum(left: number, right: number, bottom: number, top: number, near: number, far: number, dst?: Mat4): Mat4;
+/**
+ * Computes a 4-by-4 reverse-z perspective transformation matrix given the left, right,
+ * top, bottom, near and far clipping planes. The arguments define a frustum
+ * extending in the negative z direction. The arguments near and far are the
+ * distances to the near and far clipping planes. Note that near and far are not
+ * z coordinates, but rather they are distances along the negative z-axis. The
+ * matrix generated sends the viewing frustum to the unit box. We assume a unit
+ * box extending from -1 to 1 in the x and y dimensions and from 1 (-near) to 0 (-far) in the z
+ * dimension.
+ * @param left - The x coordinate of the left plane of the box.
+ * @param right - The x coordinate of the right plane of the box.
+ * @param bottom - The y coordinate of the bottom plane of the box.
+ * @param top - The y coordinate of the right plane of the box.
+ * @param near - The negative z coordinate of the near plane of the box.
+ * @param far - The negative z coordinate of the far plane of the box.
+ * @param dst - Output matrix. If not passed a new one is created.
+ * @returns The perspective projection matrix.
+ */
+export declare function frustumReverseZ(left: number, right: number, bottom: number, top: number, near: number, far?: number, dst?: Mat4): Mat4;
 /**
  * Computes a 4-by-4 aim transformation.
  *

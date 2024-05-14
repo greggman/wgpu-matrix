@@ -474,6 +474,95 @@ function check(Type) {
       shouldBeCloseArray(vec3.transformMat4([0, 0, zFar], m), [0, 0, Infinity], 0.000001);
     });
 
+    it('should compute perspective reverseZ with zFar', () => {
+      const fov = 2;
+      const aspect = 4;
+      const zNear = 10;
+      const zFar = 20;
+      const f = Math.tan(Math.PI * 0.5 - 0.5 * fov);
+      const rangeInv = 1 / (zFar - zNear);
+      const expected = [
+        f / aspect,
+        0,
+        0,
+        0,
+
+        0,
+        f,
+        0,
+        0,
+
+        0,
+        0,
+        zNear * rangeInv,
+        -1,
+
+        0,
+        0,
+        zFar * zNear * rangeInv,
+        0,
+      ];
+      testMat4WithAndWithoutDest((dst) => {
+        return mat4.perspectiveReverseZ(fov, aspect, zNear, zFar, dst);
+      }, expected);
+    });
+
+    it('should compute correct perspective reverseZ', () => {
+      const fov = Math.PI / 4;
+      const aspect = 2;
+      const zNear = 10;
+      const zFar = 20;
+      const m = mat4.perspectiveReverseZ(fov, aspect, zNear, zFar);
+      shouldBeCloseArray(vec3.transformMat4([0, 0, -zNear], m), [0, 0, 1], 0.000001);
+      shouldBeCloseArray(vec3.transformMat4([0, 0, -15], m), [0, 0, 0.3333333432674408], 0.000001);
+      shouldBeCloseArray(vec3.transformMat4([0, 0, -zFar], m), [0, 0, 0], 0.000001);
+    });
+
+    it('should compute perspective reverseZ with zFar at infinity', () => {
+      const fov = 2;
+      const aspect = 4;
+      const zNear = 10;
+      const zFar = Infinity;
+      const f = Math.tan(Math.PI * 0.5 - 0.5 * fov);
+      const expected = [
+        f / aspect,
+        0,
+        0,
+        0,
+
+        0,
+        f,
+        0,
+        0,
+
+        0,
+        0,
+        0,
+        -1,
+
+        0,
+        0,
+        zNear,
+        0,
+      ];
+      testMat4WithAndWithoutDest((dst) => {
+        return mat4.perspectiveReverseZ(fov, aspect, zNear, zFar, dst);
+      }, expected);
+    });
+
+    it('should compute correct perspective reverseZ with zFar at Infinity', () => {
+      const fov = Math.PI / 4;
+      const aspect = 2;
+      const zNear = 10;
+      const zFar = Infinity;
+      const m = mat4.perspectiveReverseZ(fov, aspect, zNear, zFar);
+      shouldBeCloseArray(vec3.transformMat4([0, 0, -zNear], m), [0, 0, 1], 0.000001);
+      shouldBeCloseArray(vec3.transformMat4([0, 0, -1000], m), [0, 0, 0.009999999776482582], 0.000001);
+      shouldBeCloseArray(vec3.transformMat4([0, 0, -1000000], m), [0, 0, 0.000009999999747378752], 0.000001);
+      shouldBeCloseArray(vec3.transformMat4([0, 0, -1000000000], m), [0, 0, 9.99999993922529e-9], 0.000001);
+      shouldBeCloseArray(vec3.transformMat4([0, 0, -zFar], m), [0, 0, 0], 0.000001);
+    });
+
     it('should compute ortho', () => {
       const left = 2;
       const right = 4;
@@ -568,6 +657,56 @@ function check(Type) {
       const p = vec3.transformMat4([centerX, centerY, m, -far], m);
       //shouldBeCloseArray(p, [1, 1, 1], 0.000001);
       assertEqualApproximately(p[2], 1);
+    });
+
+    it('should compute frustumReverseZ', () => {
+      const left = 2;
+      const right = 4;
+      const top = 10;
+      const bottom = 30;
+      const near = 15;
+      const far = 25;
+
+      const dx = (right - left);
+      const dy = (top - bottom);
+      const dz = (far - near);
+
+      const expected = [
+        2 * near / dx,
+        0,
+        0,
+        0,
+        0,
+        2 * near / dy,
+        0,
+        0,
+        (left + right) / dx,
+        (top + bottom) / dy,
+        near / dz,
+        -1,
+        0,
+        0,
+        near * far / dz,
+        0,
+      ];
+      testMat4WithAndWithoutDest((dst) => {
+        return mat4.frustumReverseZ(left, right, bottom, top, near, far, dst);
+      }, expected);
+    });
+
+    it('should compute correct frustumReverseZ', () => {
+      const left = -2;
+      const right = 4;
+      const top = 10;
+      const bottom = 30;
+      const near = 15;
+      const far = 25;
+      const m = mat4.frustumReverseZ(left, right, bottom, top, near, far);
+      shouldBeCloseArray(vec3.transformMat4([left, bottom, -near], m), [-1, -1, 1], 0.000001);
+      const centerX = (left + right) * 0.5;
+      const centerY = (top + bottom) * 0.5;
+      assertEqualApproximately(vec3.transformMat4([centerX, centerY, -near], m)[2], 1);
+      assertEqualApproximately(vec3.transformMat4([centerX, centerY, -far], m)[2], 0);
     });
 
     it('should compute same frustum as perspective', () => {
