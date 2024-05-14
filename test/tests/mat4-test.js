@@ -474,6 +474,95 @@ function check(Type) {
       shouldBeCloseArray(vec3.transformMat4([0, 0, zFar], m), [0, 0, Infinity], 0.000001);
     });
 
+    it('should compute perspective reverseZ with zFar', () => {
+      const fov = 2;
+      const aspect = 4;
+      const zNear = 10;
+      const zFar = 20;
+      const f = Math.tan(Math.PI * 0.5 - 0.5 * fov);
+      const rangeInv = 1 / (zFar - zNear);
+      const expected = [
+        f / aspect,
+        0,
+        0,
+        0,
+
+        0,
+        f,
+        0,
+        0,
+
+        0,
+        0,
+        zNear * rangeInv,
+        -1,
+
+        0,
+        0,
+        zFar * zNear * rangeInv,
+        0,
+      ];
+      testMat4WithAndWithoutDest((dst) => {
+        return mat4.perspectiveReverseZ(fov, aspect, zNear, zFar, dst);
+      }, expected);
+    });
+
+    it('should compute correct perspective reverseZ', () => {
+      const fov = Math.PI / 4;
+      const aspect = 2;
+      const zNear = 10;
+      const zFar = 20;
+      const m = mat4.perspectiveReverseZ(fov, aspect, zNear, zFar);
+      shouldBeCloseArray(vec3.transformMat4([0, 0, -zNear], m), [0, 0, 1], 0.000001);
+      shouldBeCloseArray(vec3.transformMat4([0, 0, -15], m), [0, 0, 0.3333333432674408], 0.000001);
+      shouldBeCloseArray(vec3.transformMat4([0, 0, -zFar], m), [0, 0, 0], 0.000001);
+    });
+
+    it('should compute perspective reverseZ with zFar at infinity', () => {
+      const fov = 2;
+      const aspect = 4;
+      const zNear = 10;
+      const zFar = Infinity;
+      const f = Math.tan(Math.PI * 0.5 - 0.5 * fov);
+      const expected = [
+        f / aspect,
+        0,
+        0,
+        0,
+
+        0,
+        f,
+        0,
+        0,
+
+        0,
+        0,
+        0,
+        -1,
+
+        0,
+        0,
+        zNear,
+        0,
+      ];
+      testMat4WithAndWithoutDest((dst) => {
+        return mat4.perspectiveReverseZ(fov, aspect, zNear, zFar, dst);
+      }, expected);
+    });
+
+    it('should compute correct perspective reverseZ with zFar at Infinity', () => {
+      const fov = Math.PI / 4;
+      const aspect = 2;
+      const zNear = 10;
+      const zFar = Infinity;
+      const m = mat4.perspectiveReverseZ(fov, aspect, zNear, zFar);
+      shouldBeCloseArray(vec3.transformMat4([0, 0, -zNear], m), [0, 0, 1], 0.000001);
+      shouldBeCloseArray(vec3.transformMat4([0, 0, -1000], m), [0, 0, 0.009999999776482582], 0.000001);
+      shouldBeCloseArray(vec3.transformMat4([0, 0, -1000000], m), [0, 0, 0.000009999999747378752], 0.000001);
+      shouldBeCloseArray(vec3.transformMat4([0, 0, -1000000000], m), [0, 0, 9.99999993922529e-9], 0.000001);
+      shouldBeCloseArray(vec3.transformMat4([0, 0, -zFar], m), [0, 0, 0], 0.000001);
+    });
+
     it('should compute ortho', () => {
       const left = 2;
       const right = 4;
