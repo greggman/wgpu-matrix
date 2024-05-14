@@ -659,6 +659,56 @@ function check(Type) {
       assertEqualApproximately(p[2], 1);
     });
 
+    it('should compute frustumReverseZ', () => {
+      const left = 2;
+      const right = 4;
+      const top = 10;
+      const bottom = 30;
+      const near = 15;
+      const far = 25;
+
+      const dx = (right - left);
+      const dy = (top - bottom);
+      const dz = (far - near);
+
+      const expected = [
+        2 * near / dx,
+        0,
+        0,
+        0,
+        0,
+        2 * near / dy,
+        0,
+        0,
+        (left + right) / dx,
+        (top + bottom) / dy,
+        near / dz,
+        -1,
+        0,
+        0,
+        near * far / dz,
+        0,
+      ];
+      testMat4WithAndWithoutDest((dst) => {
+        return mat4.frustumReverseZ(left, right, bottom, top, near, far, dst);
+      }, expected);
+    });
+
+    it('should compute correct frustumReverseZ', () => {
+      const left = -2;
+      const right = 4;
+      const top = 10;
+      const bottom = 30;
+      const near = 15;
+      const far = 25;
+      const m = mat4.frustumReverseZ(left, right, bottom, top, near, far);
+      shouldBeCloseArray(vec3.transformMat4([left, bottom, -near], m), [-1, -1, 1], 0.000001);
+      const centerX = (left + right) * 0.5;
+      const centerY = (top + bottom) * 0.5;
+      assertEqualApproximately(vec3.transformMat4([centerX, centerY, -near], m)[2], 1);
+      assertEqualApproximately(vec3.transformMat4([centerX, centerY, -far], m)[2], 0);
+    });
+
     it('should compute same frustum as perspective', () => {
       const lr = 4;
       const tb = 2;
