@@ -19,7 +19,7 @@ import * as utils from './utils';
  */
 export function setDefaultType(ctor: new (n: number) => Float32Array | Float64Array | number[]) {
   mat3.setDefaultType(ctor);
-  mat4.setDefaultType(ctor);
+  //mat4.setDefaultType(ctor);
   quat.setDefaultType(ctor);
   vec2.setDefaultType(ctor);
   vec3.setDefaultType(ctor);

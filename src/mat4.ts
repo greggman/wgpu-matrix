@@ -25,4 +25,4 @@
  * When created by the library will create the default type which is `Float32Array`
  * but can be set by calling {@link mat4.setDefaultType}.
  */
-export type Mat4 = number[] | Float32Array | Float64Array;
+export type Mat4 = Float32Array;

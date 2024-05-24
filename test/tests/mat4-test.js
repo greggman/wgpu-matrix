@@ -4,13 +4,11 @@ import {
   assertEqual,
   assertEqualApproximately,
   assertFalsy,
-  assertIsArray,
-  assertInstanceOf,
   assertStrictEqual,
   assertStrictNotEqual,
   assertTruthy,
 } from '../assert.js';
-import {describe, it, before} from '../mocha-support.js';
+import {describe, it} from '../mocha-support.js';
 
 function check(Type) {
   describe('using ' + Type, () => {
@@ -20,10 +18,6 @@ function check(Type) {
        8,  9, 10, 11,
       12, 13, 14, 15,
     ];
-
-    before(function () {
-      mat4.setDefaultType(Type);
-    });
 
     function testMat4WithoutDest(func, expected, ...args) {
       const d = func(...args);
@@ -1106,17 +1100,17 @@ function check(Type) {
 
 describe('mat4', () => {
 
-  it('should set default type', () => {
-    mat4.setDefaultType(Array);
-    let d = mat4.identity();
-    assertIsArray(d);
-    mat4.setDefaultType(Float32Array);
-    d = mat4.identity();
-    assertInstanceOf(d, Float32Array);
-  });
+  //it('should set default type', () => {
+  //  mat4.setDefaultType(Array);
+  //  let d = mat4.identity();
+  //  assertIsArray(d);
+  //  mat4.setDefaultType(Float32Array);
+  //  d = mat4.identity();
+  //  assertInstanceOf(d, Float32Array);
+  //});
 
-  check(Array);
+  //check(Array);
   check(Float32Array);
-  check(Float64Array);
+  //check(Float64Array);
 });
 

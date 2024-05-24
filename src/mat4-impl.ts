@@ -6,7 +6,7 @@ import Vec3, * as vec3 from './vec3-impl';
 import * as utils from './utils';
 
 export default Mat4;
-
+export type Mat4Arg = Mat4 | Float64Array | number[];
 export type Mat4LikeCtor = new (n: number) => Mat4;
 
 /**
@@ -32,18 +32,7 @@ export type Mat4LikeCtor = new (n: number) => Mat4;
  *     mat4.multiply(mat, trans, mat);  // Multiplies mat * trans and puts result in mat.
  *
  */
-let MatType: Mat4LikeCtor = Float32Array;
-
-/**
- * Sets the type this library creates for a Mat4
- * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`
- * @returns previous constructor for Mat4
- */
-export function setDefaultType(ctor: new (n: number) => Mat4) {
-  const oldType = MatType;
-  MatType = ctor;
-  return oldType;
-}
+const MatType: Mat4LikeCtor = Float32Array;
 
 /**
  * Create a Mat4 from values
@@ -235,7 +224,7 @@ export function fromQuat(q: Quat, dst?: Mat4): Mat4 {
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns -m.
  */
-export function negate(m: Mat4, dst?: Mat4): Mat4 {
+export function negate(m: Mat4Arg, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
 
   dst[ 0] = -m[ 0];  dst[ 1] = -m[ 1];  dst[ 2] = -m[ 2];  dst[ 3] = -m[ 3];
@@ -253,7 +242,7 @@ export function negate(m: Mat4, dst?: Mat4): Mat4 {
  * @param dst - The matrix. If not passed a new one is created.
  * @returns A copy of m.
  */
-export function copy(m: Mat4, dst?: Mat4): Mat4 {
+export function copy(m: Mat4Arg, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
 
   dst[ 0] = m[ 0];  dst[ 1] = m[ 1];  dst[ 2] = m[ 2];  dst[ 3] = m[ 3];
@@ -279,7 +268,7 @@ export const clone = copy;
  * @param b - Operand matrix.
  * @returns true if matrices are approximately equal
  */
-export function equalsApproximately(a: Mat4, b: Mat4): boolean {
+export function equalsApproximately(a: Mat4Arg, b: Mat4Arg): boolean {
   return Math.abs(a[ 0] - b[ 0]) < utils.EPSILON &&
          Math.abs(a[ 1] - b[ 1]) < utils.EPSILON &&
          Math.abs(a[ 2] - b[ 2]) < utils.EPSILON &&
@@ -304,7 +293,7 @@ export function equalsApproximately(a: Mat4, b: Mat4): boolean {
  * @param b - Operand matrix.
  * @returns true if matrices are exactly equal
  */
-export function equals(a: Mat4, b: Mat4): boolean {
+export function equals(a: Mat4Arg, b: Mat4Arg): boolean {
   return a[ 0] === b[ 0] &&
          a[ 1] === b[ 1] &&
          a[ 2] === b[ 2] &&
@@ -346,7 +335,7 @@ export function identity(dst?: Mat4): Mat4 {
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns The transpose of m.
  */
-export function transpose(m: Mat4, dst?: Mat4): Mat4 {
+export function transpose(m: Mat4Arg, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
   if (dst === m) {
     let t;
@@ -408,7 +397,7 @@ export function transpose(m: Mat4, dst?: Mat4): Mat4 {
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns The inverse of m.
  */
-export function inverse(m: Mat4, dst?: Mat4): Mat4 {
+export function inverse(m: Mat4Arg, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
 
   const m00 = m[0 * 4 + 0];
@@ -558,7 +547,7 @@ export const invert = inverse;
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns The matrix product of a and b.
  */
-export function multiply(a: Mat4, b: Mat4, dst?: Mat4): Mat4 {
+export function multiply(a: Mat4Arg, b: Mat4Arg, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
 
   const a00 = a[0];
@@ -631,7 +620,7 @@ export const mul = multiply;
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns The matrix with translation set.
  */
-export function setTranslation(a: Mat4, v: Vec3, dst?: Mat4): Mat4 {
+export function setTranslation(a: Mat4Arg, v: Vec3, dst?: Mat4): Mat4 {
   dst = dst || identity();
   if (a !== dst) {
     dst[ 0] = a[ 0];
@@ -661,7 +650,7 @@ export function setTranslation(a: Mat4, v: Vec3, dst?: Mat4): Mat4 {
  * @param dst - vector to hold result. If not passed a new one is created.
  * @returns The translation component of m.
  */
-export function getTranslation(m: Mat4, dst?: Vec3): Vec3 {
+export function getTranslation(m: Mat4Arg, dst?: Vec3): Vec3 {
   dst = dst || vec3.create();
   dst[0] = m[12];
   dst[1] = m[13];
@@ -675,7 +664,7 @@ export function getTranslation(m: Mat4, dst?: Vec3): Vec3 {
  * @param axis - The axis 0 = x, 1 = y, 2 = z;
  * @returns The axis component of m.
  */
-export function getAxis(m: Mat4, axis: number, dst?: Vec3): Vec3 {
+export function getAxis(m: Mat4Arg, axis: number, dst?: Vec3): Vec3 {
   dst = dst || vec3.create();
   const off = axis * 4;
   dst[0] = m[off + 0];
@@ -692,7 +681,7 @@ export function getAxis(m: Mat4, axis: number, dst?: Vec3): Vec3 {
  * @param dst - The matrix to set. If not passed a new one is created.
  * @returns The matrix with axis set.
  */
-export function setAxis(m: Mat4, v: Vec3, axis: number, dst: Mat4): Mat4 {
+export function setAxis(m: Mat4Arg, v: Vec3, axis: number, dst: Mat4): Mat4 {
   if (dst !== m) {
     dst = copy(m, dst);
   }
@@ -708,7 +697,7 @@ export function setAxis(m: Mat4, v: Vec3, axis: number, dst: Mat4): Mat4 {
  * @param m - The Matrix
  * @param dst - The vector to set. If not passed a new one is created.
  */
-export function getScaling(m: Mat4, dst?: Vec3): Vec3 {
+export function getScaling(m: Mat4Arg, dst?: Vec3): Vec3 {
   dst = dst || vec3.create();
 
   const xx = m[0];
@@ -1111,7 +1100,7 @@ export function translation(v: Vec3, dst?: Mat4): Mat4 {
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns The translated matrix.
  */
-export function translate(m: Mat4, v: Vec3, dst?: Mat4): Mat4 {
+export function translate(m: Mat4Arg, v: Vec3, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
 
   const v0 = v[0];
@@ -1185,7 +1174,7 @@ export function rotationX(angleInRadians: number, dst?: Mat4): Mat4 {
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns The rotated matrix.
  */
-export function rotateX(m: Mat4, angleInRadians: number, dst?: Mat4): Mat4 {
+export function rotateX(m: Mat4Arg, angleInRadians: number, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
 
   const m10 = m[4];
@@ -1250,7 +1239,7 @@ export function rotationY(angleInRadians: number, dst?: Mat4): Mat4 {
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns The rotated matrix.
  */
-export function rotateY(m: Mat4, angleInRadians: number, dst?: Mat4): Mat4 {
+export function rotateY(m: Mat4Arg, angleInRadians: number, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
 
   const m00 = m[0 * 4 + 0];
@@ -1315,7 +1304,7 @@ export function rotationZ(angleInRadians: number, dst?: Mat4): Mat4 {
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns The rotated matrix.
  */
-export function rotateZ(m: Mat4, angleInRadians: number, dst?: Mat4): Mat4 {
+export function rotateZ(m: Mat4Arg, angleInRadians: number, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
 
   const m00 = m[0 * 4 + 0];
@@ -1421,7 +1410,7 @@ export const rotation = axisRotation;
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns The rotated matrix.
  */
-export function axisRotate(m: Mat4, axis: Vec3, angleInRadians: number, dst?: Mat4): Mat4 {
+export function axisRotate(m: Mat4Arg, axis: Vec3, angleInRadians: number, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
 
   let x = axis[0];
@@ -1526,7 +1515,7 @@ export function scaling(v: Vec3, dst?: Mat4): Mat4 {
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns The scaled matrix.
  */
-export function scale(m: Mat4, v: Vec3, dst?: Mat4): Mat4 {
+export function scale(m: Mat4Arg, v: Vec3, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
 
   const v0 = v[0];
@@ -1580,7 +1569,7 @@ export function uniformScaling(s: number, dst?: Mat4): Mat4 {
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns The scaled matrix.
  */
-export function uniformScale(m: Mat4, s: number, dst?: Mat4): Mat4 {
+export function uniformScale(m: Mat4Arg, s: number, dst?: Mat4): Mat4 {
   dst = dst || new MatType(16);
 
   dst[ 0] = s * m[0 * 4 + 0];
