@@ -101,7 +101,7 @@ There is also the minified version
 import {
   vec3,
   mat4,
-} from 'https://wgpu-matrix.org/dist/2.x/wgpu-matrix.module.js';
+} from 'https://wgpu-matrix.org/dist/2.x/wgpu-matrix.min.js';
 
 // ... etc ...
 ```
