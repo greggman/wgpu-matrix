@@ -1,4 +1,4 @@
-/* wgpu-matrix@2.9.0, license MIT */
+/* wgpu-matrix@2.9.1, license MIT */
 /*
  * Copyright 2022 Gregg Tavares
  *
