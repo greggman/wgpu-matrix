@@ -101,9 +101,27 @@ There is also the minified version
 import {
   vec3,
   mat4,
-} from 'https://wgpu-matrix.org/dist/2.x/wgpu-matrix.module.js';
+} from 'https://wgpu-matrix.org/dist/2.x/wgpu-matrix.module.min.js';
 
 // ... etc ...
+```
+
+and a UMD version
+
+```html
+<script src="https://wgpu-matrix.org/dist/2.x/wgpu-matrix.js"></script>
+<script>
+const { mat4, vec3 } = wgpuMatrix;
+const m = mat4.identity();
+...
+</script>
+```
+
+or UDM min version
+
+```html
+<script src="https://wgpu-matrix.org/dist/2.x/wgpu-matrix.min.js"></script>
+...
 ```
 
 or via npm
