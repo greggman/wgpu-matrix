@@ -19,10 +19,15 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
+import { BaseArgType } from "./types";
 
 /**
  * A JavaScript array with 16 values, a Float32Array with 16 values, or a Float64Array with 16 values.
- * When created by the library will create the default type which is `Float32Array`
- * but can be set by calling {@link mat4.setDefaultType}.
  */
-export type Mat4 = number[] | Float32Array | Float64Array;
+export type Mat4Arg = BaseArgType;
+
+/**
+ * A specific concrete 4x4 Matrix Type
+ */
+export type Mat4Type<T extends Mat4Arg> = T;
+

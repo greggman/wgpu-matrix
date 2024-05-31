@@ -251,6 +251,82 @@ As the saying goes [*premature optimization is the root of all evil.*](https://s
 
 ## Migration
 
+### 2.x -> 3.x
+
+In JavaScript there should be no difference in the API except for the removable of `setDefaultType`.
+
+In TypeScript, 3.x should mostly be type compatible with 2.x. 
+3.x is an attempt to fix the casting that was necessary in 2.x.
+
+```js
+// 2.x
+device.queue.writeData(buffer, 0, mat4.identity() as Float32Array);  // sadness! 😭
+
+// 3.x
+device.queue.writeData(buffer, 0, mat4.identity());  // Yay! 🎉
+```
+
+In TypeScript the differences are as follows
+
+#### Functions have a default type but return what is passed to them as the dst.
+
+In 3.x each function has a default type but if you pass it
+a destination it returns the type of the destination
+
+```ts
+mat4.identity()                       // returns Float32Array
+mat4.identity(new Float32Array(16));  // returns Float32Array
+mat4.identity(new Float64Array(16));  // returns Float32Array
+mat4.identity(new Array(16));         // returns number[]
+```
+
+### Types are specific
+
+```ts
+const a: Mat4 = ...;    // a = Float32Array
+const b: Mat4d = ...;   // b = Float64Array
+const c: Mat4n = ...;   // c = number[]
+```
+
+This is means code like this
+
+```ts
+const position: Mat4 = [10, 20, 30];
+```
+
+No longer works because `Mat4` is a `Float32Array`.
+
+**BUT, functions take any of the normal types as an argument just like they used to**
+
+```js
+const position = [10, 20, 30];          // number[]
+const target = vec3.create(1, 2, 3);    // Float32Array
+const up = new Float64Array([0, 1, 0]); // Float64Array
+
+// Works fine, even those types are different, just like 2.x did
+const view = mat4.lookAt(position, target, up);  // Float32Array
+```
+
+If you really want types for each concrete type there's
+
+* `Float32Array` types: `Mat3`, `Mat4`, `Quat`, `Vec2`, `Vec3`, `Vec4`
+* `Float64Array` types: `Mat3d`, `Mat4d`, `Quatd`, `Vec2d`, `Vec3d`, `Vec4d`,
+* `number[]` types: `Mat3n`, `Mat4n`, `Quatn`, `Vec2n`, `Vec3n`, `Vec4n`
+
+### There are 3 sets of functions, each one returning a different default
+
+```ts
+mat4.identity()   // returns Float32Array
+mat4d.identity()  // returns Float64Array
+mat4n.identity()  // returns number[]
+```
+
+Similarly there's `mat3d`, `mat3n`, `quatd`, `quatn`,
+`vec2d`, `vec2n`, `vec3d`, `vec3n`, `vec4d`, `vec4n`.
+
+**Note: that in general you're unlikely to need any of these. Just use the
+same ones you were using in 2.x**
+
 ### 1.x -> 2.x
 
 * [`mat4.lookAt`](https://wgpu-matrix.org/docs/functions/mat4.lookAt.html) 

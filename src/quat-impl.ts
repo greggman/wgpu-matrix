@@ -20,16 +20,49 @@
  * DEALINGS IN THE SOFTWARE.
  */
 import * as utils from './utils.js';
-import { Quat, create, setDefaultType, QuatType } from './quat';
-import { Mat3 } from './mat3.js';
-import { Mat4 } from './mat4.js';
-import { Vec3 } from './vec3.js';
-import * as vec3 from './vec3-impl.js';
+import { QuatArg, QuatType } from './quat';
+import { Mat3Arg } from './mat3.js';
+import { Mat4Arg } from './mat4.js';
+import { Vec3Arg } from './vec3.js';
+import { getAPI as getVec3API } from './vec3-impl';
+import { BaseArgType } from './types';
+
+export { QuatArg, QuatType };
+
+type QuatCtor<T extends QuatArg = Float32Array>  = new (n: number) => T;
 
 export type RotationOrder =  'xyz' |  'xzy' |  'yxz' |  'yzx' |  'zxy' |  'zyx';
 
-export default Quat;
-export { create, setDefaultType };
+/**
+ * Generates am typed API for Qud
+ * */
+function getAPIImpl<QuatType extends QuatArg = Float32Array>(Ctor: QuatCtor<QuatType>) {
+  const vec3 = getVec3API<QuatType>(Ctor);
+
+/**
+ * Creates a quat4; may be called with x, y, z to set initial values.
+ * @param x - Initial x value.
+ * @param y - Initial y value.
+ * @param z - Initial z value.
+ * @param w - Initial w value.
+ * @returns the created vector
+ */
+function create(x?: number, y?: number, z?: number, w?: number) {
+  const newDst = new Ctor(4);
+  if (x !== undefined) {
+    newDst[0] = x;
+    if (y !== undefined) {
+      newDst[1] = y;
+      if (z !== undefined) {
+        newDst[2] = z;
+        if (w !== undefined) {
+          newDst[3] = w;
+        }
+      }
+    }
+  }
+  return newDst;
+}
 
 /**
  * Creates a Quat; may be called with x, y, z to set initial values. (same as create)
@@ -39,7 +72,7 @@ export { create, setDefaultType };
  * @param z - Initial w value.
  * @returns the created vector
  */
-export const fromValues = create;
+const fromValues = create;
 
 /**
  * Sets the values of a Quat
@@ -52,15 +85,15 @@ export const fromValues = create;
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector with its elements set.
  */
-export function set(x: number, y: number, z: number, w: number, dst?: Quat) {
-  dst = dst || new QuatType(4);
+function set<T extends QuatArg = QuatType>(x: number, y: number, z: number, w: number, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
-  dst[0] = x;
-  dst[1] = y;
-  dst[2] = z;
-  dst[3] = w;
+  newDst[0] = x;
+  newDst[1] = y;
+  newDst[2] = z;
+  newDst[3] = w;
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -72,18 +105,18 @@ export function set(x: number, y: number, z: number, w: number, dst?: Quat) {
  * @param dst - quaternion to hold result. If not passed in a new one is created.
  * @returns The quaternion that represents the given axis and angle
  **/
-export function fromAxisAngle(axis: Vec3, angleInRadians: number, dst?: Quat): Quat {
-  dst = dst || new QuatType(4);
+function fromAxisAngle<T extends QuatArg = QuatType>(axis: Vec3Arg, angleInRadians: number, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
   const halfAngle = angleInRadians * 0.5;
   const s = Math.sin(halfAngle);
 
-  dst[0] = s * axis[0];
-  dst[1] = s * axis[1];
-  dst[2] = s * axis[2];
-  dst[3] = Math.cos(halfAngle);
+  newDst[0] = s * axis[0];
+  newDst[1] = s * axis[1];
+  newDst[2] = s * axis[2];
+  newDst[3] = Math.cos(halfAngle);
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -92,22 +125,22 @@ export function fromAxisAngle(axis: Vec3, angleInRadians: number, dst?: Quat): Q
  * @param dst - Vec3 to hold result. If not passed in a new one is created.
  * @return angle and axis
  */
-export function toAxisAngle(q: Quat, dst?: Vec3): { angle: number, axis: Vec3 } {
-  dst = dst || vec3.create(4);
+function toAxisAngle<T extends Vec3Arg = QuatType>(q: QuatArg, dst?: T): { angle: number, axis: T } {
+  const newDst = (dst ?? vec3.create(3)) as T;
 
   const angle = Math.acos(q[3]) * 2;
   const s = Math.sin(angle * 0.5);
   if (s > utils.EPSILON) {
-    dst[0] = q[0] / s;
-    dst[1] = q[1] / s;
-    dst[2] = q[2] / s;
+    newDst[0] = q[0] / s;
+    newDst[1] = q[1] / s;
+    newDst[2] = q[2] / s;
   } else {
-    dst[0] = 1;
-    dst[1] = 0;
-    dst[2] = 0;
+    newDst[0] = 1;
+    newDst[1] = 0;
+    newDst[2] = 0;
   }
 
-  return { angle, axis: dst };
+  return { angle, axis: newDst };
 }
 
 /**
@@ -116,7 +149,7 @@ export function toAxisAngle(q: Quat, dst?: Vec3): { angle: number, axis: Vec3 } 
  * @param b - quaternion b
  * @return angle in radians between the two quaternions
  */
-export function angle(a: Quat, b: Quat) {
+function angle(a: QuatArg, b: QuatArg) {
   const d = dot(a, b);
   return Math.acos(2 * d * d - 1);
 }
@@ -129,8 +162,8 @@ export function angle(a: Quat, b: Quat) {
  * @param dst - quaternion to hold result. If not passed in a new one is created.
  * @returns A quaternion that is the result of a * b
  */
-export function multiply(a: Quat, b: Quat, dst?: Quat): Quat {
-  dst = dst || new QuatType(4);
+function multiply<T extends QuatArg = QuatType>(a: QuatArg, b: QuatArg, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
   const ax = a[0];
   const ay = a[1];
@@ -142,12 +175,12 @@ export function multiply(a: Quat, b: Quat, dst?: Quat): Quat {
   const bz = b[2];
   const bw = b[3];
 
-  dst[0] = ax * bw + aw * bx + ay * bz - az * by;
-  dst[1] = ay * bw + aw * by + az * bx - ax * bz;
-  dst[2] = az * bw + aw * bz + ax * by - ay * bx;
-  dst[3] = aw * bw - ax * bx - ay * by - az * bz;
+  newDst[0] = ax * bw + aw * bx + ay * bz - az * by;
+  newDst[1] = ay * bw + aw * by + az * bx - ax * bz;
+  newDst[2] = az * bw + aw * bz + ax * by - ay * bx;
+  newDst[3] = aw * bw - ax * bx - ay * by - az * bz;
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -158,7 +191,7 @@ export function multiply(a: Quat, b: Quat, dst?: Quat): Quat {
  * @param dst - quaternion to hold result. If not passed in a new one is created.
  * @returns A quaternion that is the result of a * b
  */
-export const mul = multiply;
+const mul = multiply;
 
 /**
  * Rotates the given quaternion around the X axis by the given angle.
@@ -167,8 +200,8 @@ export const mul = multiply;
  * @param dst - quaternion to hold result. If not passed in a new one is created.
  * @returns A quaternion that is the result of a * b
  */
-export function rotateX(q: Quat, angleInRadians: number, dst?: Quat): Quat {
-  dst = dst || new QuatType(4);
+function rotateX<T extends QuatArg = QuatType>(q: QuatArg, angleInRadians: number, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
   const halfAngle = angleInRadians * 0.5;
 
@@ -180,12 +213,12 @@ export function rotateX(q: Quat, angleInRadians: number, dst?: Quat): Quat {
   const bx = Math.sin(halfAngle);
   const bw = Math.cos(halfAngle);
 
-  dst[0] = qx * bw + qw * bx;
-  dst[1] = qy * bw + qz * bx;
-  dst[2] = qz * bw - qy * bx;
-  dst[3] = qw * bw - qx * bx;
+  newDst[0] = qx * bw + qw * bx;
+  newDst[1] = qy * bw + qz * bx;
+  newDst[2] = qz * bw - qy * bx;
+  newDst[3] = qw * bw - qx * bx;
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -195,8 +228,8 @@ export function rotateX(q: Quat, angleInRadians: number, dst?: Quat): Quat {
  * @param dst - quaternion to hold result. If not passed in a new one is created.
  * @returns A quaternion that is the result of a * b
  */
-export function rotateY(q: Quat, angleInRadians: number, dst?: Quat): Quat {
-  dst = dst || new QuatType(4);
+function rotateY<T extends QuatArg = QuatType>(q: QuatArg, angleInRadians: number, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
   const halfAngle = angleInRadians * 0.5;
 
@@ -208,12 +241,12 @@ export function rotateY(q: Quat, angleInRadians: number, dst?: Quat): Quat {
   const by = Math.sin(halfAngle);
   const bw = Math.cos(halfAngle);
 
-  dst[0] = qx * bw - qz * by;
-  dst[1] = qy * bw + qw * by;
-  dst[2] = qz * bw + qx * by;
-  dst[3] = qw * bw - qy * by;
+  newDst[0] = qx * bw - qz * by;
+  newDst[1] = qy * bw + qw * by;
+  newDst[2] = qz * bw + qx * by;
+  newDst[3] = qw * bw - qy * by;
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -223,8 +256,8 @@ export function rotateY(q: Quat, angleInRadians: number, dst?: Quat): Quat {
  * @param dst - quaternion to hold result. If not passed in a new one is created.
  * @returns A quaternion that is the result of a * b
  */
-export function rotateZ(q: Quat, angleInRadians: number, dst?: Quat): Quat {
-  dst = dst || new QuatType(4);
+function rotateZ<T extends QuatArg = QuatType>(q: QuatArg, angleInRadians: number, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
   const halfAngle = angleInRadians * 0.5;
 
@@ -236,12 +269,12 @@ export function rotateZ(q: Quat, angleInRadians: number, dst?: Quat): Quat {
   const bz = Math.sin(halfAngle);
   const bw = Math.cos(halfAngle);
 
-  dst[0] = qx * bw + qy * bz;
-  dst[1] = qy * bw - qx * bz;
-  dst[2] = qz * bw + qw * bz;
-  dst[3] = qw * bw - qz * bz;
+  newDst[0] = qx * bw + qy * bz;
+  newDst[1] = qy * bw - qx * bz;
+  newDst[2] = qz * bw + qw * bz;
+  newDst[3] = qw * bw - qz * bz;
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -253,8 +286,8 @@ export function rotateZ(q: Quat, angleInRadians: number, dst?: Quat): Quat {
  * @param dst - quaternion to hold result. If not passed in a new one is created.
  * @returns A quaternion that is the result of a * b
  */
-export function slerp(a: Quat, b: Quat, t: number, dst?: Quat): Quat {
-  dst = dst || new QuatType(4);
+function slerp<T extends QuatArg = QuatType>(a: QuatArg, b: QuatArg, t: number, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
   const ax = a[0];
   const ay = a[1];
@@ -289,12 +322,12 @@ export function slerp(a: Quat, b: Quat, t: number, dst?: Quat): Quat {
     scale1 = t;
   }
 
-  dst[0] = scale0 * ax + scale1 * bx;
-  dst[1] = scale0 * ay + scale1 * by;
-  dst[2] = scale0 * az + scale1 * bz;
-  dst[3] = scale0 * aw + scale1 * bw;
+  newDst[0] = scale0 * ax + scale1 * bx;
+  newDst[1] = scale0 * ay + scale1 * by;
+  newDst[2] = scale0 * az + scale1 * bz;
+  newDst[3] = scale0 * aw + scale1 * bw;
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -303,8 +336,8 @@ export function slerp(a: Quat, b: Quat, t: number, dst?: Quat): Quat {
  * @param q - quaternion to compute the inverse of
  * @returns A quaternion that is the result of a * b
  */
-export function inverse(q: Quat, dst?: Quat): Quat {
-  dst = dst || new QuatType(4);
+function inverse<T extends QuatArg = QuatType>(q: QuatArg, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
   const a0 = q[0];
   const a1 = q[1];
@@ -314,12 +347,12 @@ export function inverse(q: Quat, dst?: Quat): Quat {
   const dot = a0 * a0 + a1 * a1 + a2 * a2 + a3 * a3;
   const invDot = dot ? 1 / dot : 0;
 
-  dst[0] = -a0 * invDot;
-  dst[1] = -a1 * invDot;
-  dst[2] = -a2 * invDot;
-  dst[3] =  a3 * invDot;
+  newDst[0] = -a0 * invDot;
+  newDst[1] = -a1 * invDot;
+  newDst[2] = -a2 * invDot;
+  newDst[3] =  a3 * invDot;
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -331,15 +364,15 @@ export function inverse(q: Quat, dst?: Quat): Quat {
  * @param dst - quaternion to hold result. If not passed in a new one is created.
  * @returns The conjugate of q
  */
-export function conjugate(q: Quat, dst?: Quat): Quat {
-  dst = dst || new QuatType(4);
+function conjugate<T extends QuatArg = QuatType>(q: QuatArg, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
-  dst[0] = -q[0];
-  dst[1] = -q[1];
-  dst[2] = -q[2];
-  dst[3] =  q[3];
+  newDst[0] = -q[0];
+  newDst[1] = -q[1];
+  newDst[2] = -q[2];
+  newDst[3] =  q[3];
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -351,8 +384,8 @@ export function conjugate(q: Quat, dst?: Quat): Quat {
  * @param dst - quaternion to hold result. If not passed in a new one is created.
  * @returns the result
  */
-export function fromMat(m: Mat3 | Mat4, dst?: Quat): Quat {
-  dst = dst || new QuatType(4);
+function fromMat<T extends QuatArg = QuatType>(m: Mat3Arg | Mat4Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
   /*
   0 1 2
@@ -371,12 +404,12 @@ export function fromMat(m: Mat3 | Mat4, dst?: Quat): Quat {
   if (trace > 0.0) {
     // |w| > 1/2, may as well choose w > 1/2
     const root = Math.sqrt(trace + 1); // 2w
-    dst[3] = 0.5 * root;
+    newDst[3] = 0.5 * root;
     const invRoot = 0.5 / root; // 1/(4w)
 
-    dst[0] = (m[6] - m[9]) * invRoot;
-    dst[1] = (m[8] - m[2]) * invRoot;
-    dst[2] = (m[1] - m[4]) * invRoot;
+    newDst[0] = (m[6] - m[9]) * invRoot;
+    newDst[1] = (m[8] - m[2]) * invRoot;
+    newDst[2] = (m[1] - m[4]) * invRoot;
   } else {
     // |w| <= 1/2
     let i = 0;
@@ -392,16 +425,16 @@ export function fromMat(m: Mat3 | Mat4, dst?: Quat): Quat {
     const k = (i + 2) % 3;
 
     const root = Math.sqrt(m[i * 4 + i] - m[j * 4 + j] - m[k * 4 + k] + 1.0);
-    dst[i] = 0.5 * root;
+    newDst[i] = 0.5 * root;
 
     const invRoot = 0.5 / root;
 
-    dst[3] = (m[j * 4 + k] - m[k * 4 + j]) * invRoot;
-    dst[j] = (m[j * 4 + i] + m[i * 4 + j]) * invRoot;
-    dst[k] = (m[k * 4 + i] + m[i * 4 + k]) * invRoot;
+    newDst[3] = (m[j * 4 + k] - m[k * 4 + j]) * invRoot;
+    newDst[j] = (m[j * 4 + i] + m[i * 4 + j]) * invRoot;
+    newDst[k] = (m[k * 4 + i] + m[i * 4 + k]) * invRoot;
   }
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -414,13 +447,13 @@ export function fromMat(m: Mat3 | Mat4, dst?: Quat): Quat {
  * @param dst - quaternion to hold result. If not passed in a new one is created.
  * @returns A quaternion representing the same rotation as the euler angles applied in the given order
  */
-export function fromEuler(
+function fromEuler<T extends QuatArg = QuatType>(
     xAngleInRadians: number,
     yAngleInRadians: number,
     zAngleInRadians: number,
     order: RotationOrder,
-    dst?: Quat) {
-  dst = dst || new QuatType(4);
+    dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
   const xHalfAngle = xAngleInRadians * 0.5;
   const yHalfAngle = yAngleInRadians * 0.5;
@@ -435,52 +468,52 @@ export function fromEuler(
 
   switch (order) {
     case 'xyz':
-      dst[0] = sx * cy * cz + cx * sy * sz;
-      dst[1] = cx * sy * cz - sx * cy * sz;
-      dst[2] = cx * cy * sz + sx * sy * cz;
-      dst[3] = cx * cy * cz - sx * sy * sz;
+      newDst[0] = sx * cy * cz + cx * sy * sz;
+      newDst[1] = cx * sy * cz - sx * cy * sz;
+      newDst[2] = cx * cy * sz + sx * sy * cz;
+      newDst[3] = cx * cy * cz - sx * sy * sz;
       break;
 
     case 'xzy':
-      dst[0] = sx * cy * cz - cx * sy * sz;
-      dst[1] = cx * sy * cz - sx * cy * sz;
-      dst[2] = cx * cy * sz + sx * sy * cz;
-      dst[3] = cx * cy * cz + sx * sy * sz;
+      newDst[0] = sx * cy * cz - cx * sy * sz;
+      newDst[1] = cx * sy * cz - sx * cy * sz;
+      newDst[2] = cx * cy * sz + sx * sy * cz;
+      newDst[3] = cx * cy * cz + sx * sy * sz;
       break;
 
     case 'yxz':
-      dst[0] = sx * cy * cz + cx * sy * sz;
-      dst[1] = cx * sy * cz - sx * cy * sz;
-      dst[2] = cx * cy * sz - sx * sy * cz;
-      dst[3] = cx * cy * cz + sx * sy * sz;
+      newDst[0] = sx * cy * cz + cx * sy * sz;
+      newDst[1] = cx * sy * cz - sx * cy * sz;
+      newDst[2] = cx * cy * sz - sx * sy * cz;
+      newDst[3] = cx * cy * cz + sx * sy * sz;
       break;
 
     case 'yzx':
-      dst[0] = sx * cy * cz + cx * sy * sz;
-      dst[1] = cx * sy * cz + sx * cy * sz;
-      dst[2] = cx * cy * sz - sx * sy * cz;
-      dst[3] = cx * cy * cz - sx * sy * sz;
+      newDst[0] = sx * cy * cz + cx * sy * sz;
+      newDst[1] = cx * sy * cz + sx * cy * sz;
+      newDst[2] = cx * cy * sz - sx * sy * cz;
+      newDst[3] = cx * cy * cz - sx * sy * sz;
       break;
 
     case 'zxy':
-      dst[0] = sx * cy * cz - cx * sy * sz;
-      dst[1] = cx * sy * cz + sx * cy * sz;
-      dst[2] = cx * cy * sz + sx * sy * cz;
-      dst[3] = cx * cy * cz - sx * sy * sz;
+      newDst[0] = sx * cy * cz - cx * sy * sz;
+      newDst[1] = cx * sy * cz + sx * cy * sz;
+      newDst[2] = cx * cy * sz + sx * sy * cz;
+      newDst[3] = cx * cy * cz - sx * sy * sz;
       break;
 
     case 'zyx':
-      dst[0] = sx * cy * cz - cx * sy * sz;
-      dst[1] = cx * sy * cz + sx * cy * sz;
-      dst[2] = cx * cy * sz - sx * sy * cz;
-      dst[3] = cx * cy * cz + sx * sy * sz;
+      newDst[0] = sx * cy * cz - cx * sy * sz;
+      newDst[1] = cx * sy * cz + sx * cy * sz;
+      newDst[2] = cx * cy * sz - sx * sy * cz;
+      newDst[3] = cx * cy * cz + sx * sy * sz;
       break;
 
     default:
       throw new Error(`Unknown rotation order: ${order}`);
   }
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -490,15 +523,15 @@ export function fromEuler(
  * @param dst - quaternion to hold result. If not passed in a new one is created.
  * @returns A quaternion that is a copy of q
  */
-export function copy(q: Quat, dst?: Quat): Quat {
-  dst = dst || new QuatType(4);
+function copy<T extends QuatArg = QuatType>(q: QuatArg, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
-  dst[0] = q[0];
-  dst[1] = q[1];
-  dst[2] = q[2];
-  dst[3] = q[3];
+  newDst[0] = q[0];
+  newDst[1] = q[1];
+  newDst[2] = q[2];
+  newDst[3] = q[3];
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -508,7 +541,7 @@ export function copy(q: Quat, dst?: Quat): Quat {
  * @param dst - quaternion to hold result. If not passed in a new one is created.
  * @returns A copy of q.
  */
-export const clone = copy;
+const clone = copy;
 
 /**
  * Adds two quaternions; assumes a and b have the same dimension.
@@ -517,15 +550,15 @@ export const clone = copy;
  * @param dst - quaternion to hold result. If not passed in a new one is created.
  * @returns A quaternion that is the sum of a and b.
  */
-export function add(a: Quat, b: Quat, dst?: Quat): Quat {
-  dst = dst || new QuatType(4);
+function add<T extends QuatArg = QuatType>(a: QuatArg, b: QuatArg, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
-  dst[0] = a[0] + b[0];
-  dst[1] = a[1] + b[1];
-  dst[2] = a[2] + b[2];
-  dst[3] = a[3] + b[3];
+  newDst[0] = a[0] + b[0];
+  newDst[1] = a[1] + b[1];
+  newDst[2] = a[2] + b[2];
+  newDst[3] = a[3] + b[3];
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -535,15 +568,15 @@ export function add(a: Quat, b: Quat, dst?: Quat): Quat {
  * @param dst - quaternion to hold result. If not passed in a new one is created.
  * @returns A quaternion that is the difference of a and b.
  */
-export function subtract(a: Quat, b: Quat, dst?: Quat): Quat {
-  dst = dst || new QuatType(4);
+function subtract<T extends QuatArg = QuatType>(a: QuatArg, b: QuatArg, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
-  dst[0] = a[0] - b[0];
-  dst[1] = a[1] - b[1];
-  dst[2] = a[2] - b[2];
-  dst[3] = a[3] - b[3];
+  newDst[0] = a[0] - b[0];
+  newDst[1] = a[1] - b[1];
+  newDst[2] = a[2] - b[2];
+  newDst[3] = a[3] - b[3];
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -553,7 +586,7 @@ export function subtract(a: Quat, b: Quat, dst?: Quat): Quat {
  * @param dst - quaternion to hold result. If not passed in a new one is created.
  * @returns A quaternion that is the difference of a and b.
  */
-export const sub = subtract;
+const sub = subtract;
 
 /**
  * Multiplies a quaternion by a scalar.
@@ -562,15 +595,15 @@ export const sub = subtract;
  * @param dst - quaternion to hold result. If not passed in a new one is created.
  * @returns The scaled quaternion.
  */
-export function mulScalar(v: Quat, k: number, dst?: Quat): Quat {
-  dst = dst || new QuatType(4);
+function mulScalar<T extends QuatArg = QuatType>(v: QuatArg, k: number, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
-  dst[0] = v[0] * k;
-  dst[1] = v[1] * k;
-  dst[2] = v[2] * k;
-  dst[3] = v[3] * k;
+  newDst[0] = v[0] * k;
+  newDst[1] = v[1] * k;
+  newDst[2] = v[2] * k;
+  newDst[3] = v[3] * k;
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -580,7 +613,7 @@ export function mulScalar(v: Quat, k: number, dst?: Quat): Quat {
  * @param dst - quaternion to hold result. If not passed in a new one is created.
  * @returns The scaled quaternion.
  */
-export const scale = mulScalar;
+const scale = mulScalar;
 
 /**
  * Divides a vector by a scalar.
@@ -589,15 +622,15 @@ export const scale = mulScalar;
  * @param dst - quaternion to hold result. If not passed in a new one is created.
  * @returns The scaled quaternion.
  */
-export function divScalar(v: Quat, k: number, dst?: Quat): Quat {
-  dst = dst || new QuatType(4);
+function divScalar<T extends QuatArg = QuatType>(v: QuatArg, k: number, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
-  dst[0] = v[0] / k;
-  dst[1] = v[1] / k;
-  dst[2] = v[2] / k;
-  dst[3] = v[3] / k;
+  newDst[0] = v[0] / k;
+  newDst[1] = v[1] / k;
+  newDst[2] = v[2] / k;
+  newDst[3] = v[3] / k;
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -606,7 +639,7 @@ export function divScalar(v: Quat, k: number, dst?: Quat): Quat {
  * @param b - Operand quaternion.
  * @returns dot product
  */
-export function dot(a: Quat, b: Quat): number {
+function dot(a: QuatArg, b: QuatArg): number {
   return (a[0] * b[0]) + (a[1] * b[1]) + (a[2] * b[2]) + (a[3] * b[3]);
 }
 
@@ -620,15 +653,15 @@ export function dot(a: Quat, b: Quat): number {
  * @param dst - quaternion to hold result. If not passed in a new one is created.
  * @returns The linear interpolated result.
  */
-export function lerp(a: Quat, b: Quat, t: number, dst?: Quat): Quat {
-  dst = dst || new QuatType(4);
+function lerp<T extends QuatArg = QuatType>(a: QuatArg, b: QuatArg, t: number, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
-  dst[0] = a[0] + t * (b[0] - a[0]);
-  dst[1] = a[1] + t * (b[1] - a[1]);
-  dst[2] = a[2] + t * (b[2] - a[2]);
-  dst[3] = a[3] + t * (b[3] - a[3]);
+  newDst[0] = a[0] + t * (b[0] - a[0]);
+  newDst[1] = a[1] + t * (b[1] - a[1]);
+  newDst[2] = a[2] + t * (b[2] - a[2]);
+  newDst[3] = a[3] + t * (b[3] - a[3]);
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -636,7 +669,7 @@ export function lerp(a: Quat, b: Quat, t: number, dst?: Quat): Quat {
  * @param v - quaternion.
  * @returns length of quaternion.
  */
-export function length(v: Quat): number {
+function length(v: QuatArg): number {
   const v0 = v[0];
   const v1 = v[1];
   const v2 = v[2];
@@ -649,14 +682,14 @@ export function length(v: Quat): number {
  * @param v - quaternion.
  * @returns length of quaternion.
  */
-export const len = length;
+const len = length;
 
 /**
  * Computes the square of the length of quaternion
  * @param v - quaternion.
  * @returns square of the length of quaternion.
  */
-export function lengthSq(v: Quat): number {
+function lengthSq(v: QuatArg): number {
   const v0 = v[0];
   const v1 = v[1];
   const v2 = v[2];
@@ -669,7 +702,7 @@ export function lengthSq(v: Quat): number {
  * @param v - quaternion.
  * @returns square of the length of quaternion.
  */
-export const lenSq = lengthSq;
+const lenSq = lengthSq;
 
 /**
  * Divides a quaternion by its Euclidean length and returns the quotient.
@@ -677,8 +710,8 @@ export const lenSq = lengthSq;
  * @param dst - quaternion to hold result. If not passed in a new one is created.
  * @returns The normalized quaternion.
  */
-export function normalize(v: Quat, dst?: Quat): Quat {
-  dst = dst || new QuatType(4);
+function normalize<T extends QuatArg = QuatType>(v: QuatArg, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
   const v0 = v[0];
   const v1 = v[1];
@@ -687,18 +720,18 @@ export function normalize(v: Quat, dst?: Quat): Quat {
   const len = Math.sqrt(v0 * v0 + v1 * v1 + v2 * v2 + v3 * v3);
 
   if (len > 0.00001) {
-    dst[0] = v0 / len;
-    dst[1] = v1 / len;
-    dst[2] = v2 / len;
-    dst[3] = v3 / len;
+    newDst[0] = v0 / len;
+    newDst[1] = v1 / len;
+    newDst[2] = v2 / len;
+    newDst[3] = v3 / len;
   } else {
-    dst[0] = 0;
-    dst[1] = 0;
-    dst[2] = 0;
-    dst[3] = 0;
+    newDst[0] = 0;
+    newDst[1] = 0;
+    newDst[2] = 0;
+    newDst[3] = 0;
   }
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -707,7 +740,7 @@ export function normalize(v: Quat, dst?: Quat): Quat {
  * @param b - Operand quaternion.
  * @returns true if quaternions are approximately equal
  */
-export function equalsApproximately(a: Quat, b: Quat): boolean {
+function equalsApproximately(a: QuatArg, b: QuatArg): boolean {
   return Math.abs(a[0] - b[0]) < utils.EPSILON &&
          Math.abs(a[1] - b[1]) < utils.EPSILON &&
          Math.abs(a[2] - b[2]) < utils.EPSILON &&
@@ -720,7 +753,7 @@ export function equalsApproximately(a: Quat, b: Quat): boolean {
  * @param b - Operand quaternion.
  * @returns true if quaternions are exactly equal
  */
-export function equals(a: Quat, b: Quat): boolean {
+function equals(a: QuatArg, b: QuatArg): boolean {
   return a[0] === b[0] && a[1] === b[1] && a[2] === b[2] && a[3] === b[3];
 }
 
@@ -729,20 +762,20 @@ export function equals(a: Quat, b: Quat): boolean {
  * @param dst - quaternion to hold result. If not passed in a new one is created.
  * @returns an identity quaternion
  */
-export function identity(dst?: Quat): Quat {
-  dst = dst || new QuatType(4);
+function identity<T extends QuatArg = QuatType>(dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
-  dst[0] = 0;
-  dst[1] = 0;
-  dst[2] = 0;
-  dst[3] = 1;
+  newDst[0] = 0;
+  newDst[1] = 0;
+  newDst[2] = 0;
+  newDst[3] = 1;
 
-  return dst;
+  return newDst;
 }
 
-let tempVec3: Vec3;
-let xUnitVec3: Vec3;
-let yUnitVec3: Vec3;
+const tempVec3 = vec3.create();
+const xUnitVec3 = vec3.create();
+const yUnitVec3 = vec3.create();
 
 /**
  * Computes a quaternion to represent the shortest rotation from one vector to another.
@@ -752,12 +785,8 @@ let yUnitVec3: Vec3;
  * @param dst - quaternion to hold result. If not passed in a new one is created.
  * @returns the result
  */
-export function rotationTo(aUnit: Vec3, bUnit: Vec3, dst?: Quat): Quat {
-  dst = dst || new QuatType(4);
-
-  tempVec3 = tempVec3 || vec3.create();
-  xUnitVec3 = xUnitVec3 || vec3.create(1, 0, 0);
-  yUnitVec3 = yUnitVec3 || vec3.create(0, 1, 0);
+function rotationTo<T extends QuatArg = QuatType>(aUnit: Vec3Arg, bUnit: Vec3Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
   const dot = vec3.dot(aUnit, bUnit);
   if (dot < -0.999999) {
@@ -767,30 +796,30 @@ export function rotationTo(aUnit: Vec3, bUnit: Vec3, dst?: Quat): Quat {
     }
 
     vec3.normalize(tempVec3, tempVec3);
-    fromAxisAngle(tempVec3, Math.PI, dst);
+    fromAxisAngle(tempVec3, Math.PI, newDst);
 
-    return dst;
+    return newDst;
   } else if (dot > 0.999999) {
-    dst[0] = 0;
-    dst[1] = 0;
-    dst[2] = 0;
-    dst[3] = 1;
+    newDst[0] = 0;
+    newDst[1] = 0;
+    newDst[2] = 0;
+    newDst[3] = 1;
 
-    return dst;
+    return newDst;
   } else {
     vec3.cross(aUnit, bUnit, tempVec3);
 
-    dst[0] = tempVec3[0];
-    dst[1] = tempVec3[1];
-    dst[2] = tempVec3[2];
-    dst[3] = 1 + dot;
+    newDst[0] = tempVec3[0];
+    newDst[1] = tempVec3[1];
+    newDst[2] = tempVec3[2];
+    newDst[3] = 1 + dot;
 
-    return normalize(dst, dst);
+    return normalize(newDst, newDst);
   }
 }
 
-let tempQuat1: Quat;
-let tempQuat2: Quat;
+const tempQuat1 = new Ctor(4);
+const tempQuat2 = new Ctor(4);
 
 /**
  * Performs a spherical linear interpolation with two control points
@@ -802,21 +831,94 @@ let tempQuat2: Quat;
  * @param t - Interpolation coefficient 0 to 1
  * @returns result
  */
-export function sqlerp(
-    a: Quat,
-    b: Quat,
-    c: Quat,
-    d: Quat,
+function sqlerp<T extends QuatArg = QuatType>(
+    a: QuatArg,
+    b: QuatArg,
+    c: QuatArg,
+    d: QuatArg,
     t: number,
-    dst?: Quat): Quat {
-  dst = dst || new QuatType(4);
-
-  tempQuat1 = tempQuat1 || new QuatType(4);
-  tempQuat2 = tempQuat2 || new QuatType(4);
+    dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
   slerp(a, d, t, tempQuat1);
   slerp(b, c, t, tempQuat2);
-  slerp(tempQuat1, tempQuat2, 2 * t * (1 - t), dst);
+  slerp(tempQuat1, tempQuat2, 2 * t * (1 - t), newDst);
 
-  return dst;
+  return newDst;
+}
+
+return {
+  create,
+  fromValues,
+  set,
+  fromAxisAngle,
+  toAxisAngle,
+  angle,
+  multiply,
+  mul,
+  rotateX,
+  rotateY,
+  rotateZ,
+  slerp,
+  inverse,
+  conjugate,
+  fromMat,
+  fromEuler,
+  copy,
+  clone,
+  add,
+  subtract,
+  sub,
+  mulScalar,
+  scale,
+  divScalar,
+  dot,
+  lerp,
+  length,
+  len,
+  lengthSq,
+  lenSq,
+  normalize,
+  equalsApproximately,
+  equals,
+  identity,
+  rotationTo,
+  sqlerp,
+};
+
+}
+
+type API<T extends BaseArgType = Float32Array> = ReturnType<typeof getAPIImpl<T>>;
+
+const cache = new Map();
+
+/**
+ *
+ * Quat4 math functions.
+ *
+ * Almost all functions take an optional `newDst` argument. If it is not passed in the
+ * functions will create a new `Quat4`. In other words you can do this
+ *
+ *     const v = quat4.cross(v1, v2);  // Creates a new Quat4 with the cross product of v1 x v2.
+ *
+ * or
+ *
+ *     const v = quat4.create();
+ *     quat4.cross(v1, v2, v);  // Puts the cross product of v1 x v2 in v
+ *
+ * The first style is often easier but depending on where it's used it generates garbage where
+ * as there is almost never allocation with the second style.
+ *
+ * It is always safe to pass any vector as the destination. So for example
+ *
+ *     quat4.cross(v1, v2, v1);  // Puts the cross product of v1 x v2 in v1
+ *
+ */
+export function getAPI<T extends QuatArg = Float32Array>(Ctor: QuatCtor<T>) {
+  let api = cache.get(Ctor);
+  if (!api) {
+    api = getAPIImpl<T>(Ctor);
+    cache.set(Ctor, api);
+  }
+  return api as API<T>;
 }

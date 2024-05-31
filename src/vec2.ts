@@ -20,83 +20,14 @@
  * DEALINGS IN THE SOFTWARE.
  */
 
-/**
- * A JavaScript array with 2 values, Float32Array with 2 values, or a Float64Array with 2 values.
- * When created by the library will create the default type which is `Float32Array`
- * but can be set by calling {@link vec2.setDefaultType}.
- */
-export type Vec2 = number[] | Float32Array | Float64Array;
+import { BaseArgType } from "./types";
 
 /**
- *
- * Vec2 math functions.
- *
- * Almost all functions take an optional `dst` argument. If it is not passed in the
- * functions will create a new Vec2. In other words you can do this
- *
- *     const v = vec2.cross(v1, v2);  // Creates a new Vec2 with the cross product of v1 x v2.
- *
- * or
- *
- *     const v = vec2.create();
- *     vec2.cross(v1, v2, v);  // Puts the cross product of v1 x v2 in v
- *
- * The first style is often easier but depending on where it's used it generates garbage where
- * as there is almost never allocation with the second style.
- *
- * It is always safe to pass any vector as the destination. So for example
- *
- *     vec2.cross(v1, v2, v1);  // Puts the cross product of v1 x v2 in v1
- *
+ * A JavaScript array with 2 values, a Float32Array with 2 values, or a Float64Array with 2 values.
  */
-
-export let VecType: new (n: number) => Vec2 = Float32Array;
+export type Vec2Arg = BaseArgType;
 
 /**
- * Sets the type this library creates for a Vec2
- * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`
- * @returns previous constructor for Vec2
+ * A specific concrete 2 element vector.
  */
-export function setDefaultType(ctor: new (n: number) => Vec2) {
-  const oldType = VecType;
-  VecType = ctor;
-  return oldType;
-}
-
-/**
- * Creates a Vec2; may be called with x, y, z to set initial values.
- *
- * Note: Since passing in a raw JavaScript array
- * is valid in all circumstances, if you want to
- * force a JavaScript array into a Vec2's specified type
- * it would be faster to use
- *
- * ```
- * const v = vec2.clone(someJSArray);
- * ```
- *
- * Note: a consequence of the implementation is if your Vec2Type = `Array`
- * instead of `Float32Array` or `Float64Array` then any values you
- * don't pass in will be undefined. Usually this is not an issue since
- * (a) using `Array` is rare and (b) using `vec2.create` is usually used
- * to create a Vec2 to be filled out as in
- *
- * ```
- * const sum = vec2.create();
- * vec2.add(v1, v2, sum);
- * ```
- *
- * @param x - Initial x value.
- * @param y - Initial y value.
- * @returns the created vector
- */
-export function create(x = 0, y = 0): Vec2 {
-  const dst = new VecType(2);
-  if (x !== undefined) {
-    dst[0] = x;
-    if (y !== undefined) {
-      dst[1] = y;
-    }
-  }
-  return dst;
-}
+export type Vec2Type<T extends Vec2Arg> = T;
