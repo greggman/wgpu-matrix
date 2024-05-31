@@ -21,61 +21,23 @@
  */
 
 import * as utils from './utils.js';
-import { Quat } from './quat';
-import { Mat3 } from './mat3';
-import { Mat4 } from './mat4';
-import Vec2, * as vec2 from './vec2-impl';
+import { QuatArg } from './quat';
+import { Mat3Arg, Mat3 } from './mat3';
+import { Mat4Arg } from './mat4';
+import { Vec2Arg } from './vec2';
+import { getAPI as getVec2API } from './vec2-impl';
+import { BaseArgType } from './types';
 
-export default Mat3;
+export { Mat3Arg, Mat3 };
 
-export type Mat3LikeCtor = new (n: number) => Mat3;
-
-/**
- * 3x3 Matrix math math functions.
- *
- * Almost all functions take an optional `dst` argument. If it is not passed in the
- * functions will create a new matrix. In other words you can do this
- *
- *     const mat = mat3.translation([1, 2, 3]);  // Creates a new translation matrix
- *
- * or
- *
- *     const mat = mat3.create();
- *     mat3.translation([1, 2, 3], mat);  // Puts translation matrix in mat.
- *
- * The first style is often easier but depending on where it's used it generates garbage where
- * as there is almost never allocation with the second style.
- *
- * It is always save to pass any matrix as the destination. So for example
- *
- *     const mat = mat3.identity();
- *     const trans = mat3.translation([1, 2, 3]);
- *     mat3.multiply(mat, trans, mat);  // Multiplies mat * trans and puts result in mat.
- *
- */
-let MatType: Mat3LikeCtor = Float32Array;
-
-// This mess is because with Mat3 we have 3 unused elements.
-// For Float32Array and Float64Array that's not an issue
-// but for Array it's troublesome
-const ctorMap = new Map<Mat3LikeCtor,() => Mat3>([
-  [Float32Array, () => new Float32Array(12)],
-  [Float64Array, () => new Float64Array(12)],
-  [Array, () => new Array(12).fill(0)],
-]);
-let newMat3: () => Mat3 = ctorMap.get(Float32Array)!;
+type Mat3Ctor<T extends Mat3Arg = Float32Array>  = new (n: number) => T;
 
 /**
- * Sets the type this library creates for a Mat3
- * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`
- * @returns previous constructor for Mat3
+ * Generates a typed API for Mat3
+ * @ignore
  */
-export function setDefaultType(ctor: new (n: number) => Mat3) {
-  const oldType = MatType;
-  MatType = ctor;
-  newMat3 = ctorMap.get(ctor)!;
-  return oldType;
-}
+function getAPIImpl<MatType extends Mat3Arg = Float32Array>(Ctor: Mat3Ctor<MatType>) {
+  const vec2 = getVec2API<MatType>(Ctor);
 
 /**
  * Create a Mat3 from values
@@ -111,34 +73,34 @@ export function setDefaultType(ctor: new (n: number) => Mat3) {
  * @param v8 - value for element 8
  * @returns matrix created from values.
  */
-export function create(
+function create(
     v0?: number, v1?: number, v2?: number,
     v3?: number, v4?: number, v5?: number,
-    v6?: number, v7?: number, v8?: number): Mat3 {
-  const dst = newMat3();
+    v6?: number, v7?: number, v8?: number) {
+  const newDst = new Ctor(12);
   // to make the array homogenous
-  dst[3] = 0;
-  dst[7] = 0;
-  dst[11] = 0;
+  newDst[3] = 0;
+  newDst[7] = 0;
+  newDst[11] = 0;
 
   if (v0 !== undefined) {
-    dst[0] = v0;
+    newDst[0] = v0;
     if (v1 !== undefined) {
-      dst[1] = v1;
+      newDst[1] = v1;
       if (v2 !== undefined) {
-        dst[2] = v2;
+        newDst[2] = v2;
         if (v3 !== undefined) {
-          dst[4] = v3;
+          newDst[4] = v3;
           if (v4 !== undefined) {
-            dst[5] = v4;
+            newDst[5] = v4;
             if (v5 !== undefined) {
-              dst[6] = v5;
+              newDst[6] = v5;
               if (v6 !== undefined) {
-                dst[8] = v6;
+                newDst[8] = v6;
                 if (v7 !== undefined) {
-                  dst[9] = v7;
+                  newDst[9] = v7;
                   if (v8 !== undefined) {
-                    dst[10] = v8;
+                    newDst[10] = v8;
                   }
                 }
               }
@@ -149,7 +111,7 @@ export function create(
     }
   }
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -168,17 +130,17 @@ export function create(
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns Mat3 set from values.
  */
-export function set(
+function set<T extends Mat3Arg = MatType>(
     v0: number, v1: number, v2: number,
     v3: number, v4: number, v5: number,
-    v6: number, v7: number, v8: number, dst?: Mat3) {
-  dst = dst || newMat3();
+    v6: number, v7: number, v8: number, dst?: T) {
+  const newDst = (dst ?? new Ctor(12)) as T;
 
-  dst[0] = v0;  dst[1] = v1;  dst[ 2] = v2;  dst[ 3] = 0;
-  dst[4] = v3;  dst[5] = v4;  dst[ 6] = v5;  dst[ 7] = 0;
-  dst[8] = v6;  dst[9] = v7;  dst[10] = v8;  dst[11] = 0;
+  newDst[0] = v0;  newDst[1] = v1;  newDst[ 2] = v2;  newDst[ 3] = 0;
+  newDst[4] = v3;  newDst[5] = v4;  newDst[ 6] = v5;  newDst[ 7] = 0;
+  newDst[8] = v6;  newDst[9] = v7;  newDst[10] = v8;  newDst[11] = 0;
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -187,12 +149,12 @@ export function set(
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns Mat3 made from m4
  */
-export function fromMat4(m4: Mat4, dst?: Mat3): Mat3 {
-  dst = dst || newMat3();
-  dst[0] = m4[0];  dst[1] = m4[1];  dst[ 2] = m4[ 2];  dst[ 3] = 0;
-  dst[4] = m4[4];  dst[5] = m4[5];  dst[ 6] = m4[ 6];  dst[ 7] = 0;
-  dst[8] = m4[8];  dst[9] = m4[9];  dst[10] = m4[10];  dst[11] = 0;
-  return dst;
+function fromMat4<T extends Mat3Arg = MatType>(m4: Mat4Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(12)) as T;
+  newDst[0] = m4[0];  newDst[1] = m4[1];  newDst[ 2] = m4[ 2];  newDst[ 3] = 0;
+  newDst[4] = m4[4];  newDst[5] = m4[5];  newDst[ 6] = m4[ 6];  newDst[ 7] = 0;
+  newDst[8] = m4[8];  newDst[9] = m4[9];  newDst[10] = m4[10];  newDst[11] = 0;
+  return newDst;
 }
 
 /**
@@ -201,8 +163,8 @@ export function fromMat4(m4: Mat4, dst?: Mat3): Mat3 {
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns Mat3 made from q
  */
-export function fromQuat(q: Quat, dst?: Mat3): Mat3 {
-  dst = dst || newMat3();
+function fromQuat<T extends Mat3Arg = MatType>(q: QuatArg, dst?: T) {
+  const newDst = (dst ?? new Ctor(12)) as T;
 
   const x = q[0]; const y = q[1]; const z = q[2]; const w = q[3];
   const x2 = x + x; const y2 = y + y; const z2 = z + z;
@@ -217,11 +179,11 @@ export function fromQuat(q: Quat, dst?: Mat3): Mat3 {
   const wy = w * y2;
   const wz = w * z2;
 
-  dst[ 0] = 1 - yy - zz;  dst[ 1] = yx + wz;      dst[ 2] = zx - wy;      dst[ 3] = 0;
-  dst[ 4] = yx - wz;      dst[ 5] = 1 - xx - zz;  dst[ 6] = zy + wx;      dst[ 7] = 0;
-  dst[ 8] = zx + wy;      dst[ 9] = zy - wx;      dst[10] = 1 - xx - yy;  dst[11] = 0;
+  newDst[ 0] = 1 - yy - zz;  newDst[ 1] = yx + wz;      newDst[ 2] = zx - wy;      newDst[ 3] = 0;
+  newDst[ 4] = yx - wz;      newDst[ 5] = 1 - xx - zz;  newDst[ 6] = zy + wx;      newDst[ 7] = 0;
+  newDst[ 8] = zx + wy;      newDst[ 9] = zy - wx;      newDst[10] = 1 - xx - yy;  newDst[11] = 0;
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -230,14 +192,14 @@ export function fromQuat(q: Quat, dst?: Mat3): Mat3 {
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns -m.
  */
-export function negate(m: Mat3, dst?: Mat3): Mat3 {
-  dst = dst || newMat3();
+function negate<T extends Mat3Arg = MatType>(m: Mat3Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(12)) as T;
 
-  dst[ 0] = -m[ 0];  dst[ 1] = -m[ 1];  dst[ 2] = -m[ 2];
-  dst[ 4] = -m[ 4];  dst[ 5] = -m[ 5];  dst[ 6] = -m[ 6];
-  dst[ 8] = -m[ 8];  dst[ 9] = -m[ 9];  dst[10] = -m[10];
+  newDst[ 0] = -m[ 0];  newDst[ 1] = -m[ 1];  newDst[ 2] = -m[ 2];
+  newDst[ 4] = -m[ 4];  newDst[ 5] = -m[ 5];  newDst[ 6] = -m[ 6];
+  newDst[ 8] = -m[ 8];  newDst[ 9] = -m[ 9];  newDst[10] = -m[10];
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -247,14 +209,14 @@ export function negate(m: Mat3, dst?: Mat3): Mat3 {
  * @param dst - The matrix. If not passed a new one is created.
  * @returns A copy of m.
  */
-export function copy(m: Mat3, dst?: Mat3): Mat3 {
-  dst = dst || newMat3();
+function copy<T extends Mat3Arg = MatType>(m: Mat3Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(12)) as T;
 
-  dst[ 0] = m[ 0];  dst[ 1] = m[ 1];  dst[ 2] = m[ 2];
-  dst[ 4] = m[ 4];  dst[ 5] = m[ 5];  dst[ 6] = m[ 6];
-  dst[ 8] = m[ 8];  dst[ 9] = m[ 9];  dst[10] = m[10];
+  newDst[ 0] = m[ 0];  newDst[ 1] = m[ 1];  newDst[ 2] = m[ 2];
+  newDst[ 4] = m[ 4];  newDst[ 5] = m[ 5];  newDst[ 6] = m[ 6];
+  newDst[ 8] = m[ 8];  newDst[ 9] = m[ 9];  newDst[10] = m[10];
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -264,7 +226,7 @@ export function copy(m: Mat3, dst?: Mat3): Mat3 {
  * @param dst - The matrix. If not passed a new one is created.
  * @returns A copy of m.
  */
-export const clone = copy;
+const clone = copy;
 
 /**
  * Check if 2 matrices are approximately equal
@@ -272,7 +234,7 @@ export const clone = copy;
  * @param b Operand matrix.
  * @returns true if matrices are approximately equal
  */
-export function equalsApproximately(a: Mat3, b: Mat3): boolean {
+function equalsApproximately(a: Mat3Arg, b: Mat3Arg): boolean {
   return Math.abs(a[ 0] - b[ 0]) < utils.EPSILON &&
          Math.abs(a[ 1] - b[ 1]) < utils.EPSILON &&
          Math.abs(a[ 2] - b[ 2]) < utils.EPSILON &&
@@ -290,7 +252,7 @@ export function equalsApproximately(a: Mat3, b: Mat3): boolean {
  * @param b Operand matrix.
  * @returns true if matrices are exactly equal
  */
-export function equals(a: Mat3, b: Mat3): boolean {
+function equals(a: Mat3Arg, b: Mat3Arg): boolean {
   return a[ 0] === b[ 0] &&
          a[ 1] === b[ 1] &&
          a[ 2] === b[ 2] &&
@@ -308,14 +270,14 @@ export function equals(a: Mat3, b: Mat3): boolean {
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns A 3-by-3 identity matrix.
  */
-export function identity(dst?: Mat3): Mat3 {
-  dst = dst || newMat3();
+function identity<T extends Mat3Arg = MatType>(dst?: T) {
+  const newDst = (dst ?? new Ctor(12)) as T;
 
-  dst[ 0] = 1;  dst[ 1] = 0;  dst[ 2] = 0;
-  dst[ 4] = 0;  dst[ 5] = 1;  dst[ 6] = 0;
-  dst[ 8] = 0;  dst[ 9] = 0;  dst[10] = 1;
+  newDst[ 0] = 1;  newDst[ 1] = 0;  newDst[ 2] = 0;
+  newDst[ 4] = 0;  newDst[ 5] = 1;  newDst[ 6] = 0;
+  newDst[ 8] = 0;  newDst[ 9] = 0;  newDst[10] = 1;
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -324,9 +286,9 @@ export function identity(dst?: Mat3): Mat3 {
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns The transpose of m.
  */
-export function transpose(m: Mat3, dst?: Mat3): Mat3 {
-  dst = dst || newMat3();
-  if (dst === m) {
+function transpose<T extends Mat3Arg = MatType>(m: Mat3Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(12)) as T;
+  if (newDst === m) {
     let t: number;
 
     // 0 1 2
@@ -345,7 +307,7 @@ export function transpose(m: Mat3, dst?: Mat3): Mat3 {
     m[6] = m[9];
     m[9] = t;
 
-    return dst;
+    return newDst;
   }
 
   const m00 = m[0 * 4 + 0];
@@ -358,11 +320,11 @@ export function transpose(m: Mat3, dst?: Mat3): Mat3 {
   const m21 = m[2 * 4 + 1];
   const m22 = m[2 * 4 + 2];
 
-  dst[ 0] = m00;  dst[ 1] = m10;  dst[ 2] = m20;
-  dst[ 4] = m01;  dst[ 5] = m11;  dst[ 6] = m21;
-  dst[ 8] = m02;  dst[ 9] = m12;  dst[10] = m22;
+  newDst[ 0] = m00;  newDst[ 1] = m10;  newDst[ 2] = m20;
+  newDst[ 4] = m01;  newDst[ 5] = m11;  newDst[ 6] = m21;
+  newDst[ 8] = m02;  newDst[ 9] = m12;  newDst[10] = m22;
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -371,8 +333,8 @@ export function transpose(m: Mat3, dst?: Mat3): Mat3 {
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns The inverse of m.
  */
-export function inverse(m: Mat3, dst?: Mat3): Mat3 {
-  dst = dst || newMat3();
+function inverse<T extends Mat3Arg = MatType>(m: Mat3Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(12)) as T;
 
   const m00 = m[0 * 4 + 0];
   const m01 = m[0 * 4 + 1];
@@ -390,17 +352,17 @@ export function inverse(m: Mat3, dst?: Mat3): Mat3 {
 
   const invDet = 1 / (m00 * b01 + m01 * b11 + m02 * b21);
 
-  dst[ 0] = b01 * invDet;
-  dst[ 1] = (-m22 * m01 + m02 * m21) * invDet;
-  dst[ 2] = ( m12 * m01 - m02 * m11) * invDet;
-  dst[ 4] = b11 * invDet;
-  dst[ 5] = ( m22 * m00 - m02 * m20) * invDet;
-  dst[ 6] = (-m12 * m00 + m02 * m10) * invDet;
-  dst[ 8] = b21 * invDet;
-  dst[ 9] = (-m21 * m00 + m01 * m20) * invDet;
-  dst[10] = ( m11 * m00 - m01 * m10) * invDet;
+  newDst[ 0] = b01 * invDet;
+  newDst[ 1] = (-m22 * m01 + m02 * m21) * invDet;
+  newDst[ 2] = ( m12 * m01 - m02 * m11) * invDet;
+  newDst[ 4] = b11 * invDet;
+  newDst[ 5] = ( m22 * m00 - m02 * m20) * invDet;
+  newDst[ 6] = (-m12 * m00 + m02 * m10) * invDet;
+  newDst[ 8] = b21 * invDet;
+  newDst[ 9] = (-m21 * m00 + m01 * m20) * invDet;
+  newDst[10] = ( m11 * m00 - m01 * m10) * invDet;
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -408,7 +370,7 @@ export function inverse(m: Mat3, dst?: Mat3): Mat3 {
  * @param m - the matrix
  * @returns the determinant
  */
-export function determinant(m: Mat3): number {
+function determinant(m: Mat3Arg): number {
   const m00 = m[0 * 4 + 0];
   const m01 = m[0 * 4 + 1];
   const m02 = m[0 * 4 + 2];
@@ -430,7 +392,7 @@ export function determinant(m: Mat3): number {
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns The inverse of m.
  */
-export const invert = inverse;
+const invert = inverse;
 
 /**
  * Multiplies two 3-by-3 matrices with a on the left and b on the right
@@ -439,8 +401,8 @@ export const invert = inverse;
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns The matrix product of a and b.
  */
-export function multiply(a: Mat3, b: Mat3, dst?: Mat3): Mat3 {
-  dst = dst || newMat3();
+function multiply<T extends Mat3Arg = MatType>(a: Mat3Arg, b: Mat3Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(12)) as T;
 
   const a00 = a[0];
   const a01 = a[1];
@@ -461,17 +423,17 @@ export function multiply(a: Mat3, b: Mat3, dst?: Mat3): Mat3 {
   const b21 = b[ 8 + 1];
   const b22 = b[ 8 + 2];
 
-  dst[ 0] = a00 * b00 + a10 * b01 + a20 * b02;
-  dst[ 1] = a01 * b00 + a11 * b01 + a21 * b02;
-  dst[ 2] = a02 * b00 + a12 * b01 + a22 * b02;
-  dst[ 4] = a00 * b10 + a10 * b11 + a20 * b12;
-  dst[ 5] = a01 * b10 + a11 * b11 + a21 * b12;
-  dst[ 6] = a02 * b10 + a12 * b11 + a22 * b12;
-  dst[ 8] = a00 * b20 + a10 * b21 + a20 * b22;
-  dst[ 9] = a01 * b20 + a11 * b21 + a21 * b22;
-  dst[10] = a02 * b20 + a12 * b21 + a22 * b22;
+  newDst[ 0] = a00 * b00 + a10 * b01 + a20 * b02;
+  newDst[ 1] = a01 * b00 + a11 * b01 + a21 * b02;
+  newDst[ 2] = a02 * b00 + a12 * b01 + a22 * b02;
+  newDst[ 4] = a00 * b10 + a10 * b11 + a20 * b12;
+  newDst[ 5] = a01 * b10 + a11 * b11 + a21 * b12;
+  newDst[ 6] = a02 * b10 + a12 * b11 + a22 * b12;
+  newDst[ 8] = a00 * b20 + a10 * b21 + a20 * b22;
+  newDst[ 9] = a01 * b20 + a11 * b21 + a21 * b22;
+  newDst[10] = a02 * b20 + a12 * b21 + a22 * b22;
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -481,7 +443,7 @@ export function multiply(a: Mat3, b: Mat3, dst?: Mat3): Mat3 {
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns The matrix product of a and b.
  */
-export const mul = multiply;
+const mul = multiply;
 
 /**
  * Sets the translation component of a 3-by-3 matrix to the given
@@ -491,20 +453,20 @@ export const mul = multiply;
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns The matrix with translation set.
  */
-export function setTranslation(a: Mat3, v: Vec2, dst?: Mat3): Mat3 {
-  dst = dst || identity();
-  if (a !== dst) {
-    dst[ 0] = a[ 0];
-    dst[ 1] = a[ 1];
-    dst[ 2] = a[ 2];
-    dst[ 4] = a[ 4];
-    dst[ 5] = a[ 5];
-    dst[ 6] = a[ 6];
+function setTranslation<T extends Mat3Arg = MatType>(a: Mat3Arg, v: Vec2Arg, dst?: T) {
+  const newDst = (dst ?? identity()) as T;
+  if (a !== newDst) {
+    newDst[ 0] = a[ 0];
+    newDst[ 1] = a[ 1];
+    newDst[ 2] = a[ 2];
+    newDst[ 4] = a[ 4];
+    newDst[ 5] = a[ 5];
+    newDst[ 6] = a[ 6];
   }
-  dst[ 8] = v[0];
-  dst[ 9] = v[1];
-  dst[10] = 1;
-  return dst;
+  newDst[ 8] = v[0];
+  newDst[ 9] = v[1];
+  newDst[10] = 1;
+  return newDst;
 }
 
 /**
@@ -514,11 +476,11 @@ export function setTranslation(a: Mat3, v: Vec2, dst?: Mat3): Mat3 {
  * @param dst - vector to hold result. If not passed a new one is created.
  * @returns The translation component of m.
  */
-export function getTranslation(m: Mat3, dst?: Vec2): Vec2 {
-  dst = dst || vec2.create();
-  dst[0] = m[8];
-  dst[1] = m[9];
-  return dst;
+function getTranslation<T extends Vec2Arg = MatType>(m: Mat3Arg, dst?: T) {
+  const newDst = (dst ?? vec2.create()) as T;
+  newDst[0] = m[8];
+  newDst[1] = m[9];
+  return newDst;
 }
 
 /**
@@ -527,12 +489,12 @@ export function getTranslation(m: Mat3, dst?: Vec2): Vec2 {
  * @param axis - The axis 0 = x, 1 = y,
  * @returns The axis component of m.
  */
-export function getAxis(m: Mat3, axis: number, dst?: Vec2): Vec2 {
-  dst = dst || vec2.create();
+function getAxis<T extends Vec2Arg = MatType>(m: Mat3Arg, axis: number, dst?: T) {
+  const newDst = (dst ?? vec2.create()) as T;
   const off = axis * 4;
-  dst[0] = m[off + 0];
-  dst[1] = m[off + 1];
-  return dst;
+  newDst[0] = m[off + 0];
+  newDst[1] = m[off + 1];
+  return newDst;
 }
 
 /**
@@ -543,33 +505,32 @@ export function getAxis(m: Mat3, axis: number, dst?: Vec2): Vec2 {
  * @param dst - The matrix to set. If not passed a new one is created.
  * @returns The matrix with axis set.
  */
-export function setAxis(m: Mat3, v: Vec2, axis: number, dst?: Mat3): Mat3 {
-  if (dst !== m) {
-    dst = copy(m, dst);
-  }
+function setAxis<T extends Mat3Arg = MatType>(m: Mat3Arg, v: Vec2Arg, axis: number, dst?: T) {
+  const newDst = (dst === m ? m : copy(m, dst)) as T;
+
   const off = axis * 4;
-  dst[off + 0] = v[0];
-  dst[off + 1] = v[1];
-  return dst;
+  newDst[off + 0] = v[0];
+  newDst[off + 1] = v[1];
+  return newDst;
 }
 
-/**
- * Returns the scaling component of the matrix
- * @param m - The Matrix
- * @param dst - The vector to set. If not passed a new one is created.
- */
-export function getScaling(m: Mat3, dst?: Vec2): Vec2 {
-  dst = dst || vec2.create();
+///**
+// * Returns the scaling component of the matrix
+// * @param m - The Matrix
+// * @param dst - The vector to set. If not passed a new one is created.
+// */
+function getScaling<T extends Vec2Arg = MatType>(m: Mat3Arg, dst?: T) {
+  const newDst = (dst ?? vec2.create());
 
   const xx = m[0];
   const xy = m[1];
   const yx = m[4];
   const yy = m[5];
 
-  dst[0] = Math.sqrt(xx * xx + xy * xy);
-  dst[1] = Math.sqrt(yx * yx + yy * yy);
+  newDst[0] = Math.sqrt(xx * xx + xy * xy);
+  newDst[1] = Math.sqrt(yx * yx + yy * yy);
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -578,14 +539,14 @@ export function getScaling(m: Mat3, dst?: Vec2): Vec2 {
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns The translation matrix.
  */
-export function translation(v: Vec2, dst?: Mat3): Mat3 {
-  dst = dst || newMat3();
+function translation<T extends Mat3Arg = MatType>(v: Vec2Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(12)) as T;
 
-  dst[ 0] = 1;     dst[ 1] = 0;     dst[ 2] = 0;
-  dst[ 4] = 0;     dst[ 5] = 1;     dst[ 6] = 0;
-  dst[ 8] = v[0];  dst[ 9] = v[1];  dst[10] = 1;
+  newDst[ 0] = 1;     newDst[ 1] = 0;     newDst[ 2] = 0;
+  newDst[ 4] = 0;     newDst[ 5] = 1;     newDst[ 6] = 0;
+  newDst[ 8] = v[0];  newDst[ 9] = v[1];  newDst[10] = 1;
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -595,8 +556,8 @@ export function translation(v: Vec2, dst?: Mat3): Mat3 {
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns The translated matrix.
  */
-export function translate(m: Mat3, v: Vec2, dst?: Mat3): Mat3 {
-  dst = dst || newMat3();
+function translate<T extends Mat3Arg = MatType>(m: Mat3Arg, v: Vec2Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(12)) as T;
 
   const v0 = v[0];
   const v1 = v[1];
@@ -611,20 +572,20 @@ export function translate(m: Mat3, v: Vec2, dst?: Mat3): Mat3 {
   const m21 = m[2 * 4 + 1];
   const m22 = m[2 * 4 + 2];
 
-  if (m !== dst) {
-    dst[ 0] = m00;
-    dst[ 1] = m01;
-    dst[ 2] = m02;
-    dst[ 4] = m10;
-    dst[ 5] = m11;
-    dst[ 6] = m12;
+  if (m !== newDst) {
+    newDst[ 0] = m00;
+    newDst[ 1] = m01;
+    newDst[ 2] = m02;
+    newDst[ 4] = m10;
+    newDst[ 5] = m11;
+    newDst[ 6] = m12;
   }
 
-  dst[ 8] = m00 * v0 + m10 * v1 + m20;
-  dst[ 9] = m01 * v0 + m11 * v1 + m21;
-  dst[10] = m02 * v0 + m12 * v1 + m22;
+  newDst[ 8] = m00 * v0 + m10 * v1 + m20;
+  newDst[ 9] = m01 * v0 + m11 * v1 + m21;
+  newDst[10] = m02 * v0 + m12 * v1 + m22;
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -633,17 +594,17 @@ export function translate(m: Mat3, v: Vec2, dst?: Mat3): Mat3 {
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns The rotation matrix.
  */
-export function rotation(angleInRadians: number, dst?: Mat3): Mat3 {
-  dst = dst || newMat3();
+function rotation<T extends Mat3Arg = MatType>(angleInRadians: number, dst?: T) {
+  const newDst = (dst ?? new Ctor(12)) as T;
 
   const c = Math.cos(angleInRadians);
   const s = Math.sin(angleInRadians);
 
-  dst[ 0] =  c;  dst[ 1] = s;  dst[ 2] = 0;
-  dst[ 4] = -s;  dst[ 5] = c;  dst[ 6] = 0;
-  dst[ 8] =  0;  dst[ 9] = 0;  dst[10] = 1;
+  newDst[ 0] =  c;  newDst[ 1] = s;  newDst[ 2] = 0;
+  newDst[ 4] = -s;  newDst[ 5] = c;  newDst[ 6] = 0;
+  newDst[ 8] =  0;  newDst[ 9] = 0;  newDst[10] = 1;
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -653,8 +614,8 @@ export function rotation(angleInRadians: number, dst?: Mat3): Mat3 {
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns The rotated matrix.
  */
-export function rotate(m: Mat3, angleInRadians: number, dst?: Mat3): Mat3 {
-  dst = dst || newMat3();
+function rotate<T extends Mat3Arg = MatType>(m: Mat3Arg, angleInRadians: number, dst?: T) {
+  const newDst = (dst ?? new Ctor(12)) as T;
 
   const m00 = m[0 * 4 + 0];
   const m01 = m[0 * 4 + 1];
@@ -665,22 +626,22 @@ export function rotate(m: Mat3, angleInRadians: number, dst?: Mat3): Mat3 {
   const c = Math.cos(angleInRadians);
   const s = Math.sin(angleInRadians);
 
-  dst[ 0] = c * m00 + s * m10;
-  dst[ 1] = c * m01 + s * m11;
-  dst[ 2] = c * m02 + s * m12;
+  newDst[ 0] = c * m00 + s * m10;
+  newDst[ 1] = c * m01 + s * m11;
+  newDst[ 2] = c * m02 + s * m12;
 
-  dst[ 4] = c * m10 - s * m00;
-  dst[ 5] = c * m11 - s * m01;
-  dst[ 6] = c * m12 - s * m02;
+  newDst[ 4] = c * m10 - s * m00;
+  newDst[ 5] = c * m11 - s * m01;
+  newDst[ 6] = c * m12 - s * m02;
 
 
-  if (m !== dst) {
-    dst[ 8] = m[ 8];
-    dst[ 9] = m[ 9];
-    dst[10] = m[10];
+  if (m !== newDst) {
+    newDst[ 8] = m[ 8];
+    newDst[ 9] = m[ 9];
+    newDst[10] = m[10];
   }
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -692,14 +653,14 @@ export function rotate(m: Mat3, angleInRadians: number, dst?: Mat3): Mat3 {
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns The scaling matrix.
  */
-export function scaling(v: Vec2, dst?: Mat3): Mat3 {
-  dst = dst || newMat3();
+function scaling<T extends Mat3Arg = MatType>(v: Vec2Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(12)) as T;
 
-  dst[ 0] = v[0];  dst[ 1] = 0;     dst[ 2] = 0;
-  dst[ 4] = 0;     dst[ 5] = v[1];  dst[ 6] = 0;
-  dst[ 8] = 0;     dst[ 9] = 0;     dst[10] = 1;
+  newDst[ 0] = v[0];  newDst[ 1] = 0;     newDst[ 2] = 0;
+  newDst[ 4] = 0;     newDst[ 5] = v[1];  newDst[ 6] = 0;
+  newDst[ 8] = 0;     newDst[ 9] = 0;     newDst[10] = 1;
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -712,27 +673,27 @@ export function scaling(v: Vec2, dst?: Mat3): Mat3 {
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns The scaled matrix.
  */
-export function scale(m: Mat3, v: Vec2, dst?: Mat3): Mat3 {
-  dst = dst || newMat3();
+function scale<T extends Mat3Arg = MatType>(m: Mat3Arg, v: Vec2Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(12)) as T;
 
   const v0 = v[0];
   const v1 = v[1];
 
-  dst[ 0] = v0 * m[0 * 4 + 0];
-  dst[ 1] = v0 * m[0 * 4 + 1];
-  dst[ 2] = v0 * m[0 * 4 + 2];
+  newDst[ 0] = v0 * m[0 * 4 + 0];
+  newDst[ 1] = v0 * m[0 * 4 + 1];
+  newDst[ 2] = v0 * m[0 * 4 + 2];
 
-  dst[ 4] = v1 * m[1 * 4 + 0];
-  dst[ 5] = v1 * m[1 * 4 + 1];
-  dst[ 6] = v1 * m[1 * 4 + 2];
+  newDst[ 4] = v1 * m[1 * 4 + 0];
+  newDst[ 5] = v1 * m[1 * 4 + 1];
+  newDst[ 6] = v1 * m[1 * 4 + 2];
 
-  if (m !== dst) {
-    dst[ 8] = m[ 8];
-    dst[ 9] = m[ 9];
-    dst[10] = m[10];
+  if (m !== newDst) {
+    newDst[ 8] = m[ 8];
+    newDst[ 9] = m[ 9];
+    newDst[10] = m[10];
   }
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -741,14 +702,14 @@ export function scale(m: Mat3, v: Vec2, dst?: Mat3): Mat3 {
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns The scaling matrix.
  */
-export function uniformScaling(s: number, dst?: Mat3): Mat3 {
-  dst = dst || newMat3();
+function uniformScaling<T extends Mat3Arg = MatType>(s: number, dst?: T) {
+  const newDst = (dst ?? new Ctor(12)) as T;
 
-  dst[ 0] = s;  dst[ 1] = 0;  dst[ 2] = 0;
-  dst[ 4] = 0;  dst[ 5] = s;  dst[ 6] = 0;
-  dst[ 8] = 0;  dst[ 9] = 0;  dst[10] = 1;
+  newDst[ 0] = s;  newDst[ 1] = 0;  newDst[ 2] = 0;
+  newDst[ 4] = 0;  newDst[ 5] = s;  newDst[ 6] = 0;
+  newDst[ 8] = 0;  newDst[ 9] = 0;  newDst[10] = 1;
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -759,22 +720,69 @@ export function uniformScaling(s: number, dst?: Mat3): Mat3 {
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns The scaled matrix.
  */
-export function uniformScale(m: Mat3, s: number, dst?: Mat3): Mat3 {
-  dst = dst || newMat3();
+function uniformScale<T extends Mat3Arg = MatType>(m: Mat3Arg, s: number, dst?: T) {
+  const newDst = (dst ?? new Ctor(12)) as T;
 
-  dst[ 0] = s * m[0 * 4 + 0];
-  dst[ 1] = s * m[0 * 4 + 1];
-  dst[ 2] = s * m[0 * 4 + 2];
+  newDst[ 0] = s * m[0 * 4 + 0];
+  newDst[ 1] = s * m[0 * 4 + 1];
+  newDst[ 2] = s * m[0 * 4 + 2];
 
-  dst[ 4] = s * m[1 * 4 + 0];
-  dst[ 5] = s * m[1 * 4 + 1];
-  dst[ 6] = s * m[1 * 4 + 2];
+  newDst[ 4] = s * m[1 * 4 + 0];
+  newDst[ 5] = s * m[1 * 4 + 1];
+  newDst[ 6] = s * m[1 * 4 + 2];
 
-  if (m !== dst) {
-    dst[ 8] = m[ 8];
-    dst[ 9] = m[ 9];
-    dst[10] = m[10];
+  if (m !== newDst) {
+    newDst[ 8] = m[ 8];
+    newDst[ 9] = m[ 9];
+    newDst[10] = m[10];
   }
 
-  return dst;
+  return newDst;
+}
+
+return {
+  clone,
+  create,
+  set,
+  fromMat4,
+  fromQuat,
+  negate,
+  copy,
+  equalsApproximately,
+  equals,
+  identity,
+  transpose,
+  inverse,
+  invert,
+  determinant,
+  mul,
+  multiply,
+  setTranslation,
+  getTranslation,
+  getAxis,
+  setAxis,
+  getScaling,
+  translation,
+  translate,
+  rotation,
+  rotate,
+  scaling,
+  scale,
+  uniformScaling,
+  uniformScale,
+};
+
+}
+
+type API<T extends BaseArgType = Float32Array> = ReturnType<typeof getAPIImpl<T>>;
+
+const cache = new Map();
+
+export function getAPI<T extends Mat4Arg = Float32Array>(Ctor: Mat3Ctor<T>) {
+  let api = cache.get(Ctor);
+  if (!api) {
+    api = getAPIImpl<T>(Ctor);
+    cache.set(Ctor, api);
+  }
+  return api as API<T>;
 }
