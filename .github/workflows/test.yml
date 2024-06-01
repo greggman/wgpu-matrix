@@ -20,5 +20,5 @@ jobs:
 
       - name: Test 🧪
         run: |
-          npm i
+          npm ci
           npm run check-ci
