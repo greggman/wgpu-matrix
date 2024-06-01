@@ -1,4 +1,4 @@
-import {mat3, mat4, quat, quatn, quatd, utils, vec3} from '../../dist/2.x/wgpu-matrix.module.js';
+import {mat3, mat4, quat, quatn, quatd, utils, vec3} from '../../dist/3.x/wgpu-matrix.module.js';
 
 import {
   assertEqual,

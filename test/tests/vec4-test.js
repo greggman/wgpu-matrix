@@ -1,4 +1,4 @@
-import {vec4, vec4n, vec4d, utils} from '../../dist/2.x/wgpu-matrix.module.js';
+import {vec4, vec4n, vec4d, utils} from '../../dist/3.x/wgpu-matrix.module.js';
 
 import {
   assertEqual,

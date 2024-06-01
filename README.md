@@ -54,7 +54,7 @@ Fast 3d math library for webgpu
 import {
   vec3,
   mat4,
-} from 'https://wgpu-matrix.org/dist/2.x/wgpu-matrix.module.js';
+} from 'https://wgpu-matrix.org/dist/3.x/wgpu-matrix.module.js';
 
 const fov = 60 * Math.PI / 180
 const aspect = width / height;
@@ -101,7 +101,7 @@ There is also the minified version
 import {
   vec3,
   mat4,
-} from 'https://wgpu-matrix.org/dist/2.x/wgpu-matrix.module.min.js';
+} from 'https://wgpu-matrix.org/dist/3.x/wgpu-matrix.module.min.js';
 
 // ... etc ...
 ```
@@ -109,7 +109,7 @@ import {
 and a UMD version
 
 ```html
-<script src="https://wgpu-matrix.org/dist/2.x/wgpu-matrix.js"></script>
+<script src="https://wgpu-matrix.org/dist/3.x/wgpu-matrix.js"></script>
 <script>
 const { mat4, vec3 } = wgpuMatrix;
 const m = mat4.identity();
@@ -120,7 +120,7 @@ const m = mat4.identity();
 or UDM min version
 
 ```html
-<script src="https://wgpu-matrix.org/dist/2.x/wgpu-matrix.min.js"></script>
+<script src="https://wgpu-matrix.org/dist/3.x/wgpu-matrix.min.js"></script>
 ...
 ```
 

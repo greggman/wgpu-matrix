@@ -2,9 +2,9 @@
   "name": "wgpu-matrix",
   "version": "2.9.1",
   "description": "fast matrix math library for WebGPU",
-  "main": "dist/2.x/wgpu-matrix.module.js",
-  "module": "dist/2.x/wgpu-matrix.module.js",
-  "types": "dist/2.x/wgpu-matrix.d.ts",
+  "main": "dist/3.x/wgpu-matrix.module.js",
+  "module": "dist/3.x/wgpu-matrix.module.js",
+  "types": "dist/3.x/wgpu-matrix.d.ts",
   "type": "module",
   "sideEffects": false,
   "directories": {
@@ -28,7 +28,7 @@
     "url": "git+https://github.com/greggman/wgpu-matrix.git"
   },
   "files": [
-    "dist/2.x/**"
+    "dist/3.x/**"
   ],
   "keywords": [
     "webgpu",
