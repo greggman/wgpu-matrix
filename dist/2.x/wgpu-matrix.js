@@ -1,142 +1,167 @@
-/* wgpu-matrix@3.0.1, license MIT */
-function wrapConstructor(OriginalConstructor, modifier) {
-    return class extends OriginalConstructor {
-        constructor(...args) {
-            super(...args);
-            modifier(this);
-        }
-    }; // Type assertion is necessary here
-}
-const ZeroArray = wrapConstructor((Array), a => a.fill(0));
+/* wgpu-matrix@2.9.1, license MIT */
+(function (global, factory) {
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+    typeof define === 'function' && define.amd ? define(['exports'], factory) :
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.wgpuMatrix = {}));
+})(this, (function (exports) { 'use strict';
 
-/*
- * Copyright 2022 Gregg Tavares
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
- * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- */
-let EPSILON = 0.000001;
-/**
- * Set the value for EPSILON for various checks
- * @param v - Value to use for EPSILON.
- * @returns previous value of EPSILON;
- */
-function setEpsilon(v) {
-    const old = EPSILON;
-    EPSILON = v;
-    return old;
-}
-/**
- * Convert degrees to radians
- * @param degrees - Angle in degrees
- * @returns angle converted to radians
- */
-function degToRad(degrees) {
-    return degrees * Math.PI / 180;
-}
-/**
- * Convert radians to degrees
- * @param radians - Angle in radians
- * @returns angle converted to degrees
- */
-function radToDeg(radians) {
-    return radians * 180 / Math.PI;
-}
-/**
- * Lerps between a and b via t
- * @param a - starting value
- * @param b - ending value
- * @param t - value where 0 = a and 1 = b
- * @returns a + (b - a) * t
- */
-function lerp(a, b, t) {
-    return a + (b - a) * t;
-}
-/**
- * Compute the opposite of lerp. Given a and b and a value between
- * a and b returns a value between 0 and 1. 0 if a, 1 if b.
- * Note: no clamping is done.
- * @param a - start value
- * @param b - end value
- * @param v - value between a and b
- * @returns (v - a) / (b - a)
- */
-function inverseLerp(a, b, v) {
-    const d = b - a;
-    return (Math.abs(b - a) < EPSILON)
-        ? a
-        : (v - a) / d;
-}
-/**
- * Compute the euclidean modulo
- *
- * ```
- * // table for n / 3
- * -5, -4, -3, -2, -1,  0,  1,  2,  3,  4,  5   <- n
- * ------------------------------------
- * -2  -1  -0  -2  -1   0,  1,  2,  0,  1,  2   <- n % 3
- *  1   2   0   1   2   0,  1,  2,  0,  1,  2   <- euclideanModule(n, 3)
- * ```
- *
- * @param n - dividend
- * @param m - divisor
- * @returns the euclidean modulo of n / m
- */
-function euclideanModulo(n, m) {
-    return ((n % m) + m) % m;
-}
+    /*
+     * Copyright 2022 Gregg Tavares
+     *
+     * Permission is hereby granted, free of charge, to any person obtaining a
+     * copy of this software and associated documentation files (the "Software"),
+     * to deal in the Software without restriction, including without limitation
+     * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+     * and/or sell copies of the Software, and to permit persons to whom the
+     * Software is furnished to do so, subject to the following conditions:
+     *
+     * The above copyright notice and this permission notice shall be included in
+     * all copies or substantial portions of the Software.
+     *
+     * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+     * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+     * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+     * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+     * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+     * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+     * DEALINGS IN THE SOFTWARE.
+     */
+    let EPSILON = 0.000001;
+    /**
+     * Set the value for EPSILON for various checks
+     * @param v - Value to use for EPSILON.
+     * @returns previous value of EPSILON;
+     */
+    function setEpsilon(v) {
+        const old = EPSILON;
+        EPSILON = v;
+        return old;
+    }
+    /**
+     * Convert degrees to radians
+     * @param degrees - Angle in degrees
+     * @returns angle converted to radians
+     */
+    function degToRad(degrees) {
+        return degrees * Math.PI / 180;
+    }
+    /**
+     * Convert radians to degrees
+     * @param radians - Angle in radians
+     * @returns angle converted to degrees
+     */
+    function radToDeg(radians) {
+        return radians * 180 / Math.PI;
+    }
+    /**
+     * Lerps between a and b via t
+     * @param a - starting value
+     * @param b - ending value
+     * @param t - value where 0 = a and 1 = b
+     * @returns a + (b - a) * t
+     */
+    function lerp$4(a, b, t) {
+        return a + (b - a) * t;
+    }
+    /**
+     * Compute the opposite of lerp. Given a and b and a value between
+     * a and b returns a value between 0 and 1. 0 if a, 1 if b.
+     * Note: no clamping is done.
+     * @param a - start value
+     * @param b - end value
+     * @param v - value between a and b
+     * @returns (v - a) / (b - a)
+     */
+    function inverseLerp(a, b, v) {
+        const d = b - a;
+        return (Math.abs(b - a) < EPSILON)
+            ? a
+            : (v - a) / d;
+    }
+    /**
+     * Compute the euclidean modulo
+     *
+     * ```
+     * // table for n / 3
+     * -5, -4, -3, -2, -1,  0,  1,  2,  3,  4,  5   <- n
+     * ------------------------------------
+     * -2  -1  -0  -2  -1   0,  1,  2,  0,  1,  2   <- n % 3
+     *  1   2   0   1   2   0,  1,  2,  0,  1,  2   <- euclideanModule(n, 3)
+     * ```
+     *
+     * @param n - dividend
+     * @param m - divisor
+     * @returns the euclidean modulo of n / m
+     */
+    function euclideanModulo(n, m) {
+        return ((n % m) + m) % m;
+    }
 
-var utils = {
-    __proto__: null,
-    get EPSILON () { return EPSILON; },
-    degToRad: degToRad,
-    euclideanModulo: euclideanModulo,
-    inverseLerp: inverseLerp,
-    lerp: lerp,
-    radToDeg: radToDeg,
-    setEpsilon: setEpsilon
-};
+    var utils = {
+        __proto__: null,
+        get EPSILON () { return EPSILON; },
+        degToRad: degToRad,
+        euclideanModulo: euclideanModulo,
+        inverseLerp: inverseLerp,
+        lerp: lerp$4,
+        radToDeg: radToDeg,
+        setEpsilon: setEpsilon
+    };
 
-/*
- * Copyright 2022 Gregg Tavares
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
- * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- */
-/**
- * Generates am typed API for Vec3
- */
-function getAPIImpl$5(Ctor) {
+    /*
+     * Copyright 2022 Gregg Tavares
+     *
+     * Permission is hereby granted, free of charge, to any person obtaining a
+     * copy of this software and associated documentation files (the "Software"),
+     * to deal in the Software without restriction, including without limitation
+     * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+     * and/or sell copies of the Software, and to permit persons to whom the
+     * Software is furnished to do so, subject to the following conditions:
+     *
+     * The above copyright notice and this permission notice shall be included in
+     * all copies or substantial portions of the Software.
+     *
+     * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+     * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+     * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+     * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+     * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+     * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+     * DEALINGS IN THE SOFTWARE.
+     */
+    /**
+     *
+     * Vec2 math functions.
+     *
+     * Almost all functions take an optional `dst` argument. If it is not passed in the
+     * functions will create a new Vec2. In other words you can do this
+     *
+     *     const v = vec2.cross(v1, v2);  // Creates a new Vec2 with the cross product of v1 x v2.
+     *
+     * or
+     *
+     *     const v = vec2.create();
+     *     vec2.cross(v1, v2, v);  // Puts the cross product of v1 x v2 in v
+     *
+     * The first style is often easier but depending on where it's used it generates garbage where
+     * as there is almost never allocation with the second style.
+     *
+     * It is always safe to pass any vector as the destination. So for example
+     *
+     *     vec2.cross(v1, v2, v1);  // Puts the cross product of v1 x v2 in v1
+     *
+     */
+    let VecType$2 = Float32Array;
+    /**
+     * Sets the type this library creates for a Vec2
+     * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`
+     * @returns previous constructor for Vec2
+     */
+    function setDefaultType$6(ctor) {
+        const oldType = VecType$2;
+        VecType$2 = ctor;
+        return oldType;
+    }
     /**
      * Creates a Vec2; may be called with x, y, z to set initial values.
      *
@@ -149,27 +174,135 @@ function getAPIImpl$5(Ctor) {
      * const v = vec2.clone(someJSArray);
      * ```
      *
+     * Note: a consequence of the implementation is if your Vec2Type = `Array`
+     * instead of `Float32Array` or `Float64Array` then any values you
+     * don't pass in will be undefined. Usually this is not an issue since
+     * (a) using `Array` is rare and (b) using `vec2.create` is usually used
+     * to create a Vec2 to be filled out as in
+     *
+     * ```
+     * const sum = vec2.create();
+     * vec2.add(v1, v2, sum);
+     * ```
+     *
      * @param x - Initial x value.
      * @param y - Initial y value.
      * @returns the created vector
      */
-    function create(x = 0, y = 0) {
-        const newDst = new Ctor(2);
+    function create$5(x = 0, y = 0) {
+        const dst = new VecType$2(2);
         if (x !== undefined) {
-            newDst[0] = x;
+            dst[0] = x;
             if (y !== undefined) {
-                newDst[1] = y;
+                dst[1] = y;
             }
         }
-        return newDst;
+        return dst;
     }
+
+    /*
+     * Copyright 2022 Gregg Tavares
+     *
+     * Permission is hereby granted, free of charge, to any person obtaining a
+     * copy of this software and associated documentation files (the "Software"),
+     * to deal in the Software without restriction, including without limitation
+     * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+     * and/or sell copies of the Software, and to permit persons to whom the
+     * Software is furnished to do so, subject to the following conditions:
+     *
+     * The above copyright notice and this permission notice shall be included in
+     * all copies or substantial portions of the Software.
+     *
+     * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+     * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+     * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+     * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+     * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+     * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+     * DEALINGS IN THE SOFTWARE.
+     */
+    /**
+     *
+     * Vec3 math functions.
+     *
+     * Almost all functions take an optional `dst` argument. If it is not passed in the
+     * functions will create a new `Vec3`. In other words you can do this
+     *
+     *     const v = vec3.cross(v1, v2);  // Creates a new Vec3 with the cross product of v1 x v2.
+     *
+     * or
+     *
+     *     const v = vec3.create();
+     *     vec3.cross(v1, v2, v);  // Puts the cross product of v1 x v2 in v
+     *
+     * The first style is often easier but depending on where it's used it generates garbage where
+     * as there is almost never allocation with the second style.
+     *
+     * It is always safe to pass any vector as the destination. So for example
+     *
+     *     vec3.cross(v1, v2, v1);  // Puts the cross product of v1 x v2 in v1
+     *
+     */
+    let VecType$1 = Float32Array;
+    /**
+     * Sets the type this library creates for a Vec3
+     * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`
+     * @returns previous constructor for Vec3
+     */
+    function setDefaultType$5(ctor) {
+        const oldType = VecType$1;
+        VecType$1 = ctor;
+        return oldType;
+    }
+    /**
+     * Creates a vec3; may be called with x, y, z to set initial values.
+     * @param x - Initial x value.
+     * @param y - Initial y value.
+     * @param z - Initial z value.
+     * @returns the created vector
+     */
+    function create$4(x, y, z) {
+        const dst = new VecType$1(3);
+        if (x !== undefined) {
+            dst[0] = x;
+            if (y !== undefined) {
+                dst[1] = y;
+                if (z !== undefined) {
+                    dst[2] = z;
+                }
+            }
+        }
+        return dst;
+    }
+
+    /*
+     * Copyright 2022 Gregg Tavares
+     *
+     * Permission is hereby granted, free of charge, to any person obtaining a
+     * copy of this software and associated documentation files (the "Software"),
+     * to deal in the Software without restriction, including without limitation
+     * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+     * and/or sell copies of the Software, and to permit persons to whom the
+     * Software is furnished to do so, subject to the following conditions:
+     *
+     * The above copyright notice and this permission notice shall be included in
+     * all copies or substantial portions of the Software.
+     *
+     * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+     * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+     * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+     * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+     * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+     * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+     * DEALINGS IN THE SOFTWARE.
+     */
     /**
      * Creates a Vec2; may be called with x, y, z to set initial values. (same as create)
      * @param x - Initial x value.
      * @param y - Initial y value.
      * @returns the created vector
      */
-    const fromValues = create;
+    const fromValues$3 = create$5;
     /**
      * Sets the values of a Vec2
      * Also see {@link vec2.create} and {@link vec2.copy}
@@ -179,11 +312,11 @@ function getAPIImpl$5(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns A vector with its elements set.
      */
-    function set(x, y, dst) {
-        const newDst = (dst ?? new Ctor(2));
-        newDst[0] = x;
-        newDst[1] = y;
-        return newDst;
+    function set$5(x, y, dst) {
+        dst = dst || new VecType$2(2);
+        dst[0] = x;
+        dst[1] = y;
+        return dst;
     }
     /**
      * Applies Math.ceil to each element of vector
@@ -191,11 +324,11 @@ function getAPIImpl$5(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns A vector that is the ceil of each element of v.
      */
-    function ceil(v, dst) {
-        const newDst = (dst ?? new Ctor(2));
-        newDst[0] = Math.ceil(v[0]);
-        newDst[1] = Math.ceil(v[1]);
-        return newDst;
+    function ceil$2(v, dst) {
+        dst = dst || new VecType$2(2);
+        dst[0] = Math.ceil(v[0]);
+        dst[1] = Math.ceil(v[1]);
+        return dst;
     }
     /**
      * Applies Math.floor to each element of vector
@@ -203,11 +336,11 @@ function getAPIImpl$5(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns A vector that is the floor of each element of v.
      */
-    function floor(v, dst) {
-        const newDst = (dst ?? new Ctor(2));
-        newDst[0] = Math.floor(v[0]);
-        newDst[1] = Math.floor(v[1]);
-        return newDst;
+    function floor$2(v, dst) {
+        dst = dst || new VecType$2(2);
+        dst[0] = Math.floor(v[0]);
+        dst[1] = Math.floor(v[1]);
+        return dst;
     }
     /**
      * Applies Math.round to each element of vector
@@ -215,11 +348,11 @@ function getAPIImpl$5(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns A vector that is the round of each element of v.
      */
-    function round(v, dst) {
-        const newDst = (dst ?? new Ctor(2));
-        newDst[0] = Math.round(v[0]);
-        newDst[1] = Math.round(v[1]);
-        return newDst;
+    function round$2(v, dst) {
+        dst = dst || new VecType$2(2);
+        dst[0] = Math.round(v[0]);
+        dst[1] = Math.round(v[1]);
+        return dst;
     }
     /**
      * Clamp each element of vector between min and max
@@ -229,11 +362,11 @@ function getAPIImpl$5(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns A vector that the clamped value of each element of v.
      */
-    function clamp(v, min = 0, max = 1, dst) {
-        const newDst = (dst ?? new Ctor(2));
-        newDst[0] = Math.min(max, Math.max(min, v[0]));
-        newDst[1] = Math.min(max, Math.max(min, v[1]));
-        return newDst;
+    function clamp$2(v, min = 0, max = 1, dst) {
+        dst = dst || new VecType$2(2);
+        dst[0] = Math.min(max, Math.max(min, v[0]));
+        dst[1] = Math.min(max, Math.max(min, v[1]));
+        return dst;
     }
     /**
      * Adds two vectors; assumes a and b have the same dimension.
@@ -242,11 +375,11 @@ function getAPIImpl$5(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns A vector that is the sum of a and b.
      */
-    function add(a, b, dst) {
-        const newDst = (dst ?? new Ctor(2));
-        newDst[0] = a[0] + b[0];
-        newDst[1] = a[1] + b[1];
-        return newDst;
+    function add$3(a, b, dst) {
+        dst = dst || new VecType$2(2);
+        dst[0] = a[0] + b[0];
+        dst[1] = a[1] + b[1];
+        return dst;
     }
     /**
      * Adds two vectors, scaling the 2nd; assumes a and b have the same dimension.
@@ -256,11 +389,11 @@ function getAPIImpl$5(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns A vector that is the sum of a + b * scale.
      */
-    function addScaled(a, b, scale, dst) {
-        const newDst = (dst ?? new Ctor(2));
-        newDst[0] = a[0] + b[0] * scale;
-        newDst[1] = a[1] + b[1] * scale;
-        return newDst;
+    function addScaled$2(a, b, scale, dst) {
+        dst = dst || new VecType$2(2);
+        dst[0] = a[0] + b[0] * scale;
+        dst[1] = a[1] + b[1] * scale;
+        return dst;
     }
     /**
      * Returns the angle in radians between two vectors.
@@ -268,7 +401,7 @@ function getAPIImpl$5(Ctor) {
      * @param b - Operand vector.
      * @returns The angle in radians between the 2 vectors.
      */
-    function angle(a, b) {
+    function angle$2(a, b) {
         const ax = a[0];
         const ay = a[1];
         const bx = b[0];
@@ -276,7 +409,7 @@ function getAPIImpl$5(Ctor) {
         const mag1 = Math.sqrt(ax * ax + ay * ay);
         const mag2 = Math.sqrt(bx * bx + by * by);
         const mag = mag1 * mag2;
-        const cosine = mag && dot(a, b) / mag;
+        const cosine = mag && dot$3(a, b) / mag;
         return Math.acos(cosine);
     }
     /**
@@ -286,11 +419,11 @@ function getAPIImpl$5(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns A vector that is the difference of a and b.
      */
-    function subtract(a, b, dst) {
-        const newDst = (dst ?? new Ctor(2));
-        newDst[0] = a[0] - b[0];
-        newDst[1] = a[1] - b[1];
-        return newDst;
+    function subtract$3(a, b, dst) {
+        dst = dst || new VecType$2(2);
+        dst[0] = a[0] - b[0];
+        dst[1] = a[1] - b[1];
+        return dst;
     }
     /**
      * Subtracts two vectors.
@@ -299,14 +432,14 @@ function getAPIImpl$5(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns A vector that is the difference of a and b.
      */
-    const sub = subtract;
+    const sub$3 = subtract$3;
     /**
      * Check if 2 vectors are approximately equal
      * @param a - Operand vector.
      * @param b - Operand vector.
      * @returns true if vectors are approximately equal
      */
-    function equalsApproximately(a, b) {
+    function equalsApproximately$5(a, b) {
         return Math.abs(a[0] - b[0]) < EPSILON &&
             Math.abs(a[1] - b[1]) < EPSILON;
     }
@@ -316,7 +449,7 @@ function getAPIImpl$5(Ctor) {
      * @param b - Operand vector.
      * @returns true if vectors are exactly equal
      */
-    function equals(a, b) {
+    function equals$5(a, b) {
         return a[0] === b[0] && a[1] === b[1];
     }
     /**
@@ -329,11 +462,11 @@ function getAPIImpl$5(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns The linear interpolated result.
      */
-    function lerp(a, b, t, dst) {
-        const newDst = (dst ?? new Ctor(2));
-        newDst[0] = a[0] + t * (b[0] - a[0]);
-        newDst[1] = a[1] + t * (b[1] - a[1]);
-        return newDst;
+    function lerp$3(a, b, t, dst) {
+        dst = dst || new VecType$2(2);
+        dst[0] = a[0] + t * (b[0] - a[0]);
+        dst[1] = a[1] + t * (b[1] - a[1]);
+        return dst;
     }
     /**
      * Performs linear interpolation on two vectors.
@@ -345,11 +478,11 @@ function getAPIImpl$5(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns the linear interpolated result.
      */
-    function lerpV(a, b, t, dst) {
-        const newDst = (dst ?? new Ctor(2));
-        newDst[0] = a[0] + t[0] * (b[0] - a[0]);
-        newDst[1] = a[1] + t[1] * (b[1] - a[1]);
-        return newDst;
+    function lerpV$2(a, b, t, dst) {
+        dst = dst || new VecType$2(2);
+        dst[0] = a[0] + t[0] * (b[0] - a[0]);
+        dst[1] = a[1] + t[1] * (b[1] - a[1]);
+        return dst;
     }
     /**
      * Return max values of two vectors.
@@ -360,11 +493,11 @@ function getAPIImpl$5(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns The max components vector.
      */
-    function max(a, b, dst) {
-        const newDst = (dst ?? new Ctor(2));
-        newDst[0] = Math.max(a[0], b[0]);
-        newDst[1] = Math.max(a[1], b[1]);
-        return newDst;
+    function max$2(a, b, dst) {
+        dst = dst || new VecType$2(2);
+        dst[0] = Math.max(a[0], b[0]);
+        dst[1] = Math.max(a[1], b[1]);
+        return dst;
     }
     /**
      * Return min values of two vectors.
@@ -375,11 +508,11 @@ function getAPIImpl$5(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns The min components vector.
      */
-    function min(a, b, dst) {
-        const newDst = (dst ?? new Ctor(2));
-        newDst[0] = Math.min(a[0], b[0]);
-        newDst[1] = Math.min(a[1], b[1]);
-        return newDst;
+    function min$2(a, b, dst) {
+        dst = dst || new VecType$2(2);
+        dst[0] = Math.min(a[0], b[0]);
+        dst[1] = Math.min(a[1], b[1]);
+        return dst;
     }
     /**
      * Multiplies a vector by a scalar.
@@ -388,11 +521,11 @@ function getAPIImpl$5(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns The scaled vector.
      */
-    function mulScalar(v, k, dst) {
-        const newDst = (dst ?? new Ctor(2));
-        newDst[0] = v[0] * k;
-        newDst[1] = v[1] * k;
-        return newDst;
+    function mulScalar$3(v, k, dst) {
+        dst = dst || new VecType$2(2);
+        dst[0] = v[0] * k;
+        dst[1] = v[1] * k;
+        return dst;
     }
     /**
      * Multiplies a vector by a scalar. (same as mulScalar)
@@ -401,7 +534,7 @@ function getAPIImpl$5(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns The scaled vector.
      */
-    const scale = mulScalar;
+    const scale$5 = mulScalar$3;
     /**
      * Divides a vector by a scalar.
      * @param v - The vector.
@@ -409,11 +542,11 @@ function getAPIImpl$5(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns The scaled vector.
      */
-    function divScalar(v, k, dst) {
-        const newDst = (dst ?? new Ctor(2));
-        newDst[0] = v[0] / k;
-        newDst[1] = v[1] / k;
-        return newDst;
+    function divScalar$3(v, k, dst) {
+        dst = dst || new VecType$2(2);
+        dst[0] = v[0] / k;
+        dst[1] = v[1] / k;
+        return dst;
     }
     /**
      * Inverse a vector.
@@ -421,11 +554,11 @@ function getAPIImpl$5(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns The inverted vector.
      */
-    function inverse(v, dst) {
-        const newDst = (dst ?? new Ctor(2));
-        newDst[0] = 1 / v[0];
-        newDst[1] = 1 / v[1];
-        return newDst;
+    function inverse$5(v, dst) {
+        dst = dst || new VecType$2(2);
+        dst[0] = 1 / v[0];
+        dst[1] = 1 / v[1];
+        return dst;
     }
     /**
      * Invert a vector. (same as inverse)
@@ -433,7 +566,7 @@ function getAPIImpl$5(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns The inverted vector.
      */
-    const invert = inverse;
+    const invert$4 = inverse$5;
     /**
      * Computes the cross product of two vectors; assumes both vectors have
      * three entries.
@@ -442,13 +575,13 @@ function getAPIImpl$5(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns The vector of a cross b.
      */
-    function cross(a, b, dst) {
-        const newDst = (dst ?? new Ctor(3));
+    function cross$1(a, b, dst) {
+        dst = dst || new VecType$1(3);
         const z = a[0] * b[1] - a[1] * b[0];
-        newDst[0] = 0;
-        newDst[1] = 0;
-        newDst[2] = z;
-        return newDst;
+        dst[0] = 0;
+        dst[1] = 0;
+        dst[2] = z;
+        return dst;
     }
     /**
      * Computes the dot product of two vectors; assumes both vectors have
@@ -457,7 +590,7 @@ function getAPIImpl$5(Ctor) {
      * @param b - Operand vector.
      * @returns dot product
      */
-    function dot(a, b) {
+    function dot$3(a, b) {
         return a[0] * b[0] + a[1] * b[1];
     }
     /**
@@ -465,7 +598,7 @@ function getAPIImpl$5(Ctor) {
      * @param v - vector.
      * @returns length of vector.
      */
-    function length(v) {
+    function length$3(v) {
         const v0 = v[0];
         const v1 = v[1];
         return Math.sqrt(v0 * v0 + v1 * v1);
@@ -475,13 +608,13 @@ function getAPIImpl$5(Ctor) {
      * @param v - vector.
      * @returns length of vector.
      */
-    const len = length;
+    const len$3 = length$3;
     /**
      * Computes the square of the length of vector
      * @param v - vector.
      * @returns square of the length of vector.
      */
-    function lengthSq(v) {
+    function lengthSq$3(v) {
         const v0 = v[0];
         const v1 = v[1];
         return v0 * v0 + v1 * v1;
@@ -491,14 +624,14 @@ function getAPIImpl$5(Ctor) {
      * @param v - vector.
      * @returns square of the length of vector.
      */
-    const lenSq = lengthSq;
+    const lenSq$3 = lengthSq$3;
     /**
      * Computes the distance between 2 points
      * @param a - vector.
      * @param b - vector.
      * @returns distance between a and b
      */
-    function distance(a, b) {
+    function distance$2(a, b) {
         const dx = a[0] - b[0];
         const dy = a[1] - b[1];
         return Math.sqrt(dx * dx + dy * dy);
@@ -509,14 +642,14 @@ function getAPIImpl$5(Ctor) {
      * @param b - vector.
      * @returns distance between a and b
      */
-    const dist = distance;
+    const dist$2 = distance$2;
     /**
      * Computes the square of the distance between 2 points
      * @param a - vector.
      * @param b - vector.
      * @returns square of the distance between a and b
      */
-    function distanceSq(a, b) {
+    function distanceSq$2(a, b) {
         const dx = a[0] - b[0];
         const dy = a[1] - b[1];
         return dx * dx + dy * dy;
@@ -527,27 +660,27 @@ function getAPIImpl$5(Ctor) {
      * @param b - vector.
      * @returns square of the distance between a and b
      */
-    const distSq = distanceSq;
+    const distSq$2 = distanceSq$2;
     /**
      * Divides a vector by its Euclidean length and returns the quotient.
      * @param v - The vector.
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns The normalized vector.
      */
-    function normalize(v, dst) {
-        const newDst = (dst ?? new Ctor(2));
+    function normalize$3(v, dst) {
+        dst = dst || new VecType$2(2);
         const v0 = v[0];
         const v1 = v[1];
         const len = Math.sqrt(v0 * v0 + v1 * v1);
         if (len > 0.00001) {
-            newDst[0] = v0 / len;
-            newDst[1] = v1 / len;
+            dst[0] = v0 / len;
+            dst[1] = v1 / len;
         }
         else {
-            newDst[0] = 0;
-            newDst[1] = 0;
+            dst[0] = 0;
+            dst[1] = 0;
         }
-        return newDst;
+        return dst;
     }
     /**
      * Negates a vector.
@@ -555,11 +688,11 @@ function getAPIImpl$5(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns -v.
      */
-    function negate(v, dst) {
-        const newDst = (dst ?? new Ctor(2));
-        newDst[0] = -v[0];
-        newDst[1] = -v[1];
-        return newDst;
+    function negate$4(v, dst) {
+        dst = dst || new VecType$2(2);
+        dst[0] = -v[0];
+        dst[1] = -v[1];
+        return dst;
     }
     /**
      * Copies a vector. (same as {@link vec2.clone})
@@ -568,11 +701,11 @@ function getAPIImpl$5(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns A copy of v.
      */
-    function copy(v, dst) {
-        const newDst = (dst ?? new Ctor(2));
-        newDst[0] = v[0];
-        newDst[1] = v[1];
-        return newDst;
+    function copy$5(v, dst) {
+        dst = dst || new VecType$2(2);
+        dst[0] = v[0];
+        dst[1] = v[1];
+        return dst;
     }
     /**
      * Clones a vector. (same as {@link vec2.copy})
@@ -581,7 +714,7 @@ function getAPIImpl$5(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns A copy of v.
      */
-    const clone = copy;
+    const clone$5 = copy$5;
     /**
      * Multiplies a vector by another vector (component-wise); assumes a and
      * b have the same length.
@@ -590,11 +723,11 @@ function getAPIImpl$5(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns The vector of products of entries of a and b.
      */
-    function multiply(a, b, dst) {
-        const newDst = (dst ?? new Ctor(2));
-        newDst[0] = a[0] * b[0];
-        newDst[1] = a[1] * b[1];
-        return newDst;
+    function multiply$5(a, b, dst) {
+        dst = dst || new VecType$2(2);
+        dst[0] = a[0] * b[0];
+        dst[1] = a[1] * b[1];
+        return dst;
     }
     /**
      * Multiplies a vector by another vector (component-wise); assumes a and
@@ -604,7 +737,7 @@ function getAPIImpl$5(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns The vector of products of entries of a and b.
      */
-    const mul = multiply;
+    const mul$5 = multiply$5;
     /**
      * Divides a vector by another vector (component-wise); assumes a and
      * b have the same length.
@@ -613,11 +746,11 @@ function getAPIImpl$5(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns The vector of quotients of entries of a and b.
      */
-    function divide(a, b, dst) {
-        const newDst = (dst ?? new Ctor(2));
-        newDst[0] = a[0] / b[0];
-        newDst[1] = a[1] / b[1];
-        return newDst;
+    function divide$2(a, b, dst) {
+        dst = dst || new VecType$2(2);
+        dst[0] = a[0] / b[0];
+        dst[1] = a[1] / b[1];
+        return dst;
     }
     /**
      * Divides a vector by another vector (component-wise); assumes a and
@@ -627,30 +760,30 @@ function getAPIImpl$5(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns The vector of quotients of entries of a and b.
      */
-    const div = divide;
+    const div$2 = divide$2;
     /**
      * Creates a random unit vector * scale
      * @param scale - Default 1
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns The random vector.
      */
-    function random(scale = 1, dst) {
-        const newDst = (dst ?? new Ctor(2));
+    function random$1(scale = 1, dst) {
+        dst = dst || new VecType$2(2);
         const angle = Math.random() * 2 * Math.PI;
-        newDst[0] = Math.cos(angle) * scale;
-        newDst[1] = Math.sin(angle) * scale;
-        return newDst;
+        dst[0] = Math.cos(angle) * scale;
+        dst[1] = Math.sin(angle) * scale;
+        return dst;
     }
     /**
      * Zero's a vector
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns The zeroed vector.
      */
-    function zero(dst) {
-        const newDst = (dst ?? new Ctor(2));
-        newDst[0] = 0;
-        newDst[1] = 0;
-        return newDst;
+    function zero$2(dst) {
+        dst = dst || new VecType$2(2);
+        dst[0] = 0;
+        dst[1] = 0;
+        return dst;
     }
     /**
      * transform Vec2 by 4x4 matrix
@@ -659,13 +792,13 @@ function getAPIImpl$5(Ctor) {
      * @param dst - optional Vec2 to store result. If not passed a new one is created.
      * @returns the transformed vector
      */
-    function transformMat4(v, m, dst) {
-        const newDst = (dst ?? new Ctor(2));
+    function transformMat4$2(v, m, dst) {
+        dst = dst || new VecType$2(2);
         const x = v[0];
         const y = v[1];
-        newDst[0] = x * m[0] + y * m[4] + m[12];
-        newDst[1] = x * m[1] + y * m[5] + m[13];
-        return newDst;
+        dst[0] = x * m[0] + y * m[4] + m[12];
+        dst[1] = x * m[1] + y * m[5] + m[13];
+        return dst;
     }
     /**
      * Transforms vec4 by 3x3 matrix
@@ -675,13 +808,13 @@ function getAPIImpl$5(Ctor) {
      * @param dst - optional Vec2 to store result. If not passed a new one is created.
      * @returns the transformed vector
      */
-    function transformMat3(v, m, dst) {
-        const newDst = (dst ?? new Ctor(2));
+    function transformMat3$1(v, m, dst) {
+        dst = dst || new VecType$2(2);
         const x = v[0];
         const y = v[1];
-        newDst[0] = m[0] * x + m[4] * y + m[8];
-        newDst[1] = m[1] * x + m[5] * y + m[9];
-        return newDst;
+        dst[0] = m[0] * x + m[4] * y + m[8];
+        dst[1] = m[1] * x + m[5] * y + m[9];
+        return dst;
     }
     /**
      * Rotate a 2D vector
@@ -691,17 +824,17 @@ function getAPIImpl$5(Ctor) {
      * @param rad The angle of rotation in radians
      * @returns the rotated vector
      */
-    function rotate(a, b, rad, dst) {
-        const newDst = (dst ?? new Ctor(2));
+    function rotate$2(a, b, rad, dst) {
+        dst = dst || new VecType$2(2);
         // Translate point to the origin
         const p0 = a[0] - b[0];
         const p1 = a[1] - b[1];
         const sinC = Math.sin(rad);
         const cosC = Math.cos(rad);
         //perform rotation and translate to correct position
-        newDst[0] = p0 * cosC - p1 * sinC + b[0];
-        newDst[1] = p0 * sinC + p1 * cosC + b[1];
-        return newDst;
+        dst[0] = p0 * cosC - p1 * sinC + b[0];
+        dst[1] = p0 * sinC + p1 * cosC + b[1];
+        return dst;
     }
     /**
      * Treat a 2D vector as a direction and set it's length
@@ -710,10 +843,10 @@ function getAPIImpl$5(Ctor) {
      * @param len The length of the resulting vector
      * @returns The lengthened vector
      */
-    function setLength(a, len, dst) {
-        const newDst = (dst ?? new Ctor(2));
-        normalize(a, newDst);
-        return mulScalar(newDst, len, newDst);
+    function setLength$2(a, len, dst) {
+        dst = dst || new VecType$2(2);
+        normalize$3(a, dst);
+        return mulScalar$3(dst, len, dst);
     }
     /**
      * Ensure a vector is not longer than a max length
@@ -722,12 +855,12 @@ function getAPIImpl$5(Ctor) {
      * @param maxLen The longest length of the resulting vector
      * @returns The vector, shortened to maxLen if it's too long
      */
-    function truncate(a, maxLen, dst) {
-        const newDst = (dst ?? new Ctor(2));
-        if (length(a) > maxLen) {
-            return setLength(a, maxLen, newDst);
+    function truncate$2(a, maxLen, dst) {
+        dst = dst || new VecType$2(2);
+        if (length$3(a) > maxLen) {
+            return setLength$2(a, maxLen, dst);
         }
-        return copy(a, newDst);
+        return copy$5(a, dst);
     }
     /**
      * Return the vector exactly between 2 endpoint vectors
@@ -736,98 +869,130 @@ function getAPIImpl$5(Ctor) {
      * @param b Endpoint 2
      * @returns The vector exactly residing between endpoints 1 and 2
      */
-    function midpoint(a, b, dst) {
-        const newDst = (dst ?? new Ctor(2));
-        return lerp(a, b, 0.5, newDst);
+    function midpoint$2(a, b, dst) {
+        dst = dst || new VecType$2(2);
+        return lerp$3(a, b, 0.5, dst);
     }
-    return {
-        create,
-        fromValues,
-        set,
-        ceil,
-        floor,
-        round,
-        clamp,
-        add,
-        addScaled,
-        angle,
-        subtract,
-        sub,
-        equalsApproximately,
-        equals,
-        lerp,
-        lerpV,
-        max,
-        min,
-        mulScalar,
-        scale,
-        divScalar,
-        inverse,
-        invert,
-        cross,
-        dot,
-        length,
-        len,
-        lengthSq,
-        lenSq,
-        distance,
-        dist,
-        distanceSq,
-        distSq,
-        normalize,
-        negate,
-        copy,
-        clone,
-        multiply,
-        mul,
-        divide,
-        div,
-        random,
-        zero,
-        transformMat4,
-        transformMat3,
-        rotate,
-        setLength,
-        truncate,
-        midpoint,
-    };
-}
-const cache$5 = new Map();
-function getAPI$5(Ctor) {
-    let api = cache$5.get(Ctor);
-    if (!api) {
-        api = getAPIImpl$5(Ctor);
-        cache$5.set(Ctor, api);
-    }
-    return api;
-}
 
-/*
- * Copyright 2022 Gregg Tavares
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
- * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- */
-/**
- * Generates a typed API for Mat3
- * */
-function getAPIImpl$4(Ctor) {
-    const vec2 = getAPI$5(Ctor);
+    var vec2Impl = {
+        __proto__: null,
+        add: add$3,
+        addScaled: addScaled$2,
+        angle: angle$2,
+        ceil: ceil$2,
+        clamp: clamp$2,
+        clone: clone$5,
+        copy: copy$5,
+        create: create$5,
+        cross: cross$1,
+        dist: dist$2,
+        distSq: distSq$2,
+        distance: distance$2,
+        distanceSq: distanceSq$2,
+        div: div$2,
+        divScalar: divScalar$3,
+        divide: divide$2,
+        dot: dot$3,
+        equals: equals$5,
+        equalsApproximately: equalsApproximately$5,
+        floor: floor$2,
+        fromValues: fromValues$3,
+        inverse: inverse$5,
+        invert: invert$4,
+        len: len$3,
+        lenSq: lenSq$3,
+        length: length$3,
+        lengthSq: lengthSq$3,
+        lerp: lerp$3,
+        lerpV: lerpV$2,
+        max: max$2,
+        midpoint: midpoint$2,
+        min: min$2,
+        mul: mul$5,
+        mulScalar: mulScalar$3,
+        multiply: multiply$5,
+        negate: negate$4,
+        normalize: normalize$3,
+        random: random$1,
+        rotate: rotate$2,
+        round: round$2,
+        scale: scale$5,
+        set: set$5,
+        setDefaultType: setDefaultType$6,
+        setLength: setLength$2,
+        sub: sub$3,
+        subtract: subtract$3,
+        transformMat3: transformMat3$1,
+        transformMat4: transformMat4$2,
+        truncate: truncate$2,
+        zero: zero$2
+    };
+
+    /*
+     * Copyright 2022 Gregg Tavares
+     *
+     * Permission is hereby granted, free of charge, to any person obtaining a
+     * copy of this software and associated documentation files (the "Software"),
+     * to deal in the Software without restriction, including without limitation
+     * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+     * and/or sell copies of the Software, and to permit persons to whom the
+     * Software is furnished to do so, subject to the following conditions:
+     *
+     * The above copyright notice and this permission notice shall be included in
+     * all copies or substantial portions of the Software.
+     *
+     * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+     * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+     * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+     * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+     * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+     * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+     * DEALINGS IN THE SOFTWARE.
+     */
+    /**
+     * 3x3 Matrix math math functions.
+     *
+     * Almost all functions take an optional `dst` argument. If it is not passed in the
+     * functions will create a new matrix. In other words you can do this
+     *
+     *     const mat = mat3.translation([1, 2, 3]);  // Creates a new translation matrix
+     *
+     * or
+     *
+     *     const mat = mat3.create();
+     *     mat3.translation([1, 2, 3], mat);  // Puts translation matrix in mat.
+     *
+     * The first style is often easier but depending on where it's used it generates garbage where
+     * as there is almost never allocation with the second style.
+     *
+     * It is always save to pass any matrix as the destination. So for example
+     *
+     *     const mat = mat3.identity();
+     *     const trans = mat3.translation([1, 2, 3]);
+     *     mat3.multiply(mat, trans, mat);  // Multiplies mat * trans and puts result in mat.
+     *
+     */
+    let MatType$1 = Float32Array;
+    // This mess is because with Mat3 we have 3 unused elements.
+    // For Float32Array and Float64Array that's not an issue
+    // but for Array it's troublesome
+    const ctorMap = new Map([
+        [Float32Array, () => new Float32Array(12)],
+        [Float64Array, () => new Float64Array(12)],
+        [Array, () => new Array(12).fill(0)],
+    ]);
+    let newMat3 = ctorMap.get(Float32Array);
+    /**
+     * Sets the type this library creates for a Mat3
+     * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`
+     * @returns previous constructor for Mat3
+     */
+    function setDefaultType$4(ctor) {
+        const oldType = MatType$1;
+        MatType$1 = ctor;
+        newMat3 = ctorMap.get(ctor);
+        return oldType;
+    }
     /**
      * Create a Mat3 from values
      *
@@ -838,6 +1003,17 @@ function getAPIImpl$4(Ctor) {
      *
      * ```
      * const m = mat3.clone(someJSArray);
+     * ```
+     *
+     * Note: a consequence of the implementation is if your Mat3Type = `Array`
+     * instead of `Float32Array` or `Float64Array` then any values you
+     * don't pass in will be undefined. Usually this is not an issue since
+     * (a) using `Array` is rare and (b) using `mat3.create` is usually used
+     * to create a Mat3 to be filled out as in
+     *
+     * ```
+     * const m = mat3.create();
+     * mat3.perspective(fov, aspect, near, far, m);
      * ```
      *
      * @param v0 - value for element 0
@@ -851,30 +1027,30 @@ function getAPIImpl$4(Ctor) {
      * @param v8 - value for element 8
      * @returns matrix created from values.
      */
-    function create(v0, v1, v2, v3, v4, v5, v6, v7, v8) {
-        const newDst = new Ctor(12);
+    function create$3(v0, v1, v2, v3, v4, v5, v6, v7, v8) {
+        const dst = newMat3();
         // to make the array homogenous
-        newDst[3] = 0;
-        newDst[7] = 0;
-        newDst[11] = 0;
+        dst[3] = 0;
+        dst[7] = 0;
+        dst[11] = 0;
         if (v0 !== undefined) {
-            newDst[0] = v0;
+            dst[0] = v0;
             if (v1 !== undefined) {
-                newDst[1] = v1;
+                dst[1] = v1;
                 if (v2 !== undefined) {
-                    newDst[2] = v2;
+                    dst[2] = v2;
                     if (v3 !== undefined) {
-                        newDst[4] = v3;
+                        dst[4] = v3;
                         if (v4 !== undefined) {
-                            newDst[5] = v4;
+                            dst[5] = v4;
                             if (v5 !== undefined) {
-                                newDst[6] = v5;
+                                dst[6] = v5;
                                 if (v6 !== undefined) {
-                                    newDst[8] = v6;
+                                    dst[8] = v6;
                                     if (v7 !== undefined) {
-                                        newDst[9] = v7;
+                                        dst[9] = v7;
                                         if (v8 !== undefined) {
-                                            newDst[10] = v8;
+                                            dst[10] = v8;
                                         }
                                     }
                                 }
@@ -884,7 +1060,7 @@ function getAPIImpl$4(Ctor) {
                 }
             }
         }
-        return newDst;
+        return dst;
     }
     /**
      * Sets the values of a Mat3
@@ -902,21 +1078,21 @@ function getAPIImpl$4(Ctor) {
      * @param dst - matrix to hold result. If not passed a new one is created.
      * @returns Mat3 set from values.
      */
-    function set(v0, v1, v2, v3, v4, v5, v6, v7, v8, dst) {
-        const newDst = (dst ?? new Ctor(12));
-        newDst[0] = v0;
-        newDst[1] = v1;
-        newDst[2] = v2;
-        newDst[3] = 0;
-        newDst[4] = v3;
-        newDst[5] = v4;
-        newDst[6] = v5;
-        newDst[7] = 0;
-        newDst[8] = v6;
-        newDst[9] = v7;
-        newDst[10] = v8;
-        newDst[11] = 0;
-        return newDst;
+    function set$4(v0, v1, v2, v3, v4, v5, v6, v7, v8, dst) {
+        dst = dst || newMat3();
+        dst[0] = v0;
+        dst[1] = v1;
+        dst[2] = v2;
+        dst[3] = 0;
+        dst[4] = v3;
+        dst[5] = v4;
+        dst[6] = v5;
+        dst[7] = 0;
+        dst[8] = v6;
+        dst[9] = v7;
+        dst[10] = v8;
+        dst[11] = 0;
+        return dst;
     }
     /**
      * Creates a Mat3 from the upper left 3x3 part of a Mat4
@@ -925,20 +1101,20 @@ function getAPIImpl$4(Ctor) {
      * @returns Mat3 made from m4
      */
     function fromMat4(m4, dst) {
-        const newDst = (dst ?? new Ctor(12));
-        newDst[0] = m4[0];
-        newDst[1] = m4[1];
-        newDst[2] = m4[2];
-        newDst[3] = 0;
-        newDst[4] = m4[4];
-        newDst[5] = m4[5];
-        newDst[6] = m4[6];
-        newDst[7] = 0;
-        newDst[8] = m4[8];
-        newDst[9] = m4[9];
-        newDst[10] = m4[10];
-        newDst[11] = 0;
-        return newDst;
+        dst = dst || newMat3();
+        dst[0] = m4[0];
+        dst[1] = m4[1];
+        dst[2] = m4[2];
+        dst[3] = 0;
+        dst[4] = m4[4];
+        dst[5] = m4[5];
+        dst[6] = m4[6];
+        dst[7] = 0;
+        dst[8] = m4[8];
+        dst[9] = m4[9];
+        dst[10] = m4[10];
+        dst[11] = 0;
+        return dst;
     }
     /**
      * Creates a Mat3 rotation matrix from a quaternion
@@ -946,8 +1122,8 @@ function getAPIImpl$4(Ctor) {
      * @param dst - matrix to hold result. If not passed a new one is created.
      * @returns Mat3 made from q
      */
-    function fromQuat(q, dst) {
-        const newDst = (dst ?? new Ctor(12));
+    function fromQuat$1(q, dst) {
+        dst = dst || newMat3();
         const x = q[0];
         const y = q[1];
         const z = q[2];
@@ -964,19 +1140,19 @@ function getAPIImpl$4(Ctor) {
         const wx = w * x2;
         const wy = w * y2;
         const wz = w * z2;
-        newDst[0] = 1 - yy - zz;
-        newDst[1] = yx + wz;
-        newDst[2] = zx - wy;
-        newDst[3] = 0;
-        newDst[4] = yx - wz;
-        newDst[5] = 1 - xx - zz;
-        newDst[6] = zy + wx;
-        newDst[7] = 0;
-        newDst[8] = zx + wy;
-        newDst[9] = zy - wx;
-        newDst[10] = 1 - xx - yy;
-        newDst[11] = 0;
-        return newDst;
+        dst[0] = 1 - yy - zz;
+        dst[1] = yx + wz;
+        dst[2] = zx - wy;
+        dst[3] = 0;
+        dst[4] = yx - wz;
+        dst[5] = 1 - xx - zz;
+        dst[6] = zy + wx;
+        dst[7] = 0;
+        dst[8] = zx + wy;
+        dst[9] = zy - wx;
+        dst[10] = 1 - xx - yy;
+        dst[11] = 0;
+        return dst;
     }
     /**
      * Negates a matrix.
@@ -984,18 +1160,18 @@ function getAPIImpl$4(Ctor) {
      * @param dst - matrix to hold result. If not passed a new one is created.
      * @returns -m.
      */
-    function negate(m, dst) {
-        const newDst = (dst ?? new Ctor(12));
-        newDst[0] = -m[0];
-        newDst[1] = -m[1];
-        newDst[2] = -m[2];
-        newDst[4] = -m[4];
-        newDst[5] = -m[5];
-        newDst[6] = -m[6];
-        newDst[8] = -m[8];
-        newDst[9] = -m[9];
-        newDst[10] = -m[10];
-        return newDst;
+    function negate$3(m, dst) {
+        dst = dst || newMat3();
+        dst[0] = -m[0];
+        dst[1] = -m[1];
+        dst[2] = -m[2];
+        dst[4] = -m[4];
+        dst[5] = -m[5];
+        dst[6] = -m[6];
+        dst[8] = -m[8];
+        dst[9] = -m[9];
+        dst[10] = -m[10];
+        return dst;
     }
     /**
      * Copies a matrix. (same as {@link mat3.clone})
@@ -1004,18 +1180,18 @@ function getAPIImpl$4(Ctor) {
      * @param dst - The matrix. If not passed a new one is created.
      * @returns A copy of m.
      */
-    function copy(m, dst) {
-        const newDst = (dst ?? new Ctor(12));
-        newDst[0] = m[0];
-        newDst[1] = m[1];
-        newDst[2] = m[2];
-        newDst[4] = m[4];
-        newDst[5] = m[5];
-        newDst[6] = m[6];
-        newDst[8] = m[8];
-        newDst[9] = m[9];
-        newDst[10] = m[10];
-        return newDst;
+    function copy$4(m, dst) {
+        dst = dst || newMat3();
+        dst[0] = m[0];
+        dst[1] = m[1];
+        dst[2] = m[2];
+        dst[4] = m[4];
+        dst[5] = m[5];
+        dst[6] = m[6];
+        dst[8] = m[8];
+        dst[9] = m[9];
+        dst[10] = m[10];
+        return dst;
     }
     /**
      * Copies a matrix (same as {@link mat3.copy})
@@ -1024,14 +1200,14 @@ function getAPIImpl$4(Ctor) {
      * @param dst - The matrix. If not passed a new one is created.
      * @returns A copy of m.
      */
-    const clone = copy;
+    const clone$4 = copy$4;
     /**
      * Check if 2 matrices are approximately equal
      * @param a Operand matrix.
      * @param b Operand matrix.
      * @returns true if matrices are approximately equal
      */
-    function equalsApproximately(a, b) {
+    function equalsApproximately$4(a, b) {
         return Math.abs(a[0] - b[0]) < EPSILON &&
             Math.abs(a[1] - b[1]) < EPSILON &&
             Math.abs(a[2] - b[2]) < EPSILON &&
@@ -1048,7 +1224,7 @@ function getAPIImpl$4(Ctor) {
      * @param b Operand matrix.
      * @returns true if matrices are exactly equal
      */
-    function equals(a, b) {
+    function equals$4(a, b) {
         return a[0] === b[0] &&
             a[1] === b[1] &&
             a[2] === b[2] &&
@@ -1065,18 +1241,18 @@ function getAPIImpl$4(Ctor) {
      * @param dst - matrix to hold result. If not passed a new one is created.
      * @returns A 3-by-3 identity matrix.
      */
-    function identity(dst) {
-        const newDst = (dst ?? new Ctor(12));
-        newDst[0] = 1;
-        newDst[1] = 0;
-        newDst[2] = 0;
-        newDst[4] = 0;
-        newDst[5] = 1;
-        newDst[6] = 0;
-        newDst[8] = 0;
-        newDst[9] = 0;
-        newDst[10] = 1;
-        return newDst;
+    function identity$2(dst) {
+        dst = dst || newMat3();
+        dst[0] = 1;
+        dst[1] = 0;
+        dst[2] = 0;
+        dst[4] = 0;
+        dst[5] = 1;
+        dst[6] = 0;
+        dst[8] = 0;
+        dst[9] = 0;
+        dst[10] = 1;
+        return dst;
     }
     /**
      * Takes the transpose of a matrix.
@@ -1084,9 +1260,9 @@ function getAPIImpl$4(Ctor) {
      * @param dst - matrix to hold result. If not passed a new one is created.
      * @returns The transpose of m.
      */
-    function transpose(m, dst) {
-        const newDst = (dst ?? new Ctor(12));
-        if (newDst === m) {
+    function transpose$1(m, dst) {
+        dst = dst || newMat3();
+        if (dst === m) {
             let t;
             // 0 1 2
             // 4 5 6
@@ -1100,7 +1276,7 @@ function getAPIImpl$4(Ctor) {
             t = m[6];
             m[6] = m[9];
             m[9] = t;
-            return newDst;
+            return dst;
         }
         const m00 = m[0 * 4 + 0];
         const m01 = m[0 * 4 + 1];
@@ -1111,16 +1287,16 @@ function getAPIImpl$4(Ctor) {
         const m20 = m[2 * 4 + 0];
         const m21 = m[2 * 4 + 1];
         const m22 = m[2 * 4 + 2];
-        newDst[0] = m00;
-        newDst[1] = m10;
-        newDst[2] = m20;
-        newDst[4] = m01;
-        newDst[5] = m11;
-        newDst[6] = m21;
-        newDst[8] = m02;
-        newDst[9] = m12;
-        newDst[10] = m22;
-        return newDst;
+        dst[0] = m00;
+        dst[1] = m10;
+        dst[2] = m20;
+        dst[4] = m01;
+        dst[5] = m11;
+        dst[6] = m21;
+        dst[8] = m02;
+        dst[9] = m12;
+        dst[10] = m22;
+        return dst;
     }
     /**
      * Computes the inverse of a 3-by-3 matrix.
@@ -1128,8 +1304,8 @@ function getAPIImpl$4(Ctor) {
      * @param dst - matrix to hold result. If not passed a new one is created.
      * @returns The inverse of m.
      */
-    function inverse(m, dst) {
-        const newDst = (dst ?? new Ctor(12));
+    function inverse$4(m, dst) {
+        dst = dst || newMat3();
         const m00 = m[0 * 4 + 0];
         const m01 = m[0 * 4 + 1];
         const m02 = m[0 * 4 + 2];
@@ -1143,23 +1319,23 @@ function getAPIImpl$4(Ctor) {
         const b11 = -m22 * m10 + m12 * m20;
         const b21 = m21 * m10 - m11 * m20;
         const invDet = 1 / (m00 * b01 + m01 * b11 + m02 * b21);
-        newDst[0] = b01 * invDet;
-        newDst[1] = (-m22 * m01 + m02 * m21) * invDet;
-        newDst[2] = (m12 * m01 - m02 * m11) * invDet;
-        newDst[4] = b11 * invDet;
-        newDst[5] = (m22 * m00 - m02 * m20) * invDet;
-        newDst[6] = (-m12 * m00 + m02 * m10) * invDet;
-        newDst[8] = b21 * invDet;
-        newDst[9] = (-m21 * m00 + m01 * m20) * invDet;
-        newDst[10] = (m11 * m00 - m01 * m10) * invDet;
-        return newDst;
+        dst[0] = b01 * invDet;
+        dst[1] = (-m22 * m01 + m02 * m21) * invDet;
+        dst[2] = (m12 * m01 - m02 * m11) * invDet;
+        dst[4] = b11 * invDet;
+        dst[5] = (m22 * m00 - m02 * m20) * invDet;
+        dst[6] = (-m12 * m00 + m02 * m10) * invDet;
+        dst[8] = b21 * invDet;
+        dst[9] = (-m21 * m00 + m01 * m20) * invDet;
+        dst[10] = (m11 * m00 - m01 * m10) * invDet;
+        return dst;
     }
     /**
      * Compute the determinant of a matrix
      * @param m - the matrix
      * @returns the determinant
      */
-    function determinant(m) {
+    function determinant$1(m) {
         const m00 = m[0 * 4 + 0];
         const m01 = m[0 * 4 + 1];
         const m02 = m[0 * 4 + 2];
@@ -1179,7 +1355,7 @@ function getAPIImpl$4(Ctor) {
      * @param dst - matrix to hold result. If not passed a new one is created.
      * @returns The inverse of m.
      */
-    const invert = inverse;
+    const invert$3 = inverse$4;
     /**
      * Multiplies two 3-by-3 matrices with a on the left and b on the right
      * @param a - The matrix on the left.
@@ -1187,8 +1363,8 @@ function getAPIImpl$4(Ctor) {
      * @param dst - matrix to hold result. If not passed a new one is created.
      * @returns The matrix product of a and b.
      */
-    function multiply(a, b, dst) {
-        const newDst = (dst ?? new Ctor(12));
+    function multiply$4(a, b, dst) {
+        dst = dst || newMat3();
         const a00 = a[0];
         const a01 = a[1];
         const a02 = a[2];
@@ -1207,16 +1383,16 @@ function getAPIImpl$4(Ctor) {
         const b20 = b[8 + 0];
         const b21 = b[8 + 1];
         const b22 = b[8 + 2];
-        newDst[0] = a00 * b00 + a10 * b01 + a20 * b02;
-        newDst[1] = a01 * b00 + a11 * b01 + a21 * b02;
-        newDst[2] = a02 * b00 + a12 * b01 + a22 * b02;
-        newDst[4] = a00 * b10 + a10 * b11 + a20 * b12;
-        newDst[5] = a01 * b10 + a11 * b11 + a21 * b12;
-        newDst[6] = a02 * b10 + a12 * b11 + a22 * b12;
-        newDst[8] = a00 * b20 + a10 * b21 + a20 * b22;
-        newDst[9] = a01 * b20 + a11 * b21 + a21 * b22;
-        newDst[10] = a02 * b20 + a12 * b21 + a22 * b22;
-        return newDst;
+        dst[0] = a00 * b00 + a10 * b01 + a20 * b02;
+        dst[1] = a01 * b00 + a11 * b01 + a21 * b02;
+        dst[2] = a02 * b00 + a12 * b01 + a22 * b02;
+        dst[4] = a00 * b10 + a10 * b11 + a20 * b12;
+        dst[5] = a01 * b10 + a11 * b11 + a21 * b12;
+        dst[6] = a02 * b10 + a12 * b11 + a22 * b12;
+        dst[8] = a00 * b20 + a10 * b21 + a20 * b22;
+        dst[9] = a01 * b20 + a11 * b21 + a21 * b22;
+        dst[10] = a02 * b20 + a12 * b21 + a22 * b22;
+        return dst;
     }
     /**
      * Multiplies two 3-by-3 matrices with a on the left and b on the right (same as multiply)
@@ -1225,7 +1401,7 @@ function getAPIImpl$4(Ctor) {
      * @param dst - matrix to hold result. If not passed a new one is created.
      * @returns The matrix product of a and b.
      */
-    const mul = multiply;
+    const mul$4 = multiply$4;
     /**
      * Sets the translation component of a 3-by-3 matrix to the given
      * vector.
@@ -1234,20 +1410,20 @@ function getAPIImpl$4(Ctor) {
      * @param dst - matrix to hold result. If not passed a new one is created.
      * @returns The matrix with translation set.
      */
-    function setTranslation(a, v, dst) {
-        const newDst = (dst ?? identity());
-        if (a !== newDst) {
-            newDst[0] = a[0];
-            newDst[1] = a[1];
-            newDst[2] = a[2];
-            newDst[4] = a[4];
-            newDst[5] = a[5];
-            newDst[6] = a[6];
+    function setTranslation$1(a, v, dst) {
+        dst = dst || identity$2();
+        if (a !== dst) {
+            dst[0] = a[0];
+            dst[1] = a[1];
+            dst[2] = a[2];
+            dst[4] = a[4];
+            dst[5] = a[5];
+            dst[6] = a[6];
         }
-        newDst[8] = v[0];
-        newDst[9] = v[1];
-        newDst[10] = 1;
-        return newDst;
+        dst[8] = v[0];
+        dst[9] = v[1];
+        dst[10] = 1;
+        return dst;
     }
     /**
      * Returns the translation component of a 3-by-3 matrix as a vector with 3
@@ -1256,11 +1432,11 @@ function getAPIImpl$4(Ctor) {
      * @param dst - vector to hold result. If not passed a new one is created.
      * @returns The translation component of m.
      */
-    function getTranslation(m, dst) {
-        const newDst = (dst ?? vec2.create());
-        newDst[0] = m[8];
-        newDst[1] = m[9];
-        return newDst;
+    function getTranslation$2(m, dst) {
+        dst = dst || create$5();
+        dst[0] = m[8];
+        dst[1] = m[9];
+        return dst;
     }
     /**
      * Returns an axis of a 3x3 matrix as a vector with 2 entries
@@ -1268,12 +1444,12 @@ function getAPIImpl$4(Ctor) {
      * @param axis - The axis 0 = x, 1 = y,
      * @returns The axis component of m.
      */
-    function getAxis(m, axis, dst) {
-        const newDst = (dst ?? vec2.create());
+    function getAxis$2(m, axis, dst) {
+        dst = dst || create$5();
         const off = axis * 4;
-        newDst[0] = m[off + 0];
-        newDst[1] = m[off + 1];
-        return newDst;
+        dst[0] = m[off + 0];
+        dst[1] = m[off + 1];
+        return dst;
     }
     /**
      * Sets an axis of a 3x3 matrix as a vector with 2 entries
@@ -1283,27 +1459,29 @@ function getAPIImpl$4(Ctor) {
      * @param dst - The matrix to set. If not passed a new one is created.
      * @returns The matrix with axis set.
      */
-    function setAxis(m, v, axis, dst) {
-        const newDst = (dst === m ? m : copy(m, dst));
+    function setAxis$1(m, v, axis, dst) {
+        if (dst !== m) {
+            dst = copy$4(m, dst);
+        }
         const off = axis * 4;
-        newDst[off + 0] = v[0];
-        newDst[off + 1] = v[1];
-        return newDst;
+        dst[off + 0] = v[0];
+        dst[off + 1] = v[1];
+        return dst;
     }
-    ///**
-    // * Returns the scaling component of the matrix
-    // * @param m - The Matrix
-    // * @param dst - The vector to set. If not passed a new one is created.
-    // */
-    function getScaling(m, dst) {
-        const newDst = (dst ?? vec2.create());
+    /**
+     * Returns the scaling component of the matrix
+     * @param m - The Matrix
+     * @param dst - The vector to set. If not passed a new one is created.
+     */
+    function getScaling$2(m, dst) {
+        dst = dst || create$5();
         const xx = m[0];
         const xy = m[1];
         const yx = m[4];
         const yy = m[5];
-        newDst[0] = Math.sqrt(xx * xx + xy * xy);
-        newDst[1] = Math.sqrt(yx * yx + yy * yy);
-        return newDst;
+        dst[0] = Math.sqrt(xx * xx + xy * xy);
+        dst[1] = Math.sqrt(yx * yx + yy * yy);
+        return dst;
     }
     /**
      * Creates a 3-by-3 matrix which translates by the given vector v.
@@ -1311,18 +1489,18 @@ function getAPIImpl$4(Ctor) {
      * @param dst - matrix to hold result. If not passed a new one is created.
      * @returns The translation matrix.
      */
-    function translation(v, dst) {
-        const newDst = (dst ?? new Ctor(12));
-        newDst[0] = 1;
-        newDst[1] = 0;
-        newDst[2] = 0;
-        newDst[4] = 0;
-        newDst[5] = 1;
-        newDst[6] = 0;
-        newDst[8] = v[0];
-        newDst[9] = v[1];
-        newDst[10] = 1;
-        return newDst;
+    function translation$1(v, dst) {
+        dst = dst || newMat3();
+        dst[0] = 1;
+        dst[1] = 0;
+        dst[2] = 0;
+        dst[4] = 0;
+        dst[5] = 1;
+        dst[6] = 0;
+        dst[8] = v[0];
+        dst[9] = v[1];
+        dst[10] = 1;
+        return dst;
     }
     /**
      * Translates the given 3-by-3 matrix by the given vector v.
@@ -1331,8 +1509,8 @@ function getAPIImpl$4(Ctor) {
      * @param dst - matrix to hold result. If not passed a new one is created.
      * @returns The translated matrix.
      */
-    function translate(m, v, dst) {
-        const newDst = (dst ?? new Ctor(12));
+    function translate$1(m, v, dst) {
+        dst = dst || newMat3();
         const v0 = v[0];
         const v1 = v[1];
         const m00 = m[0];
@@ -1344,18 +1522,18 @@ function getAPIImpl$4(Ctor) {
         const m20 = m[2 * 4 + 0];
         const m21 = m[2 * 4 + 1];
         const m22 = m[2 * 4 + 2];
-        if (m !== newDst) {
-            newDst[0] = m00;
-            newDst[1] = m01;
-            newDst[2] = m02;
-            newDst[4] = m10;
-            newDst[5] = m11;
-            newDst[6] = m12;
+        if (m !== dst) {
+            dst[0] = m00;
+            dst[1] = m01;
+            dst[2] = m02;
+            dst[4] = m10;
+            dst[5] = m11;
+            dst[6] = m12;
         }
-        newDst[8] = m00 * v0 + m10 * v1 + m20;
-        newDst[9] = m01 * v0 + m11 * v1 + m21;
-        newDst[10] = m02 * v0 + m12 * v1 + m22;
-        return newDst;
+        dst[8] = m00 * v0 + m10 * v1 + m20;
+        dst[9] = m01 * v0 + m11 * v1 + m21;
+        dst[10] = m02 * v0 + m12 * v1 + m22;
+        return dst;
     }
     /**
      * Creates a 3-by-3 matrix which rotates  by the given angle.
@@ -1363,20 +1541,20 @@ function getAPIImpl$4(Ctor) {
      * @param dst - matrix to hold result. If not passed a new one is created.
      * @returns The rotation matrix.
      */
-    function rotation(angleInRadians, dst) {
-        const newDst = (dst ?? new Ctor(12));
+    function rotation$1(angleInRadians, dst) {
+        dst = dst || newMat3();
         const c = Math.cos(angleInRadians);
         const s = Math.sin(angleInRadians);
-        newDst[0] = c;
-        newDst[1] = s;
-        newDst[2] = 0;
-        newDst[4] = -s;
-        newDst[5] = c;
-        newDst[6] = 0;
-        newDst[8] = 0;
-        newDst[9] = 0;
-        newDst[10] = 1;
-        return newDst;
+        dst[0] = c;
+        dst[1] = s;
+        dst[2] = 0;
+        dst[4] = -s;
+        dst[5] = c;
+        dst[6] = 0;
+        dst[8] = 0;
+        dst[9] = 0;
+        dst[10] = 1;
+        return dst;
     }
     /**
      * Rotates the given 3-by-3 matrix  by the given angle.
@@ -1385,8 +1563,8 @@ function getAPIImpl$4(Ctor) {
      * @param dst - matrix to hold result. If not passed a new one is created.
      * @returns The rotated matrix.
      */
-    function rotate(m, angleInRadians, dst) {
-        const newDst = (dst ?? new Ctor(12));
+    function rotate$1(m, angleInRadians, dst) {
+        dst = dst || newMat3();
         const m00 = m[0 * 4 + 0];
         const m01 = m[0 * 4 + 1];
         const m02 = m[0 * 4 + 2];
@@ -1395,18 +1573,18 @@ function getAPIImpl$4(Ctor) {
         const m12 = m[1 * 4 + 2];
         const c = Math.cos(angleInRadians);
         const s = Math.sin(angleInRadians);
-        newDst[0] = c * m00 + s * m10;
-        newDst[1] = c * m01 + s * m11;
-        newDst[2] = c * m02 + s * m12;
-        newDst[4] = c * m10 - s * m00;
-        newDst[5] = c * m11 - s * m01;
-        newDst[6] = c * m12 - s * m02;
-        if (m !== newDst) {
-            newDst[8] = m[8];
-            newDst[9] = m[9];
-            newDst[10] = m[10];
+        dst[0] = c * m00 + s * m10;
+        dst[1] = c * m01 + s * m11;
+        dst[2] = c * m02 + s * m12;
+        dst[4] = c * m10 - s * m00;
+        dst[5] = c * m11 - s * m01;
+        dst[6] = c * m12 - s * m02;
+        if (m !== dst) {
+            dst[8] = m[8];
+            dst[9] = m[9];
+            dst[10] = m[10];
         }
-        return newDst;
+        return dst;
     }
     /**
      * Creates a 3-by-3 matrix which scales in each dimension by an amount given by
@@ -1417,18 +1595,18 @@ function getAPIImpl$4(Ctor) {
      * @param dst - matrix to hold result. If not passed a new one is created.
      * @returns The scaling matrix.
      */
-    function scaling(v, dst) {
-        const newDst = (dst ?? new Ctor(12));
-        newDst[0] = v[0];
-        newDst[1] = 0;
-        newDst[2] = 0;
-        newDst[4] = 0;
-        newDst[5] = v[1];
-        newDst[6] = 0;
-        newDst[8] = 0;
-        newDst[9] = 0;
-        newDst[10] = 1;
-        return newDst;
+    function scaling$1(v, dst) {
+        dst = dst || newMat3();
+        dst[0] = v[0];
+        dst[1] = 0;
+        dst[2] = 0;
+        dst[4] = 0;
+        dst[5] = v[1];
+        dst[6] = 0;
+        dst[8] = 0;
+        dst[9] = 0;
+        dst[10] = 1;
+        return dst;
     }
     /**
      * Scales the given 3-by-3 matrix in each dimension by an amount
@@ -1440,22 +1618,22 @@ function getAPIImpl$4(Ctor) {
      * @param dst - matrix to hold result. If not passed a new one is created.
      * @returns The scaled matrix.
      */
-    function scale(m, v, dst) {
-        const newDst = (dst ?? new Ctor(12));
+    function scale$4(m, v, dst) {
+        dst = dst || newMat3();
         const v0 = v[0];
         const v1 = v[1];
-        newDst[0] = v0 * m[0 * 4 + 0];
-        newDst[1] = v0 * m[0 * 4 + 1];
-        newDst[2] = v0 * m[0 * 4 + 2];
-        newDst[4] = v1 * m[1 * 4 + 0];
-        newDst[5] = v1 * m[1 * 4 + 1];
-        newDst[6] = v1 * m[1 * 4 + 2];
-        if (m !== newDst) {
-            newDst[8] = m[8];
-            newDst[9] = m[9];
-            newDst[10] = m[10];
+        dst[0] = v0 * m[0 * 4 + 0];
+        dst[1] = v0 * m[0 * 4 + 1];
+        dst[2] = v0 * m[0 * 4 + 2];
+        dst[4] = v1 * m[1 * 4 + 0];
+        dst[5] = v1 * m[1 * 4 + 1];
+        dst[6] = v1 * m[1 * 4 + 2];
+        if (m !== dst) {
+            dst[8] = m[8];
+            dst[9] = m[9];
+            dst[10] = m[10];
         }
-        return newDst;
+        return dst;
     }
     /**
      * Creates a 3-by-3 matrix which scales uniformly in each dimension
@@ -1463,18 +1641,18 @@ function getAPIImpl$4(Ctor) {
      * @param dst - matrix to hold result. If not passed a new one is created.
      * @returns The scaling matrix.
      */
-    function uniformScaling(s, dst) {
-        const newDst = (dst ?? new Ctor(12));
-        newDst[0] = s;
-        newDst[1] = 0;
-        newDst[2] = 0;
-        newDst[4] = 0;
-        newDst[5] = s;
-        newDst[6] = 0;
-        newDst[8] = 0;
-        newDst[9] = 0;
-        newDst[10] = 1;
-        return newDst;
+    function uniformScaling$1(s, dst) {
+        dst = dst || newMat3();
+        dst[0] = s;
+        dst[1] = 0;
+        dst[2] = 0;
+        dst[4] = 0;
+        dst[5] = s;
+        dst[6] = 0;
+        dst[8] = 0;
+        dst[9] = 0;
+        dst[10] = 1;
+        return dst;
     }
     /**
      * Scales the given 3-by-3 matrix in each dimension by an amount
@@ -1484,108 +1662,77 @@ function getAPIImpl$4(Ctor) {
      * @param dst - matrix to hold result. If not passed a new one is created.
      * @returns The scaled matrix.
      */
-    function uniformScale(m, s, dst) {
-        const newDst = (dst ?? new Ctor(12));
-        newDst[0] = s * m[0 * 4 + 0];
-        newDst[1] = s * m[0 * 4 + 1];
-        newDst[2] = s * m[0 * 4 + 2];
-        newDst[4] = s * m[1 * 4 + 0];
-        newDst[5] = s * m[1 * 4 + 1];
-        newDst[6] = s * m[1 * 4 + 2];
-        if (m !== newDst) {
-            newDst[8] = m[8];
-            newDst[9] = m[9];
-            newDst[10] = m[10];
+    function uniformScale$1(m, s, dst) {
+        dst = dst || newMat3();
+        dst[0] = s * m[0 * 4 + 0];
+        dst[1] = s * m[0 * 4 + 1];
+        dst[2] = s * m[0 * 4 + 2];
+        dst[4] = s * m[1 * 4 + 0];
+        dst[5] = s * m[1 * 4 + 1];
+        dst[6] = s * m[1 * 4 + 2];
+        if (m !== dst) {
+            dst[8] = m[8];
+            dst[9] = m[9];
+            dst[10] = m[10];
         }
-        return newDst;
+        return dst;
     }
-    return {
-        clone,
-        create,
-        set,
-        fromMat4,
-        fromQuat,
-        negate,
-        copy,
-        equalsApproximately,
-        equals,
-        identity,
-        transpose,
-        inverse,
-        invert,
-        determinant,
-        mul,
-        multiply,
-        setTranslation,
-        getTranslation,
-        getAxis,
-        setAxis,
-        getScaling,
-        translation,
-        translate,
-        rotation,
-        rotate,
-        scaling,
-        scale,
-        uniformScaling,
-        uniformScale,
-    };
-}
-const cache$4 = new Map();
-function getAPI$4(Ctor) {
-    let api = cache$4.get(Ctor);
-    if (!api) {
-        api = getAPIImpl$4(Ctor);
-        cache$4.set(Ctor, api);
-    }
-    return api;
-}
 
-/*
- * Copyright 2022 Gregg Tavares
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
- * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- */
-/**
- * Generates am typed API for Vec3
- * */
-function getAPIImpl$3(Ctor) {
-    /**
-     * Creates a vec3; may be called with x, y, z to set initial values.
-     * @param x - Initial x value.
-     * @param y - Initial y value.
-     * @param z - Initial z value.
-     * @returns the created vector
+    var mat3Impl = {
+        __proto__: null,
+        clone: clone$4,
+        copy: copy$4,
+        create: create$3,
+        determinant: determinant$1,
+        equals: equals$4,
+        equalsApproximately: equalsApproximately$4,
+        fromMat4: fromMat4,
+        fromQuat: fromQuat$1,
+        getAxis: getAxis$2,
+        getScaling: getScaling$2,
+        getTranslation: getTranslation$2,
+        identity: identity$2,
+        inverse: inverse$4,
+        invert: invert$3,
+        mul: mul$4,
+        multiply: multiply$4,
+        negate: negate$3,
+        rotate: rotate$1,
+        rotation: rotation$1,
+        scale: scale$4,
+        scaling: scaling$1,
+        set: set$4,
+        setAxis: setAxis$1,
+        setDefaultType: setDefaultType$4,
+        setTranslation: setTranslation$1,
+        translate: translate$1,
+        translation: translation$1,
+        transpose: transpose$1,
+        uniformScale: uniformScale$1,
+        uniformScaling: uniformScaling$1
+    };
+
+    /*
+     * Copyright 2022 Gregg Tavares
+     *
+     * Permission is hereby granted, free of charge, to any person obtaining a
+     * copy of this software and associated documentation files (the "Software"),
+     * to deal in the Software without restriction, including without limitation
+     * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+     * and/or sell copies of the Software, and to permit persons to whom the
+     * Software is furnished to do so, subject to the following conditions:
+     *
+     * The above copyright notice and this permission notice shall be included in
+     * all copies or substantial portions of the Software.
+     *
+     * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+     * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+     * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+     * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+     * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+     * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+     * DEALINGS IN THE SOFTWARE.
      */
-    function create(x, y, z) {
-        const newDst = new Ctor(3);
-        if (x !== undefined) {
-            newDst[0] = x;
-            if (y !== undefined) {
-                newDst[1] = y;
-                if (z !== undefined) {
-                    newDst[2] = z;
-                }
-            }
-        }
-        return newDst;
-    }
     /**
      * Creates a vec3; may be called with x, y, z to set initial values. (same as create)
      * @param x - Initial x value.
@@ -1593,7 +1740,7 @@ function getAPIImpl$3(Ctor) {
      * @param z - Initial z value.
      * @returns the created vector
      */
-    const fromValues = create;
+    const fromValues$2 = create$4;
     /**
      * Sets the values of a Vec3
      * Also see {@link vec3.create} and {@link vec3.copy}
@@ -1604,12 +1751,12 @@ function getAPIImpl$3(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns A vector with its elements set.
      */
-    function set(x, y, z, dst) {
-        const newDst = (dst ?? new Ctor(3));
-        newDst[0] = x;
-        newDst[1] = y;
-        newDst[2] = z;
-        return newDst;
+    function set$3(x, y, z, dst) {
+        dst = dst || new VecType$1(3);
+        dst[0] = x;
+        dst[1] = y;
+        dst[2] = z;
+        return dst;
     }
     /**
      * Applies Math.ceil to each element of vector
@@ -1617,12 +1764,12 @@ function getAPIImpl$3(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns A vector that is the ceil of each element of v.
      */
-    function ceil(v, dst) {
-        const newDst = (dst ?? new Ctor(3));
-        newDst[0] = Math.ceil(v[0]);
-        newDst[1] = Math.ceil(v[1]);
-        newDst[2] = Math.ceil(v[2]);
-        return newDst;
+    function ceil$1(v, dst) {
+        dst = dst || new VecType$1(3);
+        dst[0] = Math.ceil(v[0]);
+        dst[1] = Math.ceil(v[1]);
+        dst[2] = Math.ceil(v[2]);
+        return dst;
     }
     /**
      * Applies Math.floor to each element of vector
@@ -1630,12 +1777,12 @@ function getAPIImpl$3(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns A vector that is the floor of each element of v.
      */
-    function floor(v, dst) {
-        const newDst = (dst ?? new Ctor(3));
-        newDst[0] = Math.floor(v[0]);
-        newDst[1] = Math.floor(v[1]);
-        newDst[2] = Math.floor(v[2]);
-        return newDst;
+    function floor$1(v, dst) {
+        dst = dst || new VecType$1(3);
+        dst[0] = Math.floor(v[0]);
+        dst[1] = Math.floor(v[1]);
+        dst[2] = Math.floor(v[2]);
+        return dst;
     }
     /**
      * Applies Math.round to each element of vector
@@ -1643,12 +1790,12 @@ function getAPIImpl$3(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns A vector that is the round of each element of v.
      */
-    function round(v, dst) {
-        const newDst = (dst ?? new Ctor(3));
-        newDst[0] = Math.round(v[0]);
-        newDst[1] = Math.round(v[1]);
-        newDst[2] = Math.round(v[2]);
-        return newDst;
+    function round$1(v, dst) {
+        dst = dst || new VecType$1(3);
+        dst[0] = Math.round(v[0]);
+        dst[1] = Math.round(v[1]);
+        dst[2] = Math.round(v[2]);
+        return dst;
     }
     /**
      * Clamp each element of vector between min and max
@@ -1658,12 +1805,12 @@ function getAPIImpl$3(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns A vector that the clamped value of each element of v.
      */
-    function clamp(v, min = 0, max = 1, dst) {
-        const newDst = (dst ?? new Ctor(3));
-        newDst[0] = Math.min(max, Math.max(min, v[0]));
-        newDst[1] = Math.min(max, Math.max(min, v[1]));
-        newDst[2] = Math.min(max, Math.max(min, v[2]));
-        return newDst;
+    function clamp$1(v, min = 0, max = 1, dst) {
+        dst = dst || new VecType$1(3);
+        dst[0] = Math.min(max, Math.max(min, v[0]));
+        dst[1] = Math.min(max, Math.max(min, v[1]));
+        dst[2] = Math.min(max, Math.max(min, v[2]));
+        return dst;
     }
     /**
      * Adds two vectors; assumes a and b have the same dimension.
@@ -1672,12 +1819,12 @@ function getAPIImpl$3(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns A vector that is the sum of a and b.
      */
-    function add(a, b, dst) {
-        const newDst = (dst ?? new Ctor(3));
-        newDst[0] = a[0] + b[0];
-        newDst[1] = a[1] + b[1];
-        newDst[2] = a[2] + b[2];
-        return newDst;
+    function add$2(a, b, dst) {
+        dst = dst || new VecType$1(3);
+        dst[0] = a[0] + b[0];
+        dst[1] = a[1] + b[1];
+        dst[2] = a[2] + b[2];
+        return dst;
     }
     /**
      * Adds two vectors, scaling the 2nd; assumes a and b have the same dimension.
@@ -1687,12 +1834,12 @@ function getAPIImpl$3(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns A vector that is the sum of a + b * scale.
      */
-    function addScaled(a, b, scale, dst) {
-        const newDst = (dst ?? new Ctor(3));
-        newDst[0] = a[0] + b[0] * scale;
-        newDst[1] = a[1] + b[1] * scale;
-        newDst[2] = a[2] + b[2] * scale;
-        return newDst;
+    function addScaled$1(a, b, scale, dst) {
+        dst = dst || new VecType$1(3);
+        dst[0] = a[0] + b[0] * scale;
+        dst[1] = a[1] + b[1] * scale;
+        dst[2] = a[2] + b[2] * scale;
+        return dst;
     }
     /**
      * Returns the angle in radians between two vectors.
@@ -1700,7 +1847,7 @@ function getAPIImpl$3(Ctor) {
      * @param b - Operand vector.
      * @returns The angle in radians between the 2 vectors.
      */
-    function angle(a, b) {
+    function angle$1(a, b) {
         const ax = a[0];
         const ay = a[1];
         const az = a[2];
@@ -1710,7 +1857,7 @@ function getAPIImpl$3(Ctor) {
         const mag1 = Math.sqrt(ax * ax + ay * ay + az * az);
         const mag2 = Math.sqrt(bx * bx + by * by + bz * bz);
         const mag = mag1 * mag2;
-        const cosine = mag && dot(a, b) / mag;
+        const cosine = mag && dot$2(a, b) / mag;
         return Math.acos(cosine);
     }
     /**
@@ -1720,12 +1867,12 @@ function getAPIImpl$3(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns A vector that is the difference of a and b.
      */
-    function subtract(a, b, dst) {
-        const newDst = (dst ?? new Ctor(3));
-        newDst[0] = a[0] - b[0];
-        newDst[1] = a[1] - b[1];
-        newDst[2] = a[2] - b[2];
-        return newDst;
+    function subtract$2(a, b, dst) {
+        dst = dst || new VecType$1(3);
+        dst[0] = a[0] - b[0];
+        dst[1] = a[1] - b[1];
+        dst[2] = a[2] - b[2];
+        return dst;
     }
     /**
      * Subtracts two vectors.
@@ -1734,14 +1881,14 @@ function getAPIImpl$3(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns A vector that is the difference of a and b.
      */
-    const sub = subtract;
+    const sub$2 = subtract$2;
     /**
      * Check if 2 vectors are approximately equal
      * @param a - Operand vector.
      * @param b - Operand vector.
      * @returns true if vectors are approximately equal
      */
-    function equalsApproximately(a, b) {
+    function equalsApproximately$3(a, b) {
         return Math.abs(a[0] - b[0]) < EPSILON &&
             Math.abs(a[1] - b[1]) < EPSILON &&
             Math.abs(a[2] - b[2]) < EPSILON;
@@ -1752,7 +1899,7 @@ function getAPIImpl$3(Ctor) {
      * @param b - Operand vector.
      * @returns true if vectors are exactly equal
      */
-    function equals(a, b) {
+    function equals$3(a, b) {
         return a[0] === b[0] && a[1] === b[1] && a[2] === b[2];
     }
     /**
@@ -1765,12 +1912,12 @@ function getAPIImpl$3(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns The linear interpolated result.
      */
-    function lerp(a, b, t, dst) {
-        const newDst = (dst ?? new Ctor(3));
-        newDst[0] = a[0] + t * (b[0] - a[0]);
-        newDst[1] = a[1] + t * (b[1] - a[1]);
-        newDst[2] = a[2] + t * (b[2] - a[2]);
-        return newDst;
+    function lerp$2(a, b, t, dst) {
+        dst = dst || new VecType$1(3);
+        dst[0] = a[0] + t * (b[0] - a[0]);
+        dst[1] = a[1] + t * (b[1] - a[1]);
+        dst[2] = a[2] + t * (b[2] - a[2]);
+        return dst;
     }
     /**
      * Performs linear interpolation on two vectors.
@@ -1782,12 +1929,12 @@ function getAPIImpl$3(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns the linear interpolated result.
      */
-    function lerpV(a, b, t, dst) {
-        const newDst = (dst ?? new Ctor(3));
-        newDst[0] = a[0] + t[0] * (b[0] - a[0]);
-        newDst[1] = a[1] + t[1] * (b[1] - a[1]);
-        newDst[2] = a[2] + t[2] * (b[2] - a[2]);
-        return newDst;
+    function lerpV$1(a, b, t, dst) {
+        dst = dst || new VecType$1(3);
+        dst[0] = a[0] + t[0] * (b[0] - a[0]);
+        dst[1] = a[1] + t[1] * (b[1] - a[1]);
+        dst[2] = a[2] + t[2] * (b[2] - a[2]);
+        return dst;
     }
     /**
      * Return max values of two vectors.
@@ -1798,12 +1945,12 @@ function getAPIImpl$3(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns The max components vector.
      */
-    function max(a, b, dst) {
-        const newDst = (dst ?? new Ctor(3));
-        newDst[0] = Math.max(a[0], b[0]);
-        newDst[1] = Math.max(a[1], b[1]);
-        newDst[2] = Math.max(a[2], b[2]);
-        return newDst;
+    function max$1(a, b, dst) {
+        dst = dst || new VecType$1(3);
+        dst[0] = Math.max(a[0], b[0]);
+        dst[1] = Math.max(a[1], b[1]);
+        dst[2] = Math.max(a[2], b[2]);
+        return dst;
     }
     /**
      * Return min values of two vectors.
@@ -1814,12 +1961,12 @@ function getAPIImpl$3(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns The min components vector.
      */
-    function min(a, b, dst) {
-        const newDst = (dst ?? new Ctor(3));
-        newDst[0] = Math.min(a[0], b[0]);
-        newDst[1] = Math.min(a[1], b[1]);
-        newDst[2] = Math.min(a[2], b[2]);
-        return newDst;
+    function min$1(a, b, dst) {
+        dst = dst || new VecType$1(3);
+        dst[0] = Math.min(a[0], b[0]);
+        dst[1] = Math.min(a[1], b[1]);
+        dst[2] = Math.min(a[2], b[2]);
+        return dst;
     }
     /**
      * Multiplies a vector by a scalar.
@@ -1828,12 +1975,12 @@ function getAPIImpl$3(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns The scaled vector.
      */
-    function mulScalar(v, k, dst) {
-        const newDst = (dst ?? new Ctor(3));
-        newDst[0] = v[0] * k;
-        newDst[1] = v[1] * k;
-        newDst[2] = v[2] * k;
-        return newDst;
+    function mulScalar$2(v, k, dst) {
+        dst = dst || new VecType$1(3);
+        dst[0] = v[0] * k;
+        dst[1] = v[1] * k;
+        dst[2] = v[2] * k;
+        return dst;
     }
     /**
      * Multiplies a vector by a scalar. (same as mulScalar)
@@ -1842,7 +1989,7 @@ function getAPIImpl$3(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns The scaled vector.
      */
-    const scale = mulScalar;
+    const scale$3 = mulScalar$2;
     /**
      * Divides a vector by a scalar.
      * @param v - The vector.
@@ -1850,12 +1997,12 @@ function getAPIImpl$3(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns The scaled vector.
      */
-    function divScalar(v, k, dst) {
-        const newDst = (dst ?? new Ctor(3));
-        newDst[0] = v[0] / k;
-        newDst[1] = v[1] / k;
-        newDst[2] = v[2] / k;
-        return newDst;
+    function divScalar$2(v, k, dst) {
+        dst = dst || new VecType$1(3);
+        dst[0] = v[0] / k;
+        dst[1] = v[1] / k;
+        dst[2] = v[2] / k;
+        return dst;
     }
     /**
      * Inverse a vector.
@@ -1863,12 +2010,12 @@ function getAPIImpl$3(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns The inverted vector.
      */
-    function inverse(v, dst) {
-        const newDst = (dst ?? new Ctor(3));
-        newDst[0] = 1 / v[0];
-        newDst[1] = 1 / v[1];
-        newDst[2] = 1 / v[2];
-        return newDst;
+    function inverse$3(v, dst) {
+        dst = dst || new VecType$1(3);
+        dst[0] = 1 / v[0];
+        dst[1] = 1 / v[1];
+        dst[2] = 1 / v[2];
+        return dst;
     }
     /**
      * Invert a vector. (same as inverse)
@@ -1876,7 +2023,7 @@ function getAPIImpl$3(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns The inverted vector.
      */
-    const invert = inverse;
+    const invert$2 = inverse$3;
     /**
      * Computes the cross product of two vectors; assumes both vectors have
      * three entries.
@@ -1886,13 +2033,13 @@ function getAPIImpl$3(Ctor) {
      * @returns The vector of a cross b.
      */
     function cross(a, b, dst) {
-        const newDst = (dst ?? new Ctor(3));
+        dst = dst || new VecType$1(3);
         const t1 = a[2] * b[0] - a[0] * b[2];
         const t2 = a[0] * b[1] - a[1] * b[0];
-        newDst[0] = a[1] * b[2] - a[2] * b[1];
-        newDst[1] = t1;
-        newDst[2] = t2;
-        return newDst;
+        dst[0] = a[1] * b[2] - a[2] * b[1];
+        dst[1] = t1;
+        dst[2] = t2;
+        return dst;
     }
     /**
      * Computes the dot product of two vectors; assumes both vectors have
@@ -1901,7 +2048,7 @@ function getAPIImpl$3(Ctor) {
      * @param b - Operand vector.
      * @returns dot product
      */
-    function dot(a, b) {
+    function dot$2(a, b) {
         return (a[0] * b[0]) + (a[1] * b[1]) + (a[2] * b[2]);
     }
     /**
@@ -1909,7 +2056,7 @@ function getAPIImpl$3(Ctor) {
      * @param v - vector.
      * @returns length of vector.
      */
-    function length(v) {
+    function length$2(v) {
         const v0 = v[0];
         const v1 = v[1];
         const v2 = v[2];
@@ -1920,13 +2067,13 @@ function getAPIImpl$3(Ctor) {
      * @param v - vector.
      * @returns length of vector.
      */
-    const len = length;
+    const len$2 = length$2;
     /**
      * Computes the square of the length of vector
      * @param v - vector.
      * @returns square of the length of vector.
      */
-    function lengthSq(v) {
+    function lengthSq$2(v) {
         const v0 = v[0];
         const v1 = v[1];
         const v2 = v[2];
@@ -1937,14 +2084,14 @@ function getAPIImpl$3(Ctor) {
      * @param v - vector.
      * @returns square of the length of vector.
      */
-    const lenSq = lengthSq;
+    const lenSq$2 = lengthSq$2;
     /**
      * Computes the distance between 2 points
      * @param a - vector.
      * @param b - vector.
      * @returns distance between a and b
      */
-    function distance(a, b) {
+    function distance$1(a, b) {
         const dx = a[0] - b[0];
         const dy = a[1] - b[1];
         const dz = a[2] - b[2];
@@ -1956,14 +2103,14 @@ function getAPIImpl$3(Ctor) {
      * @param b - vector.
      * @returns distance between a and b
      */
-    const dist = distance;
+    const dist$1 = distance$1;
     /**
      * Computes the square of the distance between 2 points
      * @param a - vector.
      * @param b - vector.
      * @returns square of the distance between a and b
      */
-    function distanceSq(a, b) {
+    function distanceSq$1(a, b) {
         const dx = a[0] - b[0];
         const dy = a[1] - b[1];
         const dz = a[2] - b[2];
@@ -1975,30 +2122,30 @@ function getAPIImpl$3(Ctor) {
      * @param b - vector.
      * @returns square of the distance between a and b
      */
-    const distSq = distanceSq;
+    const distSq$1 = distanceSq$1;
     /**
      * Divides a vector by its Euclidean length and returns the quotient.
      * @param v - The vector.
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns The normalized vector.
      */
-    function normalize(v, dst) {
-        const newDst = (dst ?? new Ctor(3));
+    function normalize$2(v, dst) {
+        dst = dst || new VecType$1(3);
         const v0 = v[0];
         const v1 = v[1];
         const v2 = v[2];
         const len = Math.sqrt(v0 * v0 + v1 * v1 + v2 * v2);
         if (len > 0.00001) {
-            newDst[0] = v0 / len;
-            newDst[1] = v1 / len;
-            newDst[2] = v2 / len;
+            dst[0] = v0 / len;
+            dst[1] = v1 / len;
+            dst[2] = v2 / len;
         }
         else {
-            newDst[0] = 0;
-            newDst[1] = 0;
-            newDst[2] = 0;
+            dst[0] = 0;
+            dst[1] = 0;
+            dst[2] = 0;
         }
-        return newDst;
+        return dst;
     }
     /**
      * Negates a vector.
@@ -2006,12 +2153,12 @@ function getAPIImpl$3(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns -v.
      */
-    function negate(v, dst) {
-        const newDst = (dst ?? new Ctor(3));
-        newDst[0] = -v[0];
-        newDst[1] = -v[1];
-        newDst[2] = -v[2];
-        return newDst;
+    function negate$2(v, dst) {
+        dst = dst || new VecType$1(3);
+        dst[0] = -v[0];
+        dst[1] = -v[1];
+        dst[2] = -v[2];
+        return dst;
     }
     /**
      * Copies a vector. (same as {@link vec3.clone})
@@ -2020,12 +2167,12 @@ function getAPIImpl$3(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns A copy of v.
      */
-    function copy(v, dst) {
-        const newDst = (dst ?? new Ctor(3));
-        newDst[0] = v[0];
-        newDst[1] = v[1];
-        newDst[2] = v[2];
-        return newDst;
+    function copy$3(v, dst) {
+        dst = dst || new VecType$1(3);
+        dst[0] = v[0];
+        dst[1] = v[1];
+        dst[2] = v[2];
+        return dst;
     }
     /**
      * Clones a vector. (same as {@link vec3.copy})
@@ -2034,7 +2181,7 @@ function getAPIImpl$3(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns A copy of v.
      */
-    const clone = copy;
+    const clone$3 = copy$3;
     /**
      * Multiplies a vector by another vector (component-wise); assumes a and
      * b have the same length.
@@ -2043,12 +2190,12 @@ function getAPIImpl$3(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns The vector of products of entries of a and b.
      */
-    function multiply(a, b, dst) {
-        const newDst = (dst ?? new Ctor(3));
-        newDst[0] = a[0] * b[0];
-        newDst[1] = a[1] * b[1];
-        newDst[2] = a[2] * b[2];
-        return newDst;
+    function multiply$3(a, b, dst) {
+        dst = dst || new VecType$1(3);
+        dst[0] = a[0] * b[0];
+        dst[1] = a[1] * b[1];
+        dst[2] = a[2] * b[2];
+        return dst;
     }
     /**
      * Multiplies a vector by another vector (component-wise); assumes a and
@@ -2058,7 +2205,7 @@ function getAPIImpl$3(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns The vector of products of entries of a and b.
      */
-    const mul = multiply;
+    const mul$3 = multiply$3;
     /**
      * Divides a vector by another vector (component-wise); assumes a and
      * b have the same length.
@@ -2067,12 +2214,12 @@ function getAPIImpl$3(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns The vector of quotients of entries of a and b.
      */
-    function divide(a, b, dst) {
-        const newDst = (dst ?? new Ctor(3));
-        newDst[0] = a[0] / b[0];
-        newDst[1] = a[1] / b[1];
-        newDst[2] = a[2] / b[2];
-        return newDst;
+    function divide$1(a, b, dst) {
+        dst = dst || new VecType$1(3);
+        dst[0] = a[0] / b[0];
+        dst[1] = a[1] / b[1];
+        dst[2] = a[2] / b[2];
+        return dst;
     }
     /**
      * Divides a vector by another vector (component-wise); assumes a and
@@ -2082,7 +2229,7 @@ function getAPIImpl$3(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns The vector of quotients of entries of a and b.
      */
-    const div = divide;
+    const div$1 = divide$1;
     /**
      * Creates a random vector
      * @param scale - Default 1
@@ -2090,26 +2237,26 @@ function getAPIImpl$3(Ctor) {
      * @returns The random vector.
      */
     function random(scale = 1, dst) {
-        const newDst = (dst ?? new Ctor(3));
+        dst = dst || new VecType$1(3);
         const angle = Math.random() * 2 * Math.PI;
         const z = Math.random() * 2 - 1;
         const zScale = Math.sqrt(1 - z * z) * scale;
-        newDst[0] = Math.cos(angle) * zScale;
-        newDst[1] = Math.sin(angle) * zScale;
-        newDst[2] = z * scale;
-        return newDst;
+        dst[0] = Math.cos(angle) * zScale;
+        dst[1] = Math.sin(angle) * zScale;
+        dst[2] = z * scale;
+        return dst;
     }
     /**
      * Zero's a vector
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns The zeroed vector.
      */
-    function zero(dst) {
-        const newDst = (dst ?? new Ctor(3));
-        newDst[0] = 0;
-        newDst[1] = 0;
-        newDst[2] = 0;
-        return newDst;
+    function zero$1(dst) {
+        dst = dst || new VecType$1(3);
+        dst[0] = 0;
+        dst[1] = 0;
+        dst[2] = 0;
+        return dst;
     }
     /**
      * transform vec3 by 4x4 matrix
@@ -2118,33 +2265,33 @@ function getAPIImpl$3(Ctor) {
      * @param dst - optional vec3 to store result. If not passed a new one is created.
      * @returns the transformed vector
      */
-    function transformMat4(v, m, dst) {
-        const newDst = (dst ?? new Ctor(3));
+    function transformMat4$1(v, m, dst) {
+        dst = dst || new VecType$1(3);
         const x = v[0];
         const y = v[1];
         const z = v[2];
         const w = (m[3] * x + m[7] * y + m[11] * z + m[15]) || 1;
-        newDst[0] = (m[0] * x + m[4] * y + m[8] * z + m[12]) / w;
-        newDst[1] = (m[1] * x + m[5] * y + m[9] * z + m[13]) / w;
-        newDst[2] = (m[2] * x + m[6] * y + m[10] * z + m[14]) / w;
-        return newDst;
+        dst[0] = (m[0] * x + m[4] * y + m[8] * z + m[12]) / w;
+        dst[1] = (m[1] * x + m[5] * y + m[9] * z + m[13]) / w;
+        dst[2] = (m[2] * x + m[6] * y + m[10] * z + m[14]) / w;
+        return dst;
     }
     /**
-     * Transform vec3 by upper 3x3 matrix inside 4x4 matrix.
+     * Transform vec4 by upper 3x3 matrix inside 4x4 matrix.
      * @param v - The direction.
      * @param m - The matrix.
-     * @param dst - optional vec3 to store result. If not passed a new one is created.
+     * @param dst - optional Vec3 to store result. If not passed a new one is created.
      * @returns The transformed vector.
      */
     function transformMat4Upper3x3(v, m, dst) {
-        const newDst = (dst ?? new Ctor(3));
+        dst = dst || new VecType$1(3);
         const v0 = v[0];
         const v1 = v[1];
         const v2 = v[2];
-        newDst[0] = v0 * m[0 * 4 + 0] + v1 * m[1 * 4 + 0] + v2 * m[2 * 4 + 0];
-        newDst[1] = v0 * m[0 * 4 + 1] + v1 * m[1 * 4 + 1] + v2 * m[2 * 4 + 1];
-        newDst[2] = v0 * m[0 * 4 + 2] + v1 * m[1 * 4 + 2] + v2 * m[2 * 4 + 2];
-        return newDst;
+        dst[0] = v0 * m[0 * 4 + 0] + v1 * m[1 * 4 + 0] + v2 * m[2 * 4 + 0];
+        dst[1] = v0 * m[0 * 4 + 1] + v1 * m[1 * 4 + 1] + v2 * m[2 * 4 + 1];
+        dst[2] = v0 * m[0 * 4 + 2] + v1 * m[1 * 4 + 2] + v2 * m[2 * 4 + 2];
+        return dst;
     }
     /**
      * Transforms vec3 by 3x3 matrix
@@ -2155,14 +2302,14 @@ function getAPIImpl$3(Ctor) {
      * @returns the transformed vector
      */
     function transformMat3(v, m, dst) {
-        const newDst = (dst ?? new Ctor(3));
+        dst = dst || new VecType$1(3);
         const x = v[0];
         const y = v[1];
         const z = v[2];
-        newDst[0] = x * m[0] + y * m[4] + z * m[8];
-        newDst[1] = x * m[1] + y * m[5] + z * m[9];
-        newDst[2] = x * m[2] + y * m[6] + z * m[10];
-        return newDst;
+        dst[0] = x * m[0] + y * m[4] + z * m[8];
+        dst[1] = x * m[1] + y * m[5] + z * m[9];
+        dst[2] = x * m[2] + y * m[6] + z * m[10];
+        return dst;
     }
     /**
      * Transforms vec3 by Quaternion
@@ -2172,7 +2319,7 @@ function getAPIImpl$3(Ctor) {
      * @returns the transformed
      */
     function transformQuat(v, q, dst) {
-        const newDst = (dst ?? new Ctor(3));
+        dst = dst || new VecType$1(3);
         const qx = q[0];
         const qy = q[1];
         const qz = q[2];
@@ -2183,10 +2330,10 @@ function getAPIImpl$3(Ctor) {
         const uvX = qy * z - qz * y;
         const uvY = qz * x - qx * z;
         const uvZ = qx * y - qy * x;
-        newDst[0] = x + uvX * w2 + (qy * uvZ - qz * uvY) * 2;
-        newDst[1] = y + uvY * w2 + (qz * uvX - qx * uvZ) * 2;
-        newDst[2] = z + uvZ * w2 + (qx * uvY - qy * uvX) * 2;
-        return newDst;
+        dst[0] = x + uvX * w2 + (qy * uvZ - qz * uvY) * 2;
+        dst[1] = y + uvY * w2 + (qz * uvX - qx * uvZ) * 2;
+        dst[2] = z + uvZ * w2 + (qx * uvY - qy * uvX) * 2;
+        return dst;
     }
     /**
      * Returns the translation component of a 4-by-4 matrix as a vector with 3
@@ -2195,12 +2342,12 @@ function getAPIImpl$3(Ctor) {
      * @param dst - vector to hold result. If not passed a new one is created.
      * @returns The translation component of m.
      */
-    function getTranslation(m, dst) {
-        const newDst = (dst ?? new Ctor(3));
-        newDst[0] = m[12];
-        newDst[1] = m[13];
-        newDst[2] = m[14];
-        return newDst;
+    function getTranslation$1(m, dst) {
+        dst = dst || new VecType$1(3);
+        dst[0] = m[12];
+        dst[1] = m[13];
+        dst[2] = m[14];
+        return dst;
     }
     /**
      * Returns an axis of a 4x4 matrix as a vector with 3 entries
@@ -2208,21 +2355,21 @@ function getAPIImpl$3(Ctor) {
      * @param axis - The axis 0 = x, 1 = y, 2 = z;
      * @returns The axis component of m.
      */
-    function getAxis(m, axis, dst) {
-        const newDst = (dst ?? new Ctor(3));
+    function getAxis$1(m, axis, dst) {
+        dst = dst || new VecType$1(3);
         const off = axis * 4;
-        newDst[0] = m[off + 0];
-        newDst[1] = m[off + 1];
-        newDst[2] = m[off + 2];
-        return newDst;
+        dst[0] = m[off + 0];
+        dst[1] = m[off + 1];
+        dst[2] = m[off + 2];
+        return dst;
     }
     /**
      * Returns the scaling component of the matrix
      * @param m - The Matrix
      * @param dst - The vector to set. If not passed a new one is created.
      */
-    function getScaling(m, dst) {
-        const newDst = (dst ?? new Ctor(3));
+    function getScaling$1(m, dst) {
+        dst = dst || new VecType$1(3);
         const xx = m[0];
         const xy = m[1];
         const xz = m[2];
@@ -2232,10 +2379,10 @@ function getAPIImpl$3(Ctor) {
         const zx = m[8];
         const zy = m[9];
         const zz = m[10];
-        newDst[0] = Math.sqrt(xx * xx + xy * xy + xz * xz);
-        newDst[1] = Math.sqrt(yx * yx + yy * yy + yz * yz);
-        newDst[2] = Math.sqrt(zx * zx + zy * zy + zz * zz);
-        return newDst;
+        dst[0] = Math.sqrt(xx * xx + xy * xy + xz * xz);
+        dst[1] = Math.sqrt(yx * yx + yy * yy + yz * yz);
+        dst[2] = Math.sqrt(zx * zx + zy * zy + zz * zz);
+        return dst;
     }
     /**
      * Rotate a 3D vector around the x-axis
@@ -2246,8 +2393,8 @@ function getAPIImpl$3(Ctor) {
      * @param dst - The vector to set. If not passed a new one is created.
      * @returns the rotated vector
      */
-    function rotateX(a, b, rad, dst) {
-        const newDst = (dst ?? new Ctor(3));
+    function rotateX$2(a, b, rad, dst) {
+        dst = dst || new VecType$1(3);
         const p = [];
         const r = [];
         //Translate point to the origin
@@ -2259,10 +2406,10 @@ function getAPIImpl$3(Ctor) {
         r[1] = p[1] * Math.cos(rad) - p[2] * Math.sin(rad);
         r[2] = p[1] * Math.sin(rad) + p[2] * Math.cos(rad);
         //translate to correct position
-        newDst[0] = r[0] + b[0];
-        newDst[1] = r[1] + b[1];
-        newDst[2] = r[2] + b[2];
-        return newDst;
+        dst[0] = r[0] + b[0];
+        dst[1] = r[1] + b[1];
+        dst[2] = r[2] + b[2];
+        return dst;
     }
     /**
      * Rotate a 3D vector around the y-axis
@@ -2273,8 +2420,8 @@ function getAPIImpl$3(Ctor) {
      * @param dst - The vector to set. If not passed a new one is created.
      * @returns the rotated vector
      */
-    function rotateY(a, b, rad, dst) {
-        const newDst = (dst ?? new Ctor(3));
+    function rotateY$2(a, b, rad, dst) {
+        dst = dst || new VecType$1(3);
         const p = [];
         const r = [];
         // translate point to the origin
@@ -2286,10 +2433,10 @@ function getAPIImpl$3(Ctor) {
         r[1] = p[1];
         r[2] = p[2] * Math.cos(rad) - p[0] * Math.sin(rad);
         // translate to correct position
-        newDst[0] = r[0] + b[0];
-        newDst[1] = r[1] + b[1];
-        newDst[2] = r[2] + b[2];
-        return newDst;
+        dst[0] = r[0] + b[0];
+        dst[1] = r[1] + b[1];
+        dst[2] = r[2] + b[2];
+        return dst;
     }
     /**
      * Rotate a 3D vector around the z-axis
@@ -2300,8 +2447,8 @@ function getAPIImpl$3(Ctor) {
      * @param dst - The vector to set. If not passed a new one is created.
      * @returns {vec3} out
      */
-    function rotateZ(a, b, rad, dst) {
-        const newDst = (dst ?? new Ctor(3));
+    function rotateZ$2(a, b, rad, dst) {
+        dst = dst || new VecType$1(3);
         const p = [];
         const r = [];
         // translate point to the origin
@@ -2313,10 +2460,10 @@ function getAPIImpl$3(Ctor) {
         r[1] = p[0] * Math.sin(rad) + p[1] * Math.cos(rad);
         r[2] = p[2];
         // translate to correct position
-        newDst[0] = r[0] + b[0];
-        newDst[1] = r[1] + b[1];
-        newDst[2] = r[2] + b[2];
-        return newDst;
+        dst[0] = r[0] + b[0];
+        dst[1] = r[1] + b[1];
+        dst[2] = r[2] + b[2];
+        return dst;
     }
     /**
      * Treat a 3D vector as a direction and set it's length
@@ -2325,10 +2472,10 @@ function getAPIImpl$3(Ctor) {
      * @param len The length of the resulting vector
      * @returns The lengthened vector
      */
-    function setLength(a, len, dst) {
-        const newDst = (dst ?? new Ctor(3));
-        normalize(a, newDst);
-        return mulScalar(newDst, len, newDst);
+    function setLength$1(a, len, dst) {
+        dst = dst || new VecType$1(3);
+        normalize$2(a, dst);
+        return mulScalar$2(dst, len, dst);
     }
     /**
      * Ensure a vector is not longer than a max length
@@ -2337,12 +2484,12 @@ function getAPIImpl$3(Ctor) {
      * @param maxLen The longest length of the resulting vector
      * @returns The vector, shortened to maxLen if it's too long
      */
-    function truncate(a, maxLen, dst) {
-        const newDst = (dst ?? new Ctor(3));
-        if (length(a) > maxLen) {
-            return setLength(a, maxLen, newDst);
+    function truncate$1(a, maxLen, dst) {
+        dst = dst || new VecType$1(3);
+        if (length$2(a) > maxLen) {
+            return setLength$1(a, maxLen, dst);
         }
-        return copy(a, newDst);
+        return copy$3(a, dst);
     }
     /**
      * Return the vector exactly between 2 endpoint vectors
@@ -2351,88 +2498,76 @@ function getAPIImpl$3(Ctor) {
      * @param b Endpoint 2
      * @returns The vector exactly residing between endpoints 1 and 2
      */
-    function midpoint(a, b, dst) {
-        const newDst = (dst ?? new Ctor(3));
-        return lerp(a, b, 0.5, newDst);
+    function midpoint$1(a, b, dst) {
+        dst = dst || new VecType$1(3);
+        return lerp$2(a, b, 0.5, dst);
     }
-    return {
-        create,
-        fromValues,
-        set,
-        ceil,
-        floor,
-        round,
-        clamp,
-        add,
-        addScaled,
-        angle,
-        subtract,
-        sub,
-        equalsApproximately,
-        equals,
-        lerp,
-        lerpV,
-        max,
-        min,
-        mulScalar,
-        scale,
-        divScalar,
-        inverse,
-        invert,
-        cross,
-        dot,
-        length,
-        len,
-        lengthSq,
-        lenSq,
-        distance,
-        dist,
-        distanceSq,
-        distSq,
-        normalize,
-        negate,
-        copy,
-        clone,
-        multiply,
-        mul,
-        divide,
-        div,
-        random,
-        zero,
-        transformMat4,
-        transformMat4Upper3x3,
-        transformMat3,
-        transformQuat,
-        getTranslation,
-        getAxis,
-        getScaling,
-        rotateX,
-        rotateY,
-        rotateZ,
-        setLength,
-        truncate,
-        midpoint,
-    };
-}
-const cache$3 = new Map();
-function getAPI$3(Ctor) {
-    let api = cache$3.get(Ctor);
-    if (!api) {
-        api = getAPIImpl$3(Ctor);
-        cache$3.set(Ctor, api);
-    }
-    return api;
-}
 
-/**
- * Generates a typed API for Mat4
- * */
-function getAPIImpl$2(Ctor) {
-    const vec3 = getAPI$3(Ctor);
+    var vec3Impl = {
+        __proto__: null,
+        add: add$2,
+        addScaled: addScaled$1,
+        angle: angle$1,
+        ceil: ceil$1,
+        clamp: clamp$1,
+        clone: clone$3,
+        copy: copy$3,
+        create: create$4,
+        cross: cross,
+        dist: dist$1,
+        distSq: distSq$1,
+        distance: distance$1,
+        distanceSq: distanceSq$1,
+        div: div$1,
+        divScalar: divScalar$2,
+        divide: divide$1,
+        dot: dot$2,
+        equals: equals$3,
+        equalsApproximately: equalsApproximately$3,
+        floor: floor$1,
+        fromValues: fromValues$2,
+        getAxis: getAxis$1,
+        getScaling: getScaling$1,
+        getTranslation: getTranslation$1,
+        inverse: inverse$3,
+        invert: invert$2,
+        len: len$2,
+        lenSq: lenSq$2,
+        length: length$2,
+        lengthSq: lengthSq$2,
+        lerp: lerp$2,
+        lerpV: lerpV$1,
+        max: max$1,
+        midpoint: midpoint$1,
+        min: min$1,
+        mul: mul$3,
+        mulScalar: mulScalar$2,
+        multiply: multiply$3,
+        negate: negate$2,
+        normalize: normalize$2,
+        random: random,
+        rotateX: rotateX$2,
+        rotateY: rotateY$2,
+        rotateZ: rotateZ$2,
+        round: round$1,
+        scale: scale$3,
+        set: set$3,
+        setDefaultType: setDefaultType$5,
+        setLength: setLength$1,
+        sub: sub$2,
+        subtract: subtract$2,
+        transformMat3: transformMat3,
+        transformMat4: transformMat4$1,
+        transformMat4Upper3x3: transformMat4Upper3x3,
+        transformQuat: transformQuat,
+        truncate: truncate$1,
+        zero: zero$1
+    };
+
     /**
      * 4x4 Matrix math math functions.
      *
-     * Almost all functions take an optional `newDst` argument. If it is not passed in the
+     * Almost all functions take an optional `dst` argument. If it is not passed in the
      * functions will create a new matrix. In other words you can do this
      *
      *     const mat = mat4.translation([1, 2, 3]);  // Creates a new translation matrix
@@ -2452,6 +2587,17 @@ function getAPIImpl$2(Ctor) {
      *     mat4.multiply(mat, trans, mat);  // Multiplies mat * trans and puts result in mat.
      *
      */
+    let MatType = Float32Array;
+    /**
+     * Sets the type this library creates for a Mat4
+     * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`
+     * @returns previous constructor for Mat4
+     */
+    function setDefaultType$3(ctor) {
+        const oldType = MatType;
+        MatType = ctor;
+        return oldType;
+    }
     /**
      * Create a Mat4 from values
      *
@@ -2462,6 +2608,17 @@ function getAPIImpl$2(Ctor) {
      *
      * ```
      * const m = mat4.clone(someJSArray);
+     * ```
+     *
+     * Note: a consequence of the implementation is if your Mat4Type = `Array`
+     * instead of `Float32Array` or `Float64Array` then any values you
+     * don't pass in will be undefined. Usually this is not an issue since
+     * (a) using `Array` is rare and (b) using `mat4.create` is usually used
+     * to create a Mat4 to be filled out as in
+     *
+     * ```
+     * const m = mat4.create();
+     * mat4.perspective(fov, aspect, near, far, m);
      * ```
      *
      * @param v0 - value for element 0
@@ -2482,40 +2639,40 @@ function getAPIImpl$2(Ctor) {
      * @param v15 - value for element 15
      * @returns created from values.
      */
-    function create(v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15) {
-        const newDst = new Ctor(16);
+    function create$2(v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15) {
+        const dst = new MatType(16);
         if (v0 !== undefined) {
-            newDst[0] = v0;
+            dst[0] = v0;
             if (v1 !== undefined) {
-                newDst[1] = v1;
+                dst[1] = v1;
                 if (v2 !== undefined) {
-                    newDst[2] = v2;
+                    dst[2] = v2;
                     if (v3 !== undefined) {
-                        newDst[3] = v3;
+                        dst[3] = v3;
                         if (v4 !== undefined) {
-                            newDst[4] = v4;
+                            dst[4] = v4;
                             if (v5 !== undefined) {
-                                newDst[5] = v5;
+                                dst[5] = v5;
                                 if (v6 !== undefined) {
-                                    newDst[6] = v6;
+                                    dst[6] = v6;
                                     if (v7 !== undefined) {
-                                        newDst[7] = v7;
+                                        dst[7] = v7;
                                         if (v8 !== undefined) {
-                                            newDst[8] = v8;
+                                            dst[8] = v8;
                                             if (v9 !== undefined) {
-                                                newDst[9] = v9;
+                                                dst[9] = v9;
                                                 if (v10 !== undefined) {
-                                                    newDst[10] = v10;
+                                                    dst[10] = v10;
                                                     if (v11 !== undefined) {
-                                                        newDst[11] = v11;
+                                                        dst[11] = v11;
                                                         if (v12 !== undefined) {
-                                                            newDst[12] = v12;
+                                                            dst[12] = v12;
                                                             if (v13 !== undefined) {
-                                                                newDst[13] = v13;
+                                                                dst[13] = v13;
                                                                 if (v14 !== undefined) {
-                                                                    newDst[14] = v14;
+                                                                    dst[14] = v14;
                                                                     if (v15 !== undefined) {
-                                                                        newDst[15] = v15;
+                                                                        dst[15] = v15;
                                                                     }
                                                                 }
                                                             }
@@ -2532,7 +2689,7 @@ function getAPIImpl$2(Ctor) {
                 }
             }
         }
-        return newDst;
+        return dst;
     }
     /**
      * Sets the values of a Mat4
@@ -2557,25 +2714,25 @@ function getAPIImpl$2(Ctor) {
      * @param dst - matrix to hold result. If not passed a new one is created.
      * @returns Mat4 created from values.
      */
-    function set(v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, dst) {
-        const newDst = (dst ?? new Ctor(16));
-        newDst[0] = v0;
-        newDst[1] = v1;
-        newDst[2] = v2;
-        newDst[3] = v3;
-        newDst[4] = v4;
-        newDst[5] = v5;
-        newDst[6] = v6;
-        newDst[7] = v7;
-        newDst[8] = v8;
-        newDst[9] = v9;
-        newDst[10] = v10;
-        newDst[11] = v11;
-        newDst[12] = v12;
-        newDst[13] = v13;
-        newDst[14] = v14;
-        newDst[15] = v15;
-        return newDst;
+    function set$2(v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, dst) {
+        dst = dst || new MatType(16);
+        dst[0] = v0;
+        dst[1] = v1;
+        dst[2] = v2;
+        dst[3] = v3;
+        dst[4] = v4;
+        dst[5] = v5;
+        dst[6] = v6;
+        dst[7] = v7;
+        dst[8] = v8;
+        dst[9] = v9;
+        dst[10] = v10;
+        dst[11] = v11;
+        dst[12] = v12;
+        dst[13] = v13;
+        dst[14] = v14;
+        dst[15] = v15;
+        return dst;
     }
     /**
      * Creates a Mat4 from a Mat3
@@ -2584,24 +2741,24 @@ function getAPIImpl$2(Ctor) {
      * @returns Mat4 made from m3
      */
     function fromMat3(m3, dst) {
-        const newDst = (dst ?? new Ctor(16));
-        newDst[0] = m3[0];
-        newDst[1] = m3[1];
-        newDst[2] = m3[2];
-        newDst[3] = 0;
-        newDst[4] = m3[4];
-        newDst[5] = m3[5];
-        newDst[6] = m3[6];
-        newDst[7] = 0;
-        newDst[8] = m3[8];
-        newDst[9] = m3[9];
-        newDst[10] = m3[10];
-        newDst[11] = 0;
-        newDst[12] = 0;
-        newDst[13] = 0;
-        newDst[14] = 0;
-        newDst[15] = 1;
-        return newDst;
+        dst = dst || new MatType(16);
+        dst[0] = m3[0];
+        dst[1] = m3[1];
+        dst[2] = m3[2];
+        dst[3] = 0;
+        dst[4] = m3[4];
+        dst[5] = m3[5];
+        dst[6] = m3[6];
+        dst[7] = 0;
+        dst[8] = m3[8];
+        dst[9] = m3[9];
+        dst[10] = m3[10];
+        dst[11] = 0;
+        dst[12] = 0;
+        dst[13] = 0;
+        dst[14] = 0;
+        dst[15] = 1;
+        return dst;
     }
     /**
      * Creates a Mat4 rotation matrix from a quaternion
@@ -2610,7 +2767,7 @@ function getAPIImpl$2(Ctor) {
      * @returns Mat4 made from q
      */
     function fromQuat(q, dst) {
-        const newDst = (dst ?? new Ctor(16));
+        dst = dst || new MatType(16);
         const x = q[0];
         const y = q[1];
         const z = q[2];
@@ -2627,23 +2784,23 @@ function getAPIImpl$2(Ctor) {
         const wx = w * x2;
         const wy = w * y2;
         const wz = w * z2;
-        newDst[0] = 1 - yy - zz;
-        newDst[1] = yx + wz;
-        newDst[2] = zx - wy;
-        newDst[3] = 0;
-        newDst[4] = yx - wz;
-        newDst[5] = 1 - xx - zz;
-        newDst[6] = zy + wx;
-        newDst[7] = 0;
-        newDst[8] = zx + wy;
-        newDst[9] = zy - wx;
-        newDst[10] = 1 - xx - yy;
-        newDst[11] = 0;
-        newDst[12] = 0;
-        newDst[13] = 0;
-        newDst[14] = 0;
-        newDst[15] = 1;
-        return newDst;
+        dst[0] = 1 - yy - zz;
+        dst[1] = yx + wz;
+        dst[2] = zx - wy;
+        dst[3] = 0;
+        dst[4] = yx - wz;
+        dst[5] = 1 - xx - zz;
+        dst[6] = zy + wx;
+        dst[7] = 0;
+        dst[8] = zx + wy;
+        dst[9] = zy - wx;
+        dst[10] = 1 - xx - yy;
+        dst[11] = 0;
+        dst[12] = 0;
+        dst[13] = 0;
+        dst[14] = 0;
+        dst[15] = 1;
+        return dst;
     }
     /**
      * Negates a matrix.
@@ -2651,25 +2808,25 @@ function getAPIImpl$2(Ctor) {
      * @param dst - matrix to hold result. If not passed a new one is created.
      * @returns -m.
      */
-    function negate(m, dst) {
-        const newDst = (dst ?? new Ctor(16));
-        newDst[0] = -m[0];
-        newDst[1] = -m[1];
-        newDst[2] = -m[2];
-        newDst[3] = -m[3];
-        newDst[4] = -m[4];
-        newDst[5] = -m[5];
-        newDst[6] = -m[6];
-        newDst[7] = -m[7];
-        newDst[8] = -m[8];
-        newDst[9] = -m[9];
-        newDst[10] = -m[10];
-        newDst[11] = -m[11];
-        newDst[12] = -m[12];
-        newDst[13] = -m[13];
-        newDst[14] = -m[14];
-        newDst[15] = -m[15];
-        return newDst;
+    function negate$1(m, dst) {
+        dst = dst || new MatType(16);
+        dst[0] = -m[0];
+        dst[1] = -m[1];
+        dst[2] = -m[2];
+        dst[3] = -m[3];
+        dst[4] = -m[4];
+        dst[5] = -m[5];
+        dst[6] = -m[6];
+        dst[7] = -m[7];
+        dst[8] = -m[8];
+        dst[9] = -m[9];
+        dst[10] = -m[10];
+        dst[11] = -m[11];
+        dst[12] = -m[12];
+        dst[13] = -m[13];
+        dst[14] = -m[14];
+        dst[15] = -m[15];
+        return dst;
     }
     /**
      * Copies a matrix. (same as {@link mat4.clone})
@@ -2678,25 +2835,25 @@ function getAPIImpl$2(Ctor) {
      * @param dst - The matrix. If not passed a new one is created.
      * @returns A copy of m.
      */
-    function copy(m, dst) {
-        const newDst = (dst ?? new Ctor(16));
-        newDst[0] = m[0];
-        newDst[1] = m[1];
-        newDst[2] = m[2];
-        newDst[3] = m[3];
-        newDst[4] = m[4];
-        newDst[5] = m[5];
-        newDst[6] = m[6];
-        newDst[7] = m[7];
-        newDst[8] = m[8];
-        newDst[9] = m[9];
-        newDst[10] = m[10];
-        newDst[11] = m[11];
-        newDst[12] = m[12];
-        newDst[13] = m[13];
-        newDst[14] = m[14];
-        newDst[15] = m[15];
-        return newDst;
+    function copy$2(m, dst) {
+        dst = dst || new MatType(16);
+        dst[0] = m[0];
+        dst[1] = m[1];
+        dst[2] = m[2];
+        dst[3] = m[3];
+        dst[4] = m[4];
+        dst[5] = m[5];
+        dst[6] = m[6];
+        dst[7] = m[7];
+        dst[8] = m[8];
+        dst[9] = m[9];
+        dst[10] = m[10];
+        dst[11] = m[11];
+        dst[12] = m[12];
+        dst[13] = m[13];
+        dst[14] = m[14];
+        dst[15] = m[15];
+        return dst;
     }
     /**
      * Copies a matrix (same as {@link mat4.copy})
@@ -2705,14 +2862,14 @@ function getAPIImpl$2(Ctor) {
      * @param dst - The matrix. If not passed a new one is created.
      * @returns A copy of m.
      */
-    const clone = copy;
+    const clone$2 = copy$2;
     /**
      * Check if 2 matrices are approximately equal
      * @param a - Operand matrix.
      * @param b - Operand matrix.
      * @returns true if matrices are approximately equal
      */
-    function equalsApproximately(a, b) {
+    function equalsApproximately$2(a, b) {
         return Math.abs(a[0] - b[0]) < EPSILON &&
             Math.abs(a[1] - b[1]) < EPSILON &&
             Math.abs(a[2] - b[2]) < EPSILON &&
@@ -2736,7 +2893,7 @@ function getAPIImpl$2(Ctor) {
      * @param b - Operand matrix.
      * @returns true if matrices are exactly equal
      */
-    function equals(a, b) {
+    function equals$2(a, b) {
         return a[0] === b[0] &&
             a[1] === b[1] &&
             a[2] === b[2] &&
@@ -2760,25 +2917,25 @@ function getAPIImpl$2(Ctor) {
      * @param dst - matrix to hold result. If not passed a new one is created.
      * @returns A 4-by-4 identity matrix.
      */
-    function identity(dst) {
-        const newDst = (dst ?? new Ctor(16));
-        newDst[0] = 1;
-        newDst[1] = 0;
-        newDst[2] = 0;
-        newDst[3] = 0;
-        newDst[4] = 0;
-        newDst[5] = 1;
-        newDst[6] = 0;
-        newDst[7] = 0;
-        newDst[8] = 0;
-        newDst[9] = 0;
-        newDst[10] = 1;
-        newDst[11] = 0;
-        newDst[12] = 0;
-        newDst[13] = 0;
-        newDst[14] = 0;
-        newDst[15] = 1;
-        return newDst;
+    function identity$1(dst) {
+        dst = dst || new MatType(16);
+        dst[0] = 1;
+        dst[1] = 0;
+        dst[2] = 0;
+        dst[3] = 0;
+        dst[4] = 0;
+        dst[5] = 1;
+        dst[6] = 0;
+        dst[7] = 0;
+        dst[8] = 0;
+        dst[9] = 0;
+        dst[10] = 1;
+        dst[11] = 0;
+        dst[12] = 0;
+        dst[13] = 0;
+        dst[14] = 0;
+        dst[15] = 1;
+        return dst;
     }
     /**
      * Takes the transpose of a matrix.
@@ -2787,8 +2944,8 @@ function getAPIImpl$2(Ctor) {
      * @returns The transpose of m.
      */
     function transpose(m, dst) {
-        const newDst = (dst ?? new Ctor(16));
-        if (newDst === m) {
+        dst = dst || new MatType(16);
+        if (dst === m) {
             let t;
             t = m[1];
             m[1] = m[4];
@@ -2808,7 +2965,7 @@ function getAPIImpl$2(Ctor) {
             t = m[11];
             m[11] = m[14];
             m[14] = t;
-            return newDst;
+            return dst;
         }
         const m00 = m[0 * 4 + 0];
         const m01 = m[0 * 4 + 1];
@@ -2826,23 +2983,23 @@ function getAPIImpl$2(Ctor) {
         const m31 = m[3 * 4 + 1];
         const m32 = m[3 * 4 + 2];
         const m33 = m[3 * 4 + 3];
-        newDst[0] = m00;
-        newDst[1] = m10;
-        newDst[2] = m20;
-        newDst[3] = m30;
-        newDst[4] = m01;
-        newDst[5] = m11;
-        newDst[6] = m21;
-        newDst[7] = m31;
-        newDst[8] = m02;
-        newDst[9] = m12;
-        newDst[10] = m22;
-        newDst[11] = m32;
-        newDst[12] = m03;
-        newDst[13] = m13;
-        newDst[14] = m23;
-        newDst[15] = m33;
-        return newDst;
+        dst[0] = m00;
+        dst[1] = m10;
+        dst[2] = m20;
+        dst[3] = m30;
+        dst[4] = m01;
+        dst[5] = m11;
+        dst[6] = m21;
+        dst[7] = m31;
+        dst[8] = m02;
+        dst[9] = m12;
+        dst[10] = m22;
+        dst[11] = m32;
+        dst[12] = m03;
+        dst[13] = m13;
+        dst[14] = m23;
+        dst[15] = m33;
+        return dst;
     }
     /**
      * Computes the inverse of a 4-by-4 matrix.
@@ -2850,8 +3007,8 @@ function getAPIImpl$2(Ctor) {
      * @param dst - matrix to hold result. If not passed a new one is created.
      * @returns The inverse of m.
      */
-    function inverse(m, dst) {
-        const newDst = (dst ?? new Ctor(16));
+    function inverse$2(m, dst) {
+        dst = dst || new MatType(16);
         const m00 = m[0 * 4 + 0];
         const m01 = m[0 * 4 + 1];
         const m02 = m[0 * 4 + 2];
@@ -2901,35 +3058,35 @@ function getAPIImpl$2(Ctor) {
         const t3 = (tmp5 * m01 + tmp8 * m11 + tmp11 * m21) -
             (tmp4 * m01 + tmp9 * m11 + tmp10 * m21);
         const d = 1 / (m00 * t0 + m10 * t1 + m20 * t2 + m30 * t3);
-        newDst[0] = d * t0;
-        newDst[1] = d * t1;
-        newDst[2] = d * t2;
-        newDst[3] = d * t3;
-        newDst[4] = d * ((tmp1 * m10 + tmp2 * m20 + tmp5 * m30) -
+        dst[0] = d * t0;
+        dst[1] = d * t1;
+        dst[2] = d * t2;
+        dst[3] = d * t3;
+        dst[4] = d * ((tmp1 * m10 + tmp2 * m20 + tmp5 * m30) -
             (tmp0 * m10 + tmp3 * m20 + tmp4 * m30));
-        newDst[5] = d * ((tmp0 * m00 + tmp7 * m20 + tmp8 * m30) -
+        dst[5] = d * ((tmp0 * m00 + tmp7 * m20 + tmp8 * m30) -
             (tmp1 * m00 + tmp6 * m20 + tmp9 * m30));
-        newDst[6] = d * ((tmp3 * m00 + tmp6 * m10 + tmp11 * m30) -
+        dst[6] = d * ((tmp3 * m00 + tmp6 * m10 + tmp11 * m30) -
             (tmp2 * m00 + tmp7 * m10 + tmp10 * m30));
-        newDst[7] = d * ((tmp4 * m00 + tmp9 * m10 + tmp10 * m20) -
+        dst[7] = d * ((tmp4 * m00 + tmp9 * m10 + tmp10 * m20) -
             (tmp5 * m00 + tmp8 * m10 + tmp11 * m20));
-        newDst[8] = d * ((tmp12 * m13 + tmp15 * m23 + tmp16 * m33) -
+        dst[8] = d * ((tmp12 * m13 + tmp15 * m23 + tmp16 * m33) -
             (tmp13 * m13 + tmp14 * m23 + tmp17 * m33));
-        newDst[9] = d * ((tmp13 * m03 + tmp18 * m23 + tmp21 * m33) -
+        dst[9] = d * ((tmp13 * m03 + tmp18 * m23 + tmp21 * m33) -
             (tmp12 * m03 + tmp19 * m23 + tmp20 * m33));
-        newDst[10] = d * ((tmp14 * m03 + tmp19 * m13 + tmp22 * m33) -
+        dst[10] = d * ((tmp14 * m03 + tmp19 * m13 + tmp22 * m33) -
             (tmp15 * m03 + tmp18 * m13 + tmp23 * m33));
-        newDst[11] = d * ((tmp17 * m03 + tmp20 * m13 + tmp23 * m23) -
+        dst[11] = d * ((tmp17 * m03 + tmp20 * m13 + tmp23 * m23) -
             (tmp16 * m03 + tmp21 * m13 + tmp22 * m23));
-        newDst[12] = d * ((tmp14 * m22 + tmp17 * m32 + tmp13 * m12) -
+        dst[12] = d * ((tmp14 * m22 + tmp17 * m32 + tmp13 * m12) -
             (tmp16 * m32 + tmp12 * m12 + tmp15 * m22));
-        newDst[13] = d * ((tmp20 * m32 + tmp12 * m02 + tmp19 * m22) -
+        dst[13] = d * ((tmp20 * m32 + tmp12 * m02 + tmp19 * m22) -
             (tmp18 * m22 + tmp21 * m32 + tmp13 * m02));
-        newDst[14] = d * ((tmp18 * m12 + tmp23 * m32 + tmp15 * m02) -
+        dst[14] = d * ((tmp18 * m12 + tmp23 * m32 + tmp15 * m02) -
             (tmp22 * m32 + tmp14 * m02 + tmp19 * m12));
-        newDst[15] = d * ((tmp22 * m22 + tmp16 * m02 + tmp21 * m12) -
+        dst[15] = d * ((tmp22 * m22 + tmp16 * m02 + tmp21 * m12) -
             (tmp20 * m12 + tmp23 * m22 + tmp17 * m02));
-        return newDst;
+        return dst;
     }
     /**
      * Compute the determinant of a matrix
@@ -2981,7 +3138,7 @@ function getAPIImpl$2(Ctor) {
      * @param dst - matrix to hold result. If not passed a new one is created.
      * @returns The inverse of m.
      */
-    const invert = inverse;
+    const invert$1 = inverse$2;
     /**
      * Multiplies two 4-by-4 matrices with a on the left and b on the right
      * @param a - The matrix on the left.
@@ -2989,8 +3146,8 @@ function getAPIImpl$2(Ctor) {
      * @param dst - matrix to hold result. If not passed a new one is created.
      * @returns The matrix product of a and b.
      */
-    function multiply(a, b, dst) {
-        const newDst = (dst ?? new Ctor(16));
+    function multiply$2(a, b, dst) {
+        dst = dst || new MatType(16);
         const a00 = a[0];
         const a01 = a[1];
         const a02 = a[2];
@@ -3023,23 +3180,23 @@ function getAPIImpl$2(Ctor) {
         const b31 = b[12 + 1];
         const b32 = b[12 + 2];
         const b33 = b[12 + 3];
-        newDst[0] = a00 * b00 + a10 * b01 + a20 * b02 + a30 * b03;
-        newDst[1] = a01 * b00 + a11 * b01 + a21 * b02 + a31 * b03;
-        newDst[2] = a02 * b00 + a12 * b01 + a22 * b02 + a32 * b03;
-        newDst[3] = a03 * b00 + a13 * b01 + a23 * b02 + a33 * b03;
-        newDst[4] = a00 * b10 + a10 * b11 + a20 * b12 + a30 * b13;
-        newDst[5] = a01 * b10 + a11 * b11 + a21 * b12 + a31 * b13;
-        newDst[6] = a02 * b10 + a12 * b11 + a22 * b12 + a32 * b13;
-        newDst[7] = a03 * b10 + a13 * b11 + a23 * b12 + a33 * b13;
-        newDst[8] = a00 * b20 + a10 * b21 + a20 * b22 + a30 * b23;
-        newDst[9] = a01 * b20 + a11 * b21 + a21 * b22 + a31 * b23;
-        newDst[10] = a02 * b20 + a12 * b21 + a22 * b22 + a32 * b23;
-        newDst[11] = a03 * b20 + a13 * b21 + a23 * b22 + a33 * b23;
-        newDst[12] = a00 * b30 + a10 * b31 + a20 * b32 + a30 * b33;
-        newDst[13] = a01 * b30 + a11 * b31 + a21 * b32 + a31 * b33;
-        newDst[14] = a02 * b30 + a12 * b31 + a22 * b32 + a32 * b33;
-        newDst[15] = a03 * b30 + a13 * b31 + a23 * b32 + a33 * b33;
-        return newDst;
+        dst[0] = a00 * b00 + a10 * b01 + a20 * b02 + a30 * b03;
+        dst[1] = a01 * b00 + a11 * b01 + a21 * b02 + a31 * b03;
+        dst[2] = a02 * b00 + a12 * b01 + a22 * b02 + a32 * b03;
+        dst[3] = a03 * b00 + a13 * b01 + a23 * b02 + a33 * b03;
+        dst[4] = a00 * b10 + a10 * b11 + a20 * b12 + a30 * b13;
+        dst[5] = a01 * b10 + a11 * b11 + a21 * b12 + a31 * b13;
+        dst[6] = a02 * b10 + a12 * b11 + a22 * b12 + a32 * b13;
+        dst[7] = a03 * b10 + a13 * b11 + a23 * b12 + a33 * b13;
+        dst[8] = a00 * b20 + a10 * b21 + a20 * b22 + a30 * b23;
+        dst[9] = a01 * b20 + a11 * b21 + a21 * b22 + a31 * b23;
+        dst[10] = a02 * b20 + a12 * b21 + a22 * b22 + a32 * b23;
+        dst[11] = a03 * b20 + a13 * b21 + a23 * b22 + a33 * b23;
+        dst[12] = a00 * b30 + a10 * b31 + a20 * b32 + a30 * b33;
+        dst[13] = a01 * b30 + a11 * b31 + a21 * b32 + a31 * b33;
+        dst[14] = a02 * b30 + a12 * b31 + a22 * b32 + a32 * b33;
+        dst[15] = a03 * b30 + a13 * b31 + a23 * b32 + a33 * b33;
+        return dst;
     }
     /**
      * Multiplies two 4-by-4 matrices with a on the left and b on the right (same as multiply)
@@ -3048,7 +3205,7 @@ function getAPIImpl$2(Ctor) {
      * @param dst - matrix to hold result. If not passed a new one is created.
      * @returns The matrix product of a and b.
      */
-    const mul = multiply;
+    const mul$2 = multiply$2;
     /**
      * Sets the translation component of a 4-by-4 matrix to the given
      * vector.
@@ -3058,40 +3215,40 @@ function getAPIImpl$2(Ctor) {
      * @returns The matrix with translation set.
      */
     function setTranslation(a, v, dst) {
-        const newDst = (dst ?? identity());
-        if (a !== newDst) {
-            newDst[0] = a[0];
-            newDst[1] = a[1];
-            newDst[2] = a[2];
-            newDst[3] = a[3];
-            newDst[4] = a[4];
-            newDst[5] = a[5];
-            newDst[6] = a[6];
-            newDst[7] = a[7];
-            newDst[8] = a[8];
-            newDst[9] = a[9];
-            newDst[10] = a[10];
-            newDst[11] = a[11];
+        dst = dst || identity$1();
+        if (a !== dst) {
+            dst[0] = a[0];
+            dst[1] = a[1];
+            dst[2] = a[2];
+            dst[3] = a[3];
+            dst[4] = a[4];
+            dst[5] = a[5];
+            dst[6] = a[6];
+            dst[7] = a[7];
+            dst[8] = a[8];
+            dst[9] = a[9];
+            dst[10] = a[10];
+            dst[11] = a[11];
         }
-        newDst[12] = v[0];
-        newDst[13] = v[1];
-        newDst[14] = v[2];
-        newDst[15] = 1;
-        return newDst;
+        dst[12] = v[0];
+        dst[13] = v[1];
+        dst[14] = v[2];
+        dst[15] = 1;
+        return dst;
     }
-    ///**
-    // * Returns the translation component of a 4-by-4 matrix as a vector with 3
-    // * entries.
-    // * @param m - The matrix.
-    // * @param dst - vector to hold result. If not passed a new one is created.
-    // * @returns The translation component of m.
-    // */
+    /**
+     * Returns the translation component of a 4-by-4 matrix as a vector with 3
+     * entries.
+     * @param m - The matrix.
+     * @param dst - vector to hold result. If not passed a new one is created.
+     * @returns The translation component of m.
+     */
     function getTranslation(m, dst) {
-        const newDst = (dst ?? vec3.create());
-        newDst[0] = m[12];
-        newDst[1] = m[13];
-        newDst[2] = m[14];
-        return newDst;
+        dst = dst || create$4();
+        dst[0] = m[12];
+        dst[1] = m[13];
+        dst[2] = m[14];
+        return dst;
     }
     /**
      * Returns an axis of a 4x4 matrix as a vector with 3 entries
@@ -3100,12 +3257,12 @@ function getAPIImpl$2(Ctor) {
      * @returns The axis component of m.
      */
     function getAxis(m, axis, dst) {
-        const newDst = (dst ?? vec3.create());
+        dst = dst || create$4();
         const off = axis * 4;
-        newDst[0] = m[off + 0];
-        newDst[1] = m[off + 1];
-        newDst[2] = m[off + 2];
-        return newDst;
+        dst[0] = m[off + 0];
+        dst[1] = m[off + 1];
+        dst[2] = m[off + 2];
+        return dst;
     }
     /**
      * Sets an axis of a 4x4 matrix as a vector with 3 entries
@@ -3116,20 +3273,22 @@ function getAPIImpl$2(Ctor) {
      * @returns The matrix with axis set.
      */
     function setAxis(m, v, axis, dst) {
-        const newDst = (dst === m) ? dst : copy(m, dst);
+        if (dst !== m) {
+            dst = copy$2(m, dst);
+        }
         const off = axis * 4;
-        newDst[off + 0] = v[0];
-        newDst[off + 1] = v[1];
-        newDst[off + 2] = v[2];
-        return newDst;
+        dst[off + 0] = v[0];
+        dst[off + 1] = v[1];
+        dst[off + 2] = v[2];
+        return dst;
     }
-    ///**
-    // * Returns the scaling component of the matrix
-    // * @param m - The Matrix
-    // * @param dst - The vector to set. If not passed a new one is created.
-    // */
+    /**
+     * Returns the scaling component of the matrix
+     * @param m - The Matrix
+     * @param dst - The vector to set. If not passed a new one is created.
+     */
     function getScaling(m, dst) {
-        const newDst = (dst ?? vec3.create());
+        dst = dst || create$4();
         const xx = m[0];
         const xy = m[1];
         const xz = m[2];
@@ -3139,10 +3298,10 @@ function getAPIImpl$2(Ctor) {
         const zx = m[8];
         const zy = m[9];
         const zz = m[10];
-        newDst[0] = Math.sqrt(xx * xx + xy * xy + xz * xz);
-        newDst[1] = Math.sqrt(yx * yx + yy * yy + yz * yz);
-        newDst[2] = Math.sqrt(zx * zx + zy * zy + zz * zz);
-        return newDst;
+        dst[0] = Math.sqrt(xx * xx + xy * xy + xz * xz);
+        dst[1] = Math.sqrt(yx * yx + yy * yy + yz * yz);
+        dst[2] = Math.sqrt(zx * zx + zy * zy + zz * zz);
+        return dst;
     }
     /**
      * Computes a 4-by-4 perspective transformation matrix given the angular height
@@ -3170,32 +3329,32 @@ function getAPIImpl$2(Ctor) {
      * @returns The perspective matrix.
      */
     function perspective(fieldOfViewYInRadians, aspect, zNear, zFar, dst) {
-        const newDst = (dst ?? new Ctor(16));
+        dst = dst || new MatType(16);
         const f = Math.tan(Math.PI * 0.5 - 0.5 * fieldOfViewYInRadians);
-        newDst[0] = f / aspect;
-        newDst[1] = 0;
-        newDst[2] = 0;
-        newDst[3] = 0;
-        newDst[4] = 0;
-        newDst[5] = f;
-        newDst[6] = 0;
-        newDst[7] = 0;
-        newDst[8] = 0;
-        newDst[9] = 0;
-        newDst[11] = -1;
-        newDst[12] = 0;
-        newDst[13] = 0;
-        newDst[15] = 0;
+        dst[0] = f / aspect;
+        dst[1] = 0;
+        dst[2] = 0;
+        dst[3] = 0;
+        dst[4] = 0;
+        dst[5] = f;
+        dst[6] = 0;
+        dst[7] = 0;
+        dst[8] = 0;
+        dst[9] = 0;
+        dst[11] = -1;
+        dst[12] = 0;
+        dst[13] = 0;
+        dst[15] = 0;
         if (Number.isFinite(zFar)) {
             const rangeInv = 1 / (zNear - zFar);
-            newDst[10] = zFar * rangeInv;
-            newDst[14] = zFar * zNear * rangeInv;
+            dst[10] = zFar * rangeInv;
+            dst[14] = zFar * zNear * rangeInv;
         }
         else {
-            newDst[10] = -1;
-            newDst[14] = -zNear;
+            dst[10] = -1;
+            dst[14] = -zNear;
         }
-        return newDst;
+        return dst;
     }
     /**
      * Computes a 4-by-4 reverse-z perspective transformation matrix given the angular height
@@ -3218,32 +3377,32 @@ function getAPIImpl$2(Ctor) {
      * @param dst - matrix to hold result. If not passed a new one is created.
      * @returns The perspective matrix.
      */ function perspectiveReverseZ(fieldOfViewYInRadians, aspect, zNear, zFar = Infinity, dst) {
-        const newDst = (dst ?? new Ctor(16));
+        dst = dst || new MatType(16);
         const f = 1 / Math.tan(fieldOfViewYInRadians * 0.5);
-        newDst[0] = f / aspect;
-        newDst[1] = 0;
-        newDst[2] = 0;
-        newDst[3] = 0;
-        newDst[4] = 0;
-        newDst[5] = f;
-        newDst[6] = 0;
-        newDst[7] = 0;
-        newDst[8] = 0;
-        newDst[9] = 0;
-        newDst[11] = -1;
-        newDst[12] = 0;
-        newDst[13] = 0;
-        newDst[15] = 0;
+        dst[0] = f / aspect;
+        dst[1] = 0;
+        dst[2] = 0;
+        dst[3] = 0;
+        dst[4] = 0;
+        dst[5] = f;
+        dst[6] = 0;
+        dst[7] = 0;
+        dst[8] = 0;
+        dst[9] = 0;
+        dst[11] = -1;
+        dst[12] = 0;
+        dst[13] = 0;
+        dst[15] = 0;
         if (zFar === Infinity) {
-            newDst[10] = 0;
-            newDst[14] = zNear;
+            dst[10] = 0;
+            dst[14] = zNear;
         }
         else {
             const rangeInv = 1 / (zFar - zNear);
-            newDst[10] = zNear * rangeInv;
-            newDst[14] = zFar * zNear * rangeInv;
+            dst[10] = zNear * rangeInv;
+            dst[14] = zFar * zNear * rangeInv;
         }
-        return newDst;
+        return dst;
     }
     /**
      * Computes a 4-by-4 orthogonal transformation matrix that transforms from
@@ -3261,24 +3420,24 @@ function getAPIImpl$2(Ctor) {
      * @returns The orthographic projection matrix.
      */
     function ortho(left, right, bottom, top, near, far, dst) {
-        const newDst = (dst ?? new Ctor(16));
-        newDst[0] = 2 / (right - left);
-        newDst[1] = 0;
-        newDst[2] = 0;
-        newDst[3] = 0;
-        newDst[4] = 0;
-        newDst[5] = 2 / (top - bottom);
-        newDst[6] = 0;
-        newDst[7] = 0;
-        newDst[8] = 0;
-        newDst[9] = 0;
-        newDst[10] = 1 / (near - far);
-        newDst[11] = 0;
-        newDst[12] = (right + left) / (left - right);
-        newDst[13] = (top + bottom) / (bottom - top);
-        newDst[14] = near / (near - far);
-        newDst[15] = 1;
-        return newDst;
+        dst = dst || new MatType(16);
+        dst[0] = 2 / (right - left);
+        dst[1] = 0;
+        dst[2] = 0;
+        dst[3] = 0;
+        dst[4] = 0;
+        dst[5] = 2 / (top - bottom);
+        dst[6] = 0;
+        dst[7] = 0;
+        dst[8] = 0;
+        dst[9] = 0;
+        dst[10] = 1 / (near - far);
+        dst[11] = 0;
+        dst[12] = (right + left) / (left - right);
+        dst[13] = (top + bottom) / (bottom - top);
+        dst[14] = near / (near - far);
+        dst[15] = 1;
+        return dst;
     }
     /**
      * Computes a 4-by-4 perspective transformation matrix given the left, right,
@@ -3299,27 +3458,27 @@ function getAPIImpl$2(Ctor) {
      * @returns The perspective projection matrix.
      */
     function frustum(left, right, bottom, top, near, far, dst) {
-        const newDst = (dst ?? new Ctor(16));
+        dst = dst || new MatType(16);
         const dx = (right - left);
         const dy = (top - bottom);
         const dz = (near - far);
-        newDst[0] = 2 * near / dx;
-        newDst[1] = 0;
-        newDst[2] = 0;
-        newDst[3] = 0;
-        newDst[4] = 0;
-        newDst[5] = 2 * near / dy;
-        newDst[6] = 0;
-        newDst[7] = 0;
-        newDst[8] = (left + right) / dx;
-        newDst[9] = (top + bottom) / dy;
-        newDst[10] = far / dz;
-        newDst[11] = -1;
-        newDst[12] = 0;
-        newDst[13] = 0;
-        newDst[14] = near * far / dz;
-        newDst[15] = 0;
-        return newDst;
+        dst[0] = 2 * near / dx;
+        dst[1] = 0;
+        dst[2] = 0;
+        dst[3] = 0;
+        dst[4] = 0;
+        dst[5] = 2 * near / dy;
+        dst[6] = 0;
+        dst[7] = 0;
+        dst[8] = (left + right) / dx;
+        dst[9] = (top + bottom) / dy;
+        dst[10] = far / dz;
+        dst[11] = -1;
+        dst[12] = 0;
+        dst[13] = 0;
+        dst[14] = near * far / dz;
+        dst[15] = 0;
+        return dst;
     }
     /**
      * Computes a 4-by-4 reverse-z perspective transformation matrix given the left, right,
@@ -3340,37 +3499,37 @@ function getAPIImpl$2(Ctor) {
      * @returns The perspective projection matrix.
      */
     function frustumReverseZ(left, right, bottom, top, near, far = Infinity, dst) {
-        const newDst = (dst ?? new Ctor(16));
+        dst = dst || new MatType(16);
         const dx = (right - left);
         const dy = (top - bottom);
-        newDst[0] = 2 * near / dx;
-        newDst[1] = 0;
-        newDst[2] = 0;
-        newDst[3] = 0;
-        newDst[4] = 0;
-        newDst[5] = 2 * near / dy;
-        newDst[6] = 0;
-        newDst[7] = 0;
-        newDst[8] = (left + right) / dx;
-        newDst[9] = (top + bottom) / dy;
-        newDst[11] = -1;
-        newDst[12] = 0;
-        newDst[13] = 0;
-        newDst[15] = 0;
+        dst[0] = 2 * near / dx;
+        dst[1] = 0;
+        dst[2] = 0;
+        dst[3] = 0;
+        dst[4] = 0;
+        dst[5] = 2 * near / dy;
+        dst[6] = 0;
+        dst[7] = 0;
+        dst[8] = (left + right) / dx;
+        dst[9] = (top + bottom) / dy;
+        dst[11] = -1;
+        dst[12] = 0;
+        dst[13] = 0;
+        dst[15] = 0;
         if (far === Infinity) {
-            newDst[10] = 0;
-            newDst[14] = near;
+            dst[10] = 0;
+            dst[14] = near;
         }
         else {
             const rangeInv = 1 / (far - near);
-            newDst[10] = near * rangeInv;
-            newDst[14] = far * near * rangeInv;
+            dst[10] = near * rangeInv;
+            dst[14] = far * near * rangeInv;
         }
-        return newDst;
+        return dst;
     }
-    const xAxis = vec3.create();
-    const yAxis = vec3.create();
-    const zAxis = vec3.create();
+    let xAxis;
+    let yAxis;
+    let zAxis;
     /**
      * Computes a 4-by-4 aim transformation.
      *
@@ -3386,27 +3545,30 @@ function getAPIImpl$2(Ctor) {
      * @returns The aim matrix.
      */
     function aim(position, target, up, dst) {
-        const newDst = (dst ?? new Ctor(16));
-        vec3.normalize(vec3.subtract(target, position, zAxis), zAxis);
-        vec3.normalize(vec3.cross(up, zAxis, xAxis), xAxis);
-        vec3.normalize(vec3.cross(zAxis, xAxis, yAxis), yAxis);
-        newDst[0] = xAxis[0];
-        newDst[1] = xAxis[1];
-        newDst[2] = xAxis[2];
-        newDst[3] = 0;
-        newDst[4] = yAxis[0];
-        newDst[5] = yAxis[1];
-        newDst[6] = yAxis[2];
-        newDst[7] = 0;
-        newDst[8] = zAxis[0];
-        newDst[9] = zAxis[1];
-        newDst[10] = zAxis[2];
-        newDst[11] = 0;
-        newDst[12] = position[0];
-        newDst[13] = position[1];
-        newDst[14] = position[2];
-        newDst[15] = 1;
-        return newDst;
+        dst = dst || new MatType(16);
+        xAxis = xAxis || create$4();
+        yAxis = yAxis || create$4();
+        zAxis = zAxis || create$4();
+        normalize$2(subtract$2(target, position, zAxis), zAxis);
+        normalize$2(cross(up, zAxis, xAxis), xAxis);
+        normalize$2(cross(zAxis, xAxis, yAxis), yAxis);
+        dst[0] = xAxis[0];
+        dst[1] = xAxis[1];
+        dst[2] = xAxis[2];
+        dst[3] = 0;
+        dst[4] = yAxis[0];
+        dst[5] = yAxis[1];
+        dst[6] = yAxis[2];
+        dst[7] = 0;
+        dst[8] = zAxis[0];
+        dst[9] = zAxis[1];
+        dst[10] = zAxis[2];
+        dst[11] = 0;
+        dst[12] = position[0];
+        dst[13] = position[1];
+        dst[14] = position[2];
+        dst[15] = 1;
+        return dst;
     }
     /**
      * Computes a 4-by-4 camera aim transformation.
@@ -3423,27 +3585,30 @@ function getAPIImpl$2(Ctor) {
      * @returns The aim matrix.
      */
     function cameraAim(eye, target, up, dst) {
-        const newDst = (dst ?? new Ctor(16));
-        vec3.normalize(vec3.subtract(eye, target, zAxis), zAxis);
-        vec3.normalize(vec3.cross(up, zAxis, xAxis), xAxis);
-        vec3.normalize(vec3.cross(zAxis, xAxis, yAxis), yAxis);
-        newDst[0] = xAxis[0];
-        newDst[1] = xAxis[1];
-        newDst[2] = xAxis[2];
-        newDst[3] = 0;
-        newDst[4] = yAxis[0];
-        newDst[5] = yAxis[1];
-        newDst[6] = yAxis[2];
-        newDst[7] = 0;
-        newDst[8] = zAxis[0];
-        newDst[9] = zAxis[1];
-        newDst[10] = zAxis[2];
-        newDst[11] = 0;
-        newDst[12] = eye[0];
-        newDst[13] = eye[1];
-        newDst[14] = eye[2];
-        newDst[15] = 1;
-        return newDst;
+        dst = dst || new MatType(16);
+        xAxis = xAxis || create$4();
+        yAxis = yAxis || create$4();
+        zAxis = zAxis || create$4();
+        normalize$2(subtract$2(eye, target, zAxis), zAxis);
+        normalize$2(cross(up, zAxis, xAxis), xAxis);
+        normalize$2(cross(zAxis, xAxis, yAxis), yAxis);
+        dst[0] = xAxis[0];
+        dst[1] = xAxis[1];
+        dst[2] = xAxis[2];
+        dst[3] = 0;
+        dst[4] = yAxis[0];
+        dst[5] = yAxis[1];
+        dst[6] = yAxis[2];
+        dst[7] = 0;
+        dst[8] = zAxis[0];
+        dst[9] = zAxis[1];
+        dst[10] = zAxis[2];
+        dst[11] = 0;
+        dst[12] = eye[0];
+        dst[13] = eye[1];
+        dst[14] = eye[2];
+        dst[15] = 1;
+        return dst;
     }
     /**
      * Computes a 4-by-4 view transformation.
@@ -3458,27 +3623,30 @@ function getAPIImpl$2(Ctor) {
      * @returns The look-at matrix.
      */
     function lookAt(eye, target, up, dst) {
-        const newDst = (dst ?? new Ctor(16));
-        vec3.normalize(vec3.subtract(eye, target, zAxis), zAxis);
-        vec3.normalize(vec3.cross(up, zAxis, xAxis), xAxis);
-        vec3.normalize(vec3.cross(zAxis, xAxis, yAxis), yAxis);
-        newDst[0] = xAxis[0];
-        newDst[1] = yAxis[0];
-        newDst[2] = zAxis[0];
-        newDst[3] = 0;
-        newDst[4] = xAxis[1];
-        newDst[5] = yAxis[1];
-        newDst[6] = zAxis[1];
-        newDst[7] = 0;
-        newDst[8] = xAxis[2];
-        newDst[9] = yAxis[2];
-        newDst[10] = zAxis[2];
-        newDst[11] = 0;
-        newDst[12] = -(xAxis[0] * eye[0] + xAxis[1] * eye[1] + xAxis[2] * eye[2]);
-        newDst[13] = -(yAxis[0] * eye[0] + yAxis[1] * eye[1] + yAxis[2] * eye[2]);
-        newDst[14] = -(zAxis[0] * eye[0] + zAxis[1] * eye[1] + zAxis[2] * eye[2]);
-        newDst[15] = 1;
-        return newDst;
+        dst = dst || new MatType(16);
+        xAxis = xAxis || create$4();
+        yAxis = yAxis || create$4();
+        zAxis = zAxis || create$4();
+        normalize$2(subtract$2(eye, target, zAxis), zAxis);
+        normalize$2(cross(up, zAxis, xAxis), xAxis);
+        normalize$2(cross(zAxis, xAxis, yAxis), yAxis);
+        dst[0] = xAxis[0];
+        dst[1] = yAxis[0];
+        dst[2] = zAxis[0];
+        dst[3] = 0;
+        dst[4] = xAxis[1];
+        dst[5] = yAxis[1];
+        dst[6] = zAxis[1];
+        dst[7] = 0;
+        dst[8] = xAxis[2];
+        dst[9] = yAxis[2];
+        dst[10] = zAxis[2];
+        dst[11] = 0;
+        dst[12] = -(xAxis[0] * eye[0] + xAxis[1] * eye[1] + xAxis[2] * eye[2]);
+        dst[13] = -(yAxis[0] * eye[0] + yAxis[1] * eye[1] + yAxis[2] * eye[2]);
+        dst[14] = -(zAxis[0] * eye[0] + zAxis[1] * eye[1] + zAxis[2] * eye[2]);
+        dst[15] = 1;
+        return dst;
     }
     /**
      * Creates a 4-by-4 matrix which translates by the given vector v.
@@ -3488,24 +3656,24 @@ function getAPIImpl$2(Ctor) {
      * @returns The translation matrix.
      */
     function translation(v, dst) {
-        const newDst = (dst ?? new Ctor(16));
-        newDst[0] = 1;
-        newDst[1] = 0;
-        newDst[2] = 0;
-        newDst[3] = 0;
-        newDst[4] = 0;
-        newDst[5] = 1;
-        newDst[6] = 0;
-        newDst[7] = 0;
-        newDst[8] = 0;
-        newDst[9] = 0;
-        newDst[10] = 1;
-        newDst[11] = 0;
-        newDst[12] = v[0];
-        newDst[13] = v[1];
-        newDst[14] = v[2];
-        newDst[15] = 1;
-        return newDst;
+        dst = dst || new MatType(16);
+        dst[0] = 1;
+        dst[1] = 0;
+        dst[2] = 0;
+        dst[3] = 0;
+        dst[4] = 0;
+        dst[5] = 1;
+        dst[6] = 0;
+        dst[7] = 0;
+        dst[8] = 0;
+        dst[9] = 0;
+        dst[10] = 1;
+        dst[11] = 0;
+        dst[12] = v[0];
+        dst[13] = v[1];
+        dst[14] = v[2];
+        dst[15] = 1;
+        return dst;
     }
     /**
      * Translates the given 4-by-4 matrix by the given vector v.
@@ -3516,7 +3684,7 @@ function getAPIImpl$2(Ctor) {
      * @returns The translated matrix.
      */
     function translate(m, v, dst) {
-        const newDst = (dst ?? new Ctor(16));
+        dst = dst || new MatType(16);
         const v0 = v[0];
         const v1 = v[1];
         const v2 = v[2];
@@ -3536,25 +3704,25 @@ function getAPIImpl$2(Ctor) {
         const m31 = m[3 * 4 + 1];
         const m32 = m[3 * 4 + 2];
         const m33 = m[3 * 4 + 3];
-        if (m !== newDst) {
-            newDst[0] = m00;
-            newDst[1] = m01;
-            newDst[2] = m02;
-            newDst[3] = m03;
-            newDst[4] = m10;
-            newDst[5] = m11;
-            newDst[6] = m12;
-            newDst[7] = m13;
-            newDst[8] = m20;
-            newDst[9] = m21;
-            newDst[10] = m22;
-            newDst[11] = m23;
+        if (m !== dst) {
+            dst[0] = m00;
+            dst[1] = m01;
+            dst[2] = m02;
+            dst[3] = m03;
+            dst[4] = m10;
+            dst[5] = m11;
+            dst[6] = m12;
+            dst[7] = m13;
+            dst[8] = m20;
+            dst[9] = m21;
+            dst[10] = m22;
+            dst[11] = m23;
         }
-        newDst[12] = m00 * v0 + m10 * v1 + m20 * v2 + m30;
-        newDst[13] = m01 * v0 + m11 * v1 + m21 * v2 + m31;
-        newDst[14] = m02 * v0 + m12 * v1 + m22 * v2 + m32;
-        newDst[15] = m03 * v0 + m13 * v1 + m23 * v2 + m33;
-        return newDst;
+        dst[12] = m00 * v0 + m10 * v1 + m20 * v2 + m30;
+        dst[13] = m01 * v0 + m11 * v1 + m21 * v2 + m31;
+        dst[14] = m02 * v0 + m12 * v1 + m22 * v2 + m32;
+        dst[15] = m03 * v0 + m13 * v1 + m23 * v2 + m33;
+        return dst;
     }
     /**
      * Creates a 4-by-4 matrix which rotates around the x-axis by the given angle.
@@ -3563,26 +3731,26 @@ function getAPIImpl$2(Ctor) {
      * @returns The rotation matrix.
      */
     function rotationX(angleInRadians, dst) {
-        const newDst = (dst ?? new Ctor(16));
+        dst = dst || new MatType(16);
         const c = Math.cos(angleInRadians);
         const s = Math.sin(angleInRadians);
-        newDst[0] = 1;
-        newDst[1] = 0;
-        newDst[2] = 0;
-        newDst[3] = 0;
-        newDst[4] = 0;
-        newDst[5] = c;
-        newDst[6] = s;
-        newDst[7] = 0;
-        newDst[8] = 0;
-        newDst[9] = -s;
-        newDst[10] = c;
-        newDst[11] = 0;
-        newDst[12] = 0;
-        newDst[13] = 0;
-        newDst[14] = 0;
-        newDst[15] = 1;
-        return newDst;
+        dst[0] = 1;
+        dst[1] = 0;
+        dst[2] = 0;
+        dst[3] = 0;
+        dst[4] = 0;
+        dst[5] = c;
+        dst[6] = s;
+        dst[7] = 0;
+        dst[8] = 0;
+        dst[9] = -s;
+        dst[10] = c;
+        dst[11] = 0;
+        dst[12] = 0;
+        dst[13] = 0;
+        dst[14] = 0;
+        dst[15] = 1;
+        return dst;
     }
     /**
      * Rotates the given 4-by-4 matrix around the x-axis by the given
@@ -3592,8 +3760,8 @@ function getAPIImpl$2(Ctor) {
      * @param dst - matrix to hold result. If not passed a new one is created.
      * @returns The rotated matrix.
      */
-    function rotateX(m, angleInRadians, dst) {
-        const newDst = (dst ?? new Ctor(16));
+    function rotateX$1(m, angleInRadians, dst) {
+        dst = dst || new MatType(16);
         const m10 = m[4];
         const m11 = m[5];
         const m12 = m[6];
@@ -3604,25 +3772,25 @@ function getAPIImpl$2(Ctor) {
         const m23 = m[11];
         const c = Math.cos(angleInRadians);
         const s = Math.sin(angleInRadians);
-        newDst[4] = c * m10 + s * m20;
-        newDst[5] = c * m11 + s * m21;
-        newDst[6] = c * m12 + s * m22;
-        newDst[7] = c * m13 + s * m23;
-        newDst[8] = c * m20 - s * m10;
-        newDst[9] = c * m21 - s * m11;
-        newDst[10] = c * m22 - s * m12;
-        newDst[11] = c * m23 - s * m13;
-        if (m !== newDst) {
-            newDst[0] = m[0];
-            newDst[1] = m[1];
-            newDst[2] = m[2];
-            newDst[3] = m[3];
-            newDst[12] = m[12];
-            newDst[13] = m[13];
-            newDst[14] = m[14];
-            newDst[15] = m[15];
+        dst[4] = c * m10 + s * m20;
+        dst[5] = c * m11 + s * m21;
+        dst[6] = c * m12 + s * m22;
+        dst[7] = c * m13 + s * m23;
+        dst[8] = c * m20 - s * m10;
+        dst[9] = c * m21 - s * m11;
+        dst[10] = c * m22 - s * m12;
+        dst[11] = c * m23 - s * m13;
+        if (m !== dst) {
+            dst[0] = m[0];
+            dst[1] = m[1];
+            dst[2] = m[2];
+            dst[3] = m[3];
+            dst[12] = m[12];
+            dst[13] = m[13];
+            dst[14] = m[14];
+            dst[15] = m[15];
         }
-        return newDst;
+        return dst;
     }
     /**
      * Creates a 4-by-4 matrix which rotates around the y-axis by the given angle.
@@ -3631,26 +3799,26 @@ function getAPIImpl$2(Ctor) {
      * @returns The rotation matrix.
      */
     function rotationY(angleInRadians, dst) {
-        const newDst = (dst ?? new Ctor(16));
+        dst = dst || new MatType(16);
         const c = Math.cos(angleInRadians);
         const s = Math.sin(angleInRadians);
-        newDst[0] = c;
-        newDst[1] = 0;
-        newDst[2] = -s;
-        newDst[3] = 0;
-        newDst[4] = 0;
-        newDst[5] = 1;
-        newDst[6] = 0;
-        newDst[7] = 0;
-        newDst[8] = s;
-        newDst[9] = 0;
-        newDst[10] = c;
-        newDst[11] = 0;
-        newDst[12] = 0;
-        newDst[13] = 0;
-        newDst[14] = 0;
-        newDst[15] = 1;
-        return newDst;
+        dst[0] = c;
+        dst[1] = 0;
+        dst[2] = -s;
+        dst[3] = 0;
+        dst[4] = 0;
+        dst[5] = 1;
+        dst[6] = 0;
+        dst[7] = 0;
+        dst[8] = s;
+        dst[9] = 0;
+        dst[10] = c;
+        dst[11] = 0;
+        dst[12] = 0;
+        dst[13] = 0;
+        dst[14] = 0;
+        dst[15] = 1;
+        return dst;
     }
     /**
      * Rotates the given 4-by-4 matrix around the y-axis by the given
@@ -3660,8 +3828,8 @@ function getAPIImpl$2(Ctor) {
      * @param dst - matrix to hold result. If not passed a new one is created.
      * @returns The rotated matrix.
      */
-    function rotateY(m, angleInRadians, dst) {
-        const newDst = (dst ?? new Ctor(16));
+    function rotateY$1(m, angleInRadians, dst) {
+        dst = dst || new MatType(16);
         const m00 = m[0 * 4 + 0];
         const m01 = m[0 * 4 + 1];
         const m02 = m[0 * 4 + 2];
@@ -3672,25 +3840,25 @@ function getAPIImpl$2(Ctor) {
         const m23 = m[2 * 4 + 3];
         const c = Math.cos(angleInRadians);
         const s = Math.sin(angleInRadians);
-        newDst[0] = c * m00 - s * m20;
-        newDst[1] = c * m01 - s * m21;
-        newDst[2] = c * m02 - s * m22;
-        newDst[3] = c * m03 - s * m23;
-        newDst[8] = c * m20 + s * m00;
-        newDst[9] = c * m21 + s * m01;
-        newDst[10] = c * m22 + s * m02;
-        newDst[11] = c * m23 + s * m03;
-        if (m !== newDst) {
-            newDst[4] = m[4];
-            newDst[5] = m[5];
-            newDst[6] = m[6];
-            newDst[7] = m[7];
-            newDst[12] = m[12];
-            newDst[13] = m[13];
-            newDst[14] = m[14];
-            newDst[15] = m[15];
+        dst[0] = c * m00 - s * m20;
+        dst[1] = c * m01 - s * m21;
+        dst[2] = c * m02 - s * m22;
+        dst[3] = c * m03 - s * m23;
+        dst[8] = c * m20 + s * m00;
+        dst[9] = c * m21 + s * m01;
+        dst[10] = c * m22 + s * m02;
+        dst[11] = c * m23 + s * m03;
+        if (m !== dst) {
+            dst[4] = m[4];
+            dst[5] = m[5];
+            dst[6] = m[6];
+            dst[7] = m[7];
+            dst[12] = m[12];
+            dst[13] = m[13];
+            dst[14] = m[14];
+            dst[15] = m[15];
         }
-        return newDst;
+        return dst;
     }
     /**
      * Creates a 4-by-4 matrix which rotates around the z-axis by the given angle.
@@ -3699,26 +3867,26 @@ function getAPIImpl$2(Ctor) {
      * @returns The rotation matrix.
      */
     function rotationZ(angleInRadians, dst) {
-        const newDst = (dst ?? new Ctor(16));
+        dst = dst || new MatType(16);
         const c = Math.cos(angleInRadians);
         const s = Math.sin(angleInRadians);
-        newDst[0] = c;
-        newDst[1] = s;
-        newDst[2] = 0;
-        newDst[3] = 0;
-        newDst[4] = -s;
-        newDst[5] = c;
-        newDst[6] = 0;
-        newDst[7] = 0;
-        newDst[8] = 0;
-        newDst[9] = 0;
-        newDst[10] = 1;
-        newDst[11] = 0;
-        newDst[12] = 0;
-        newDst[13] = 0;
-        newDst[14] = 0;
-        newDst[15] = 1;
-        return newDst;
+        dst[0] = c;
+        dst[1] = s;
+        dst[2] = 0;
+        dst[3] = 0;
+        dst[4] = -s;
+        dst[5] = c;
+        dst[6] = 0;
+        dst[7] = 0;
+        dst[8] = 0;
+        dst[9] = 0;
+        dst[10] = 1;
+        dst[11] = 0;
+        dst[12] = 0;
+        dst[13] = 0;
+        dst[14] = 0;
+        dst[15] = 1;
+        return dst;
     }
     /**
      * Rotates the given 4-by-4 matrix around the z-axis by the given
@@ -3728,8 +3896,8 @@ function getAPIImpl$2(Ctor) {
      * @param dst - matrix to hold result. If not passed a new one is created.
      * @returns The rotated matrix.
      */
-    function rotateZ(m, angleInRadians, dst) {
-        const newDst = (dst ?? new Ctor(16));
+    function rotateZ$1(m, angleInRadians, dst) {
+        dst = dst || new MatType(16);
         const m00 = m[0 * 4 + 0];
         const m01 = m[0 * 4 + 1];
         const m02 = m[0 * 4 + 2];
@@ -3740,25 +3908,25 @@ function getAPIImpl$2(Ctor) {
         const m13 = m[1 * 4 + 3];
         const c = Math.cos(angleInRadians);
         const s = Math.sin(angleInRadians);
-        newDst[0] = c * m00 + s * m10;
-        newDst[1] = c * m01 + s * m11;
-        newDst[2] = c * m02 + s * m12;
-        newDst[3] = c * m03 + s * m13;
-        newDst[4] = c * m10 - s * m00;
-        newDst[5] = c * m11 - s * m01;
-        newDst[6] = c * m12 - s * m02;
-        newDst[7] = c * m13 - s * m03;
-        if (m !== newDst) {
-            newDst[8] = m[8];
-            newDst[9] = m[9];
-            newDst[10] = m[10];
-            newDst[11] = m[11];
-            newDst[12] = m[12];
-            newDst[13] = m[13];
-            newDst[14] = m[14];
-            newDst[15] = m[15];
+        dst[0] = c * m00 + s * m10;
+        dst[1] = c * m01 + s * m11;
+        dst[2] = c * m02 + s * m12;
+        dst[3] = c * m03 + s * m13;
+        dst[4] = c * m10 - s * m00;
+        dst[5] = c * m11 - s * m01;
+        dst[6] = c * m12 - s * m02;
+        dst[7] = c * m13 - s * m03;
+        if (m !== dst) {
+            dst[8] = m[8];
+            dst[9] = m[9];
+            dst[10] = m[10];
+            dst[11] = m[11];
+            dst[12] = m[12];
+            dst[13] = m[13];
+            dst[14] = m[14];
+            dst[15] = m[15];
         }
-        return newDst;
+        return dst;
     }
     /**
      * Creates a 4-by-4 matrix which rotates around the given axis by the given
@@ -3771,7 +3939,7 @@ function getAPIImpl$2(Ctor) {
      *     around the axis.
      */
     function axisRotation(axis, angleInRadians, dst) {
-        const newDst = (dst ?? new Ctor(16));
+        dst = dst || new MatType(16);
         let x = axis[0];
         let y = axis[1];
         let z = axis[2];
@@ -3785,23 +3953,23 @@ function getAPIImpl$2(Ctor) {
         const c = Math.cos(angleInRadians);
         const s = Math.sin(angleInRadians);
         const oneMinusCosine = 1 - c;
-        newDst[0] = xx + (1 - xx) * c;
-        newDst[1] = x * y * oneMinusCosine + z * s;
-        newDst[2] = x * z * oneMinusCosine - y * s;
-        newDst[3] = 0;
-        newDst[4] = x * y * oneMinusCosine - z * s;
-        newDst[5] = yy + (1 - yy) * c;
-        newDst[6] = y * z * oneMinusCosine + x * s;
-        newDst[7] = 0;
-        newDst[8] = x * z * oneMinusCosine + y * s;
-        newDst[9] = y * z * oneMinusCosine - x * s;
-        newDst[10] = zz + (1 - zz) * c;
-        newDst[11] = 0;
-        newDst[12] = 0;
-        newDst[13] = 0;
-        newDst[14] = 0;
-        newDst[15] = 1;
-        return newDst;
+        dst[0] = xx + (1 - xx) * c;
+        dst[1] = x * y * oneMinusCosine + z * s;
+        dst[2] = x * z * oneMinusCosine - y * s;
+        dst[3] = 0;
+        dst[4] = x * y * oneMinusCosine - z * s;
+        dst[5] = yy + (1 - yy) * c;
+        dst[6] = y * z * oneMinusCosine + x * s;
+        dst[7] = 0;
+        dst[8] = x * z * oneMinusCosine + y * s;
+        dst[9] = y * z * oneMinusCosine - x * s;
+        dst[10] = zz + (1 - zz) * c;
+        dst[11] = 0;
+        dst[12] = 0;
+        dst[13] = 0;
+        dst[14] = 0;
+        dst[15] = 1;
+        return dst;
     }
     /**
      * Creates a 4-by-4 matrix which rotates around the given axis by the given
@@ -3825,7 +3993,7 @@ function getAPIImpl$2(Ctor) {
      * @returns The rotated matrix.
      */
     function axisRotate(m, axis, angleInRadians, dst) {
-        const newDst = (dst ?? new Ctor(16));
+        dst = dst || new MatType(16);
         let x = axis[0];
         let y = axis[1];
         let z = axis[2];
@@ -3860,25 +4028,25 @@ function getAPIImpl$2(Ctor) {
         const m21 = m[9];
         const m22 = m[10];
         const m23 = m[11];
-        newDst[0] = r00 * m00 + r01 * m10 + r02 * m20;
-        newDst[1] = r00 * m01 + r01 * m11 + r02 * m21;
-        newDst[2] = r00 * m02 + r01 * m12 + r02 * m22;
-        newDst[3] = r00 * m03 + r01 * m13 + r02 * m23;
-        newDst[4] = r10 * m00 + r11 * m10 + r12 * m20;
-        newDst[5] = r10 * m01 + r11 * m11 + r12 * m21;
-        newDst[6] = r10 * m02 + r11 * m12 + r12 * m22;
-        newDst[7] = r10 * m03 + r11 * m13 + r12 * m23;
-        newDst[8] = r20 * m00 + r21 * m10 + r22 * m20;
-        newDst[9] = r20 * m01 + r21 * m11 + r22 * m21;
-        newDst[10] = r20 * m02 + r21 * m12 + r22 * m22;
-        newDst[11] = r20 * m03 + r21 * m13 + r22 * m23;
-        if (m !== newDst) {
-            newDst[12] = m[12];
-            newDst[13] = m[13];
-            newDst[14] = m[14];
-            newDst[15] = m[15];
+        dst[0] = r00 * m00 + r01 * m10 + r02 * m20;
+        dst[1] = r00 * m01 + r01 * m11 + r02 * m21;
+        dst[2] = r00 * m02 + r01 * m12 + r02 * m22;
+        dst[3] = r00 * m03 + r01 * m13 + r02 * m23;
+        dst[4] = r10 * m00 + r11 * m10 + r12 * m20;
+        dst[5] = r10 * m01 + r11 * m11 + r12 * m21;
+        dst[6] = r10 * m02 + r11 * m12 + r12 * m22;
+        dst[7] = r10 * m03 + r11 * m13 + r12 * m23;
+        dst[8] = r20 * m00 + r21 * m10 + r22 * m20;
+        dst[9] = r20 * m01 + r21 * m11 + r22 * m21;
+        dst[10] = r20 * m02 + r21 * m12 + r22 * m22;
+        dst[11] = r20 * m03 + r21 * m13 + r22 * m23;
+        if (m !== dst) {
+            dst[12] = m[12];
+            dst[13] = m[13];
+            dst[14] = m[14];
+            dst[15] = m[15];
         }
-        return newDst;
+        return dst;
     }
     /**
      * Rotates the given 4-by-4 matrix around the given axis by the
@@ -3901,24 +4069,24 @@ function getAPIImpl$2(Ctor) {
      * @returns The scaling matrix.
      */
     function scaling(v, dst) {
-        const newDst = (dst ?? new Ctor(16));
-        newDst[0] = v[0];
-        newDst[1] = 0;
-        newDst[2] = 0;
-        newDst[3] = 0;
-        newDst[4] = 0;
-        newDst[5] = v[1];
-        newDst[6] = 0;
-        newDst[7] = 0;
-        newDst[8] = 0;
-        newDst[9] = 0;
-        newDst[10] = v[2];
-        newDst[11] = 0;
-        newDst[12] = 0;
-        newDst[13] = 0;
-        newDst[14] = 0;
-        newDst[15] = 1;
-        return newDst;
+        dst = dst || new MatType(16);
+        dst[0] = v[0];
+        dst[1] = 0;
+        dst[2] = 0;
+        dst[3] = 0;
+        dst[4] = 0;
+        dst[5] = v[1];
+        dst[6] = 0;
+        dst[7] = 0;
+        dst[8] = 0;
+        dst[9] = 0;
+        dst[10] = v[2];
+        dst[11] = 0;
+        dst[12] = 0;
+        dst[13] = 0;
+        dst[14] = 0;
+        dst[15] = 1;
+        return dst;
     }
     /**
      * Scales the given 4-by-4 matrix in each dimension by an amount
@@ -3930,30 +4098,30 @@ function getAPIImpl$2(Ctor) {
      * @param dst - matrix to hold result. If not passed a new one is created.
      * @returns The scaled matrix.
      */
-    function scale(m, v, dst) {
-        const newDst = (dst ?? new Ctor(16));
+    function scale$2(m, v, dst) {
+        dst = dst || new MatType(16);
         const v0 = v[0];
         const v1 = v[1];
         const v2 = v[2];
-        newDst[0] = v0 * m[0 * 4 + 0];
-        newDst[1] = v0 * m[0 * 4 + 1];
-        newDst[2] = v0 * m[0 * 4 + 2];
-        newDst[3] = v0 * m[0 * 4 + 3];
-        newDst[4] = v1 * m[1 * 4 + 0];
-        newDst[5] = v1 * m[1 * 4 + 1];
-        newDst[6] = v1 * m[1 * 4 + 2];
-        newDst[7] = v1 * m[1 * 4 + 3];
-        newDst[8] = v2 * m[2 * 4 + 0];
-        newDst[9] = v2 * m[2 * 4 + 1];
-        newDst[10] = v2 * m[2 * 4 + 2];
-        newDst[11] = v2 * m[2 * 4 + 3];
-        if (m !== newDst) {
-            newDst[12] = m[12];
-            newDst[13] = m[13];
-            newDst[14] = m[14];
-            newDst[15] = m[15];
+        dst[0] = v0 * m[0 * 4 + 0];
+        dst[1] = v0 * m[0 * 4 + 1];
+        dst[2] = v0 * m[0 * 4 + 2];
+        dst[3] = v0 * m[0 * 4 + 3];
+        dst[4] = v1 * m[1 * 4 + 0];
+        dst[5] = v1 * m[1 * 4 + 1];
+        dst[6] = v1 * m[1 * 4 + 2];
+        dst[7] = v1 * m[1 * 4 + 3];
+        dst[8] = v2 * m[2 * 4 + 0];
+        dst[9] = v2 * m[2 * 4 + 1];
+        dst[10] = v2 * m[2 * 4 + 2];
+        dst[11] = v2 * m[2 * 4 + 3];
+        if (m !== dst) {
+            dst[12] = m[12];
+            dst[13] = m[13];
+            dst[14] = m[14];
+            dst[15] = m[15];
         }
-        return newDst;
+        return dst;
     }
     /**
      * Creates a 4-by-4 matrix which scales a uniform amount in each dimension.
@@ -3962,24 +4130,24 @@ function getAPIImpl$2(Ctor) {
      * @returns The scaling matrix.
      */
     function uniformScaling(s, dst) {
-        const newDst = (dst ?? new Ctor(16));
-        newDst[0] = s;
-        newDst[1] = 0;
-        newDst[2] = 0;
-        newDst[3] = 0;
-        newDst[4] = 0;
-        newDst[5] = s;
-        newDst[6] = 0;
-        newDst[7] = 0;
-        newDst[8] = 0;
-        newDst[9] = 0;
-        newDst[10] = s;
-        newDst[11] = 0;
-        newDst[12] = 0;
-        newDst[13] = 0;
-        newDst[14] = 0;
-        newDst[15] = 1;
-        return newDst;
+        dst = dst || new MatType(16);
+        dst[0] = s;
+        dst[1] = 0;
+        dst[2] = 0;
+        dst[3] = 0;
+        dst[4] = 0;
+        dst[5] = s;
+        dst[6] = 0;
+        dst[7] = 0;
+        dst[8] = 0;
+        dst[9] = 0;
+        dst[10] = s;
+        dst[11] = 0;
+        dst[12] = 0;
+        dst[13] = 0;
+        dst[14] = 0;
+        dst[15] = 1;
+        return dst;
     }
     /**
      * Scales the given 4-by-4 matrix in each dimension by a uniform scale.
@@ -3989,111 +4157,132 @@ function getAPIImpl$2(Ctor) {
      * @returns The scaled matrix.
      */
     function uniformScale(m, s, dst) {
-        const newDst = (dst ?? new Ctor(16));
-        newDst[0] = s * m[0 * 4 + 0];
-        newDst[1] = s * m[0 * 4 + 1];
-        newDst[2] = s * m[0 * 4 + 2];
-        newDst[3] = s * m[0 * 4 + 3];
-        newDst[4] = s * m[1 * 4 + 0];
-        newDst[5] = s * m[1 * 4 + 1];
-        newDst[6] = s * m[1 * 4 + 2];
-        newDst[7] = s * m[1 * 4 + 3];
-        newDst[8] = s * m[2 * 4 + 0];
-        newDst[9] = s * m[2 * 4 + 1];
-        newDst[10] = s * m[2 * 4 + 2];
-        newDst[11] = s * m[2 * 4 + 3];
-        if (m !== newDst) {
-            newDst[12] = m[12];
-            newDst[13] = m[13];
-            newDst[14] = m[14];
-            newDst[15] = m[15];
+        dst = dst || new MatType(16);
+        dst[0] = s * m[0 * 4 + 0];
+        dst[1] = s * m[0 * 4 + 1];
+        dst[2] = s * m[0 * 4 + 2];
+        dst[3] = s * m[0 * 4 + 3];
+        dst[4] = s * m[1 * 4 + 0];
+        dst[5] = s * m[1 * 4 + 1];
+        dst[6] = s * m[1 * 4 + 2];
+        dst[7] = s * m[1 * 4 + 3];
+        dst[8] = s * m[2 * 4 + 0];
+        dst[9] = s * m[2 * 4 + 1];
+        dst[10] = s * m[2 * 4 + 2];
+        dst[11] = s * m[2 * 4 + 3];
+        if (m !== dst) {
+            dst[12] = m[12];
+            dst[13] = m[13];
+            dst[14] = m[14];
+            dst[15] = m[15];
         }
-        return newDst;
+        return dst;
     }
-    return {
-        create,
-        set,
-        fromMat3,
-        fromQuat,
-        negate,
-        copy,
-        clone,
-        equalsApproximately,
-        equals,
-        identity,
-        transpose,
-        inverse,
-        determinant,
-        invert,
-        multiply,
-        mul,
-        setTranslation,
-        getTranslation,
-        getAxis,
-        setAxis,
-        getScaling,
-        perspective,
-        perspectiveReverseZ,
-        ortho,
-        frustum,
-        frustumReverseZ,
-        aim,
-        cameraAim,
-        lookAt,
-        translation,
-        translate,
-        rotationX,
-        rotateX,
-        rotationY,
-        rotateY,
-        rotationZ,
-        rotateZ,
-        axisRotation,
-        rotation,
-        axisRotate,
-        rotate,
-        scaling,
-        scale,
-        uniformScaling,
-        uniformScale,
-    };
-}
-const cache$2 = new Map();
-function getAPI$2(Ctor) {
-    let api = cache$2.get(Ctor);
-    if (!api) {
-        api = getAPIImpl$2(Ctor);
-        cache$2.set(Ctor, api);
-    }
-    return api;
-}
 
-/*
- * Copyright 2022 Gregg Tavares
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
- * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- */
-/**
- * Generates am typed API for Qud
- * */
-function getAPIImpl$1(Ctor) {
-    const vec3 = getAPI$3(Ctor);
+    var mat4Impl = {
+        __proto__: null,
+        aim: aim,
+        axisRotate: axisRotate,
+        axisRotation: axisRotation,
+        cameraAim: cameraAim,
+        clone: clone$2,
+        copy: copy$2,
+        create: create$2,
+        determinant: determinant,
+        equals: equals$2,
+        equalsApproximately: equalsApproximately$2,
+        fromMat3: fromMat3,
+        fromQuat: fromQuat,
+        frustum: frustum,
+        frustumReverseZ: frustumReverseZ,
+        getAxis: getAxis,
+        getScaling: getScaling,
+        getTranslation: getTranslation,
+        identity: identity$1,
+        inverse: inverse$2,
+        invert: invert$1,
+        lookAt: lookAt,
+        mul: mul$2,
+        multiply: multiply$2,
+        negate: negate$1,
+        ortho: ortho,
+        perspective: perspective,
+        perspectiveReverseZ: perspectiveReverseZ,
+        rotate: rotate,
+        rotateX: rotateX$1,
+        rotateY: rotateY$1,
+        rotateZ: rotateZ$1,
+        rotation: rotation,
+        rotationX: rotationX,
+        rotationY: rotationY,
+        rotationZ: rotationZ,
+        scale: scale$2,
+        scaling: scaling,
+        set: set$2,
+        setAxis: setAxis,
+        setDefaultType: setDefaultType$3,
+        setTranslation: setTranslation,
+        translate: translate,
+        translation: translation,
+        transpose: transpose,
+        uniformScale: uniformScale,
+        uniformScaling: uniformScaling
+    };
+
+    /*
+     * Copyright 2022 Gregg Tavares
+     *
+     * Permission is hereby granted, free of charge, to any person obtaining a
+     * copy of this software and associated documentation files (the "Software"),
+     * to deal in the Software without restriction, including without limitation
+     * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+     * and/or sell copies of the Software, and to permit persons to whom the
+     * Software is furnished to do so, subject to the following conditions:
+     *
+     * The above copyright notice and this permission notice shall be included in
+     * all copies or substantial portions of the Software.
+     *
+     * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+     * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+     * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+     * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+     * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+     * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+     * DEALINGS IN THE SOFTWARE.
+     */
+    /**
+     *
+     * Quat4 math functions.
+     *
+     * Almost all functions take an optional `dst` argument. If it is not passed in the
+     * functions will create a new `Quat4`. In other words you can do this
+     *
+     *     const v = quat4.cross(v1, v2);  // Creates a new Quat4 with the cross product of v1 x v2.
+     *
+     * or
+     *
+     *     const v = quat4.create();
+     *     quat4.cross(v1, v2, v);  // Puts the cross product of v1 x v2 in v
+     *
+     * The first style is often easier but depending on where it's used it generates garbage where
+     * as there is almost never allocation with the second style.
+     *
+     * It is always safe to pass any vector as the destination. So for example
+     *
+     *     quat4.cross(v1, v2, v1);  // Puts the cross product of v1 x v2 in v1
+     *
+     */
+    let QuatType = Float32Array;
+    /**
+     * Sets the type this library creates for a Quat4
+     * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`
+     * @returns previous constructor for Quat4
+     */
+    function setDefaultType$2(ctor) {
+        const oldType = QuatType;
+        QuatType = ctor;
+        return oldType;
+    }
     /**
      * Creates a quat4; may be called with x, y, z to set initial values.
      * @param x - Initial x value.
@@ -4102,22 +4291,44 @@ function getAPIImpl$1(Ctor) {
      * @param w - Initial w value.
      * @returns the created vector
      */
-    function create(x, y, z, w) {
-        const newDst = new Ctor(4);
+    function create$1(x, y, z, w) {
+        const dst = new QuatType(4);
         if (x !== undefined) {
-            newDst[0] = x;
+            dst[0] = x;
             if (y !== undefined) {
-                newDst[1] = y;
+                dst[1] = y;
                 if (z !== undefined) {
-                    newDst[2] = z;
+                    dst[2] = z;
                     if (w !== undefined) {
-                        newDst[3] = w;
+                        dst[3] = w;
                     }
                 }
             }
         }
-        return newDst;
+        return dst;
     }
+
+    /*
+     * Copyright 2022 Gregg Tavares
+     *
+     * Permission is hereby granted, free of charge, to any person obtaining a
+     * copy of this software and associated documentation files (the "Software"),
+     * to deal in the Software without restriction, including without limitation
+     * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+     * and/or sell copies of the Software, and to permit persons to whom the
+     * Software is furnished to do so, subject to the following conditions:
+     *
+     * The above copyright notice and this permission notice shall be included in
+     * all copies or substantial portions of the Software.
+     *
+     * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+     * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+     * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+     * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+     * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+     * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+     * DEALINGS IN THE SOFTWARE.
+     */
     /**
      * Creates a Quat; may be called with x, y, z to set initial values. (same as create)
      * @param x - Initial x value.
@@ -4126,7 +4337,7 @@ function getAPIImpl$1(Ctor) {
      * @param z - Initial w value.
      * @returns the created vector
      */
-    const fromValues = create;
+    const fromValues$1 = create$1;
     /**
      * Sets the values of a Quat
      * Also see {@link quat.create} and {@link quat.copy}
@@ -4138,13 +4349,13 @@ function getAPIImpl$1(Ctor) {
      * @param dst - vector to hold result. If not passed in a new one is created.
      * @returns A vector with its elements set.
      */
-    function set(x, y, z, w, dst) {
-        const newDst = (dst ?? new Ctor(4));
-        newDst[0] = x;
-        newDst[1] = y;
-        newDst[2] = z;
-        newDst[3] = w;
-        return newDst;
+    function set$1(x, y, z, w, dst) {
+        dst = dst || new QuatType(4);
+        dst[0] = x;
+        dst[1] = y;
+        dst[2] = z;
+        dst[3] = w;
+        return dst;
     }
     /**
      * Sets a quaternion from the given angle and  axis,
@@ -4156,14 +4367,14 @@ function getAPIImpl$1(Ctor) {
      * @returns The quaternion that represents the given axis and angle
      **/
     function fromAxisAngle(axis, angleInRadians, dst) {
-        const newDst = (dst ?? new Ctor(4));
+        dst = dst || new QuatType(4);
         const halfAngle = angleInRadians * 0.5;
         const s = Math.sin(halfAngle);
-        newDst[0] = s * axis[0];
-        newDst[1] = s * axis[1];
-        newDst[2] = s * axis[2];
-        newDst[3] = Math.cos(halfAngle);
-        return newDst;
+        dst[0] = s * axis[0];
+        dst[1] = s * axis[1];
+        dst[2] = s * axis[2];
+        dst[3] = Math.cos(halfAngle);
+        return dst;
     }
     /**
      * Gets the rotation axis and angle
@@ -4172,20 +4383,20 @@ function getAPIImpl$1(Ctor) {
      * @return angle and axis
      */
     function toAxisAngle(q, dst) {
-        const newDst = (dst ?? vec3.create(3));
+        dst = dst || create$4(4);
         const angle = Math.acos(q[3]) * 2;
         const s = Math.sin(angle * 0.5);
         if (s > EPSILON) {
-            newDst[0] = q[0] / s;
-            newDst[1] = q[1] / s;
-            newDst[2] = q[2] / s;
+            dst[0] = q[0] / s;
+            dst[1] = q[1] / s;
+            dst[2] = q[2] / s;
         }
         else {
-            newDst[0] = 1;
-            newDst[1] = 0;
-            newDst[2] = 0;
+            dst[0] = 1;
+            dst[1] = 0;
+            dst[2] = 0;
         }
-        return { angle, axis: newDst };
+        return { angle, axis: dst };
     }
     /**
      * Returns the angle in degrees between two rotations a and b.
@@ -4194,7 +4405,7 @@ function getAPIImpl$1(Ctor) {
      * @return angle in radians between the two quaternions
      */
     function angle(a, b) {
-        const d = dot(a, b);
+        const d = dot$1(a, b);
         return Math.acos(2 * d * d - 1);
     }
     /**
@@ -4205,8 +4416,8 @@ function getAPIImpl$1(Ctor) {
      * @param dst - quaternion to hold result. If not passed in a new one is created.
      * @returns A quaternion that is the result of a * b
      */
-    function multiply(a, b, dst) {
-        const newDst = (dst ?? new Ctor(4));
+    function multiply$1(a, b, dst) {
+        dst = dst || new QuatType(4);
         const ax = a[0];
         const ay = a[1];
         const az = a[2];
@@ -4215,11 +4426,11 @@ function getAPIImpl$1(Ctor) {
         const by = b[1];
         const bz = b[2];
         const bw = b[3];
-        newDst[0] = ax * bw + aw * bx + ay * bz - az * by;
-        newDst[1] = ay * bw + aw * by + az * bx - ax * bz;
-        newDst[2] = az * bw + aw * bz + ax * by - ay * bx;
-        newDst[3] = aw * bw - ax * bx - ay * by - az * bz;
-        return newDst;
+        dst[0] = ax * bw + aw * bx + ay * bz - az * by;
+        dst[1] = ay * bw + aw * by + az * bx - ax * bz;
+        dst[2] = az * bw + aw * bz + ax * by - ay * bx;
+        dst[3] = aw * bw - ax * bx - ay * by - az * bz;
+        return dst;
     }
     /**
      * Multiplies two quaternions
@@ -4229,7 +4440,7 @@ function getAPIImpl$1(Ctor) {
      * @param dst - quaternion to hold result. If not passed in a new one is created.
      * @returns A quaternion that is the result of a * b
      */
-    const mul = multiply;
+    const mul$1 = multiply$1;
     /**
      * Rotates the given quaternion around the X axis by the given angle.
      * @param q - quaternion to rotate
@@ -4238,7 +4449,7 @@ function getAPIImpl$1(Ctor) {
      * @returns A quaternion that is the result of a * b
      */
     function rotateX(q, angleInRadians, dst) {
-        const newDst = (dst ?? new Ctor(4));
+        dst = dst || new QuatType(4);
         const halfAngle = angleInRadians * 0.5;
         const qx = q[0];
         const qy = q[1];
@@ -4246,11 +4457,11 @@ function getAPIImpl$1(Ctor) {
         const qw = q[3];
         const bx = Math.sin(halfAngle);
         const bw = Math.cos(halfAngle);
-        newDst[0] = qx * bw + qw * bx;
-        newDst[1] = qy * bw + qz * bx;
-        newDst[2] = qz * bw - qy * bx;
-        newDst[3] = qw * bw - qx * bx;
-        return newDst;
+        dst[0] = qx * bw + qw * bx;
+        dst[1] = qy * bw + qz * bx;
+        dst[2] = qz * bw - qy * bx;
+        dst[3] = qw * bw - qx * bx;
+        return dst;
     }
     /**
      * Rotates the given quaternion around the Y axis by the given angle.
@@ -4260,7 +4471,7 @@ function getAPIImpl$1(Ctor) {
      * @returns A quaternion that is the result of a * b
      */
     function rotateY(q, angleInRadians, dst) {
-        const newDst = (dst ?? new Ctor(4));
+        dst = dst || new QuatType(4);
         const halfAngle = angleInRadians * 0.5;
         const qx = q[0];
         const qy = q[1];
@@ -4268,11 +4479,11 @@ function getAPIImpl$1(Ctor) {
         const qw = q[3];
         const by = Math.sin(halfAngle);
         const bw = Math.cos(halfAngle);
-        newDst[0] = qx * bw - qz * by;
-        newDst[1] = qy * bw + qw * by;
-        newDst[2] = qz * bw + qx * by;
-        newDst[3] = qw * bw - qy * by;
-        return newDst;
+        dst[0] = qx * bw - qz * by;
+        dst[1] = qy * bw + qw * by;
+        dst[2] = qz * bw + qx * by;
+        dst[3] = qw * bw - qy * by;
+        return dst;
     }
     /**
      * Rotates the given quaternion around the Z axis by the given angle.
@@ -4282,7 +4493,7 @@ function getAPIImpl$1(Ctor) {
      * @returns A quaternion that is the result of a * b
      */
     function rotateZ(q, angleInRadians, dst) {
-        const newDst = (dst ?? new Ctor(4));
+        dst = dst || new QuatType(4);
         const halfAngle = angleInRadians * 0.5;
         const qx = q[0];
         const qy = q[1];
@@ -4290,11 +4501,11 @@ function getAPIImpl$1(Ctor) {
         const qw = q[3];
         const bz = Math.sin(halfAngle);
         const bw = Math.cos(halfAngle);
-        newDst[0] = qx * bw + qy * bz;
-        newDst[1] = qy * bw - qx * bz;
-        newDst[2] = qz * bw + qw * bz;
-        newDst[3] = qw * bw - qz * bz;
-        return newDst;
+        dst[0] = qx * bw + qy * bz;
+        dst[1] = qy * bw - qx * bz;
+        dst[2] = qz * bw + qw * bz;
+        dst[3] = qw * bw - qz * bz;
+        return dst;
     }
     /**
      * Spherically linear interpolate between two quaternions
@@ -4306,7 +4517,7 @@ function getAPIImpl$1(Ctor) {
      * @returns A quaternion that is the result of a * b
      */
     function slerp(a, b, t, dst) {
-        const newDst = (dst ?? new Ctor(4));
+        dst = dst || new QuatType(4);
         const ax = a[0];
         const ay = a[1];
         const az = a[2];
@@ -4335,11 +4546,11 @@ function getAPIImpl$1(Ctor) {
             scale0 = 1.0 - t;
             scale1 = t;
         }
-        newDst[0] = scale0 * ax + scale1 * bx;
-        newDst[1] = scale0 * ay + scale1 * by;
-        newDst[2] = scale0 * az + scale1 * bz;
-        newDst[3] = scale0 * aw + scale1 * bw;
-        return newDst;
+        dst[0] = scale0 * ax + scale1 * bx;
+        dst[1] = scale0 * ay + scale1 * by;
+        dst[2] = scale0 * az + scale1 * bz;
+        dst[3] = scale0 * aw + scale1 * bw;
+        return dst;
     }
     /**
      * Compute the inverse of a quaternion
@@ -4347,19 +4558,19 @@ function getAPIImpl$1(Ctor) {
      * @param q - quaternion to compute the inverse of
      * @returns A quaternion that is the result of a * b
      */
-    function inverse(q, dst) {
-        const newDst = (dst ?? new Ctor(4));
+    function inverse$1(q, dst) {
+        dst = dst || new QuatType(4);
         const a0 = q[0];
         const a1 = q[1];
         const a2 = q[2];
         const a3 = q[3];
         const dot = a0 * a0 + a1 * a1 + a2 * a2 + a3 * a3;
         const invDot = dot ? 1 / dot : 0;
-        newDst[0] = -a0 * invDot;
-        newDst[1] = -a1 * invDot;
-        newDst[2] = -a2 * invDot;
-        newDst[3] = a3 * invDot;
-        return newDst;
+        dst[0] = -a0 * invDot;
+        dst[1] = -a1 * invDot;
+        dst[2] = -a2 * invDot;
+        dst[3] = a3 * invDot;
+        return dst;
     }
     /**
      * Compute the conjugate of a quaternion
@@ -4371,12 +4582,12 @@ function getAPIImpl$1(Ctor) {
      * @returns The conjugate of q
      */
     function conjugate(q, dst) {
-        const newDst = (dst ?? new Ctor(4));
-        newDst[0] = -q[0];
-        newDst[1] = -q[1];
-        newDst[2] = -q[2];
-        newDst[3] = q[3];
-        return newDst;
+        dst = dst || new QuatType(4);
+        dst[0] = -q[0];
+        dst[1] = -q[1];
+        dst[2] = -q[2];
+        dst[3] = q[3];
+        return dst;
     }
     /**
      * Creates a quaternion from the given rotation matrix.
@@ -4388,7 +4599,7 @@ function getAPIImpl$1(Ctor) {
      * @returns the result
      */
     function fromMat(m, dst) {
-        const newDst = (dst ?? new Ctor(4));
+        dst = dst || new QuatType(4);
         /*
         0 1 2
         3 4 5
@@ -4404,11 +4615,11 @@ function getAPIImpl$1(Ctor) {
         if (trace > 0.0) {
             // |w| > 1/2, may as well choose w > 1/2
             const root = Math.sqrt(trace + 1); // 2w
-            newDst[3] = 0.5 * root;
+            dst[3] = 0.5 * root;
             const invRoot = 0.5 / root; // 1/(4w)
-            newDst[0] = (m[6] - m[9]) * invRoot;
-            newDst[1] = (m[8] - m[2]) * invRoot;
-            newDst[2] = (m[1] - m[4]) * invRoot;
+            dst[0] = (m[6] - m[9]) * invRoot;
+            dst[1] = (m[8] - m[2]) * invRoot;
+            dst[2] = (m[1] - m[4]) * invRoot;
         }
         else {
             // |w| <= 1/2
@@ -4422,13 +4633,13 @@ function getAPIImpl$1(Ctor) {
             const j = (i + 1) % 3;
             const k = (i + 2) % 3;
             const root = Math.sqrt(m[i * 4 + i] - m[j * 4 + j] - m[k * 4 + k] + 1.0);
-            newDst[i] = 0.5 * root;
+            dst[i] = 0.5 * root;
             const invRoot = 0.5 / root;
-            newDst[3] = (m[j * 4 + k] - m[k * 4 + j]) * invRoot;
-            newDst[j] = (m[j * 4 + i] + m[i * 4 + j]) * invRoot;
-            newDst[k] = (m[k * 4 + i] + m[i * 4 + k]) * invRoot;
+            dst[3] = (m[j * 4 + k] - m[k * 4 + j]) * invRoot;
+            dst[j] = (m[j * 4 + i] + m[i * 4 + j]) * invRoot;
+            dst[k] = (m[k * 4 + i] + m[i * 4 + k]) * invRoot;
         }
-        return newDst;
+        return dst;
     }
     /**
      * Creates a quaternion from the given euler angle x, y, z using the provided intrinsic order for the conversion.
@@ -4441,7 +4652,7 @@ function getAPIImpl$1(Ctor) {
      * @returns A quaternion representing the same rotation as the euler angles applied in the given order
      */
     function fromEuler(xAngleInRadians, yAngleInRadians, zAngleInRadians, order, dst) {
-        const newDst = (dst ?? new Ctor(4));
+        dst = dst || new QuatType(4);
         const xHalfAngle = xAngleInRadians * 0.5;
         const yHalfAngle = yAngleInRadians * 0.5;
         const zHalfAngle = zAngleInRadians * 0.5;
@@ -4453,45 +4664,45 @@ function getAPIImpl$1(Ctor) {
         const cz = Math.cos(zHalfAngle);
         switch (order) {
             case 'xyz':
-                newDst[0] = sx * cy * cz + cx * sy * sz;
-                newDst[1] = cx * sy * cz - sx * cy * sz;
-                newDst[2] = cx * cy * sz + sx * sy * cz;
-                newDst[3] = cx * cy * cz - sx * sy * sz;
+                dst[0] = sx * cy * cz + cx * sy * sz;
+                dst[1] = cx * sy * cz - sx * cy * sz;
+                dst[2] = cx * cy * sz + sx * sy * cz;
+                dst[3] = cx * cy * cz - sx * sy * sz;
                 break;
             case 'xzy':
-                newDst[0] = sx * cy * cz - cx * sy * sz;
-                newDst[1] = cx * sy * cz - sx * cy * sz;
-                newDst[2] = cx * cy * sz + sx * sy * cz;
-                newDst[3] = cx * cy * cz + sx * sy * sz;
+                dst[0] = sx * cy * cz - cx * sy * sz;
+                dst[1] = cx * sy * cz - sx * cy * sz;
+                dst[2] = cx * cy * sz + sx * sy * cz;
+                dst[3] = cx * cy * cz + sx * sy * sz;
                 break;
             case 'yxz':
-                newDst[0] = sx * cy * cz + cx * sy * sz;
-                newDst[1] = cx * sy * cz - sx * cy * sz;
-                newDst[2] = cx * cy * sz - sx * sy * cz;
-                newDst[3] = cx * cy * cz + sx * sy * sz;
+                dst[0] = sx * cy * cz + cx * sy * sz;
+                dst[1] = cx * sy * cz - sx * cy * sz;
+                dst[2] = cx * cy * sz - sx * sy * cz;
+                dst[3] = cx * cy * cz + sx * sy * sz;
                 break;
             case 'yzx':
-                newDst[0] = sx * cy * cz + cx * sy * sz;
-                newDst[1] = cx * sy * cz + sx * cy * sz;
-                newDst[2] = cx * cy * sz - sx * sy * cz;
-                newDst[3] = cx * cy * cz - sx * sy * sz;
+                dst[0] = sx * cy * cz + cx * sy * sz;
+                dst[1] = cx * sy * cz + sx * cy * sz;
+                dst[2] = cx * cy * sz - sx * sy * cz;
+                dst[3] = cx * cy * cz - sx * sy * sz;
                 break;
             case 'zxy':
-                newDst[0] = sx * cy * cz - cx * sy * sz;
-                newDst[1] = cx * sy * cz + sx * cy * sz;
-                newDst[2] = cx * cy * sz + sx * sy * cz;
-                newDst[3] = cx * cy * cz - sx * sy * sz;
+                dst[0] = sx * cy * cz - cx * sy * sz;
+                dst[1] = cx * sy * cz + sx * cy * sz;
+                dst[2] = cx * cy * sz + sx * sy * cz;
+                dst[3] = cx * cy * cz - sx * sy * sz;
                 break;
             case 'zyx':
-                newDst[0] = sx * cy * cz - cx * sy * sz;
-                newDst[1] = cx * sy * cz + sx * cy * sz;
-                newDst[2] = cx * cy * sz - sx * sy * cz;
-                newDst[3] = cx * cy * cz + sx * sy * sz;
+                dst[0] = sx * cy * cz - cx * sy * sz;
+                dst[1] = cx * sy * cz + sx * cy * sz;
+                dst[2] = cx * cy * sz - sx * sy * cz;
+                dst[3] = cx * cy * cz + sx * sy * sz;
                 break;
             default:
                 throw new Error(`Unknown rotation order: ${order}`);
         }
-        return newDst;
+        return dst;
     }
     /**
      * Copies a quaternion. (same as {@link quat.clone})
@@ -4500,13 +4711,13 @@ function getAPIImpl$1(Ctor) {
      * @param dst - quaternion to hold result. If not passed in a new one is created.
      * @returns A quaternion that is a copy of q
      */
-    function copy(q, dst) {
-        const newDst = (dst ?? new Ctor(4));
-        newDst[0] = q[0];
-        newDst[1] = q[1];
-        newDst[2] = q[2];
-        newDst[3] = q[3];
-        return newDst;
+    function copy$1(q, dst) {
+        dst = dst || new QuatType(4);
+        dst[0] = q[0];
+        dst[1] = q[1];
+        dst[2] = q[2];
+        dst[3] = q[3];
+        return dst;
     }
     /**
      * Clones a quaternion. (same as {@link quat.copy})
@@ -4515,7 +4726,7 @@ function getAPIImpl$1(Ctor) {
      * @param dst - quaternion to hold result. If not passed in a new one is created.
      * @returns A copy of q.
      */
-    const clone = copy;
+    const clone$1 = copy$1;
     /**
      * Adds two quaternions; assumes a and b have the same dimension.
      * @param a - Operand quaternion.
@@ -4523,13 +4734,13 @@ function getAPIImpl$1(Ctor) {
      * @param dst - quaternion to hold result. If not passed in a new one is created.
      * @returns A quaternion that is the sum of a and b.
      */
-    function add(a, b, dst) {
-        const newDst = (dst ?? new Ctor(4));
-        newDst[0] = a[0] + b[0];
-        newDst[1] = a[1] + b[1];
-        newDst[2] = a[2] + b[2];
-        newDst[3] = a[3] + b[3];
-        return newDst;
+    function add$1(a, b, dst) {
+        dst = dst || new QuatType(4);
+        dst[0] = a[0] + b[0];
+        dst[1] = a[1] + b[1];
+        dst[2] = a[2] + b[2];
+        dst[3] = a[3] + b[3];
+        return dst;
     }
     /**
      * Subtracts two quaternions.
@@ -4538,13 +4749,13 @@ function getAPIImpl$1(Ctor) {
      * @param dst - quaternion to hold result. If not passed in a new one is created.
      * @returns A quaternion that is the difference of a and b.
      */
-    function subtract(a, b, dst) {
-        const newDst = (dst ?? new Ctor(4));
-        newDst[0] = a[0] - b[0];
-        newDst[1] = a[1] - b[1];
-        newDst[2] = a[2] - b[2];
-        newDst[3] = a[3] - b[3];
-        return newDst;
+    function subtract$1(a, b, dst) {
+        dst = dst || new QuatType(4);
+        dst[0] = a[0] - b[0];
+        dst[1] = a[1] - b[1];
+        dst[2] = a[2] - b[2];
+        dst[3] = a[3] - b[3];
+        return dst;
     }
     /**
      * Subtracts two quaternions.
@@ -4553,7 +4764,7 @@ function getAPIImpl$1(Ctor) {
      * @param dst - quaternion to hold result. If not passed in a new one is created.
      * @returns A quaternion that is the difference of a and b.
      */
-    const sub = subtract;
+    const sub$1 = subtract$1;
     /**
      * Multiplies a quaternion by a scalar.
      * @param v - The quaternion.
@@ -4561,13 +4772,13 @@ function getAPIImpl$1(Ctor) {
      * @param dst - quaternion to hold result. If not passed in a new one is created.
      * @returns The scaled quaternion.
      */
-    function mulScalar(v, k, dst) {
-        const newDst = (dst ?? new Ctor(4));
-        newDst[0] = v[0] * k;
-        newDst[1] = v[1] * k;
-        newDst[2] = v[2] * k;
-        newDst[3] = v[3] * k;
-        return newDst;
+    function mulScalar$1(v, k, dst) {
+        dst = dst || new QuatType(4);
+        dst[0] = v[0] * k;
+        dst[1] = v[1] * k;
+        dst[2] = v[2] * k;
+        dst[3] = v[3] * k;
+        return dst;
     }
     /**
      * Multiplies a quaternion by a scalar. (same as mulScalar)
@@ -4576,7 +4787,7 @@ function getAPIImpl$1(Ctor) {
      * @param dst - quaternion to hold result. If not passed in a new one is created.
      * @returns The scaled quaternion.
      */
-    const scale = mulScalar;
+    const scale$1 = mulScalar$1;
     /**
      * Divides a vector by a scalar.
      * @param v - The vector.
@@ -4584,13 +4795,13 @@ function getAPIImpl$1(Ctor) {
      * @param dst - quaternion to hold result. If not passed in a new one is created.
      * @returns The scaled quaternion.
      */
-    function divScalar(v, k, dst) {
-        const newDst = (dst ?? new Ctor(4));
-        newDst[0] = v[0] / k;
-        newDst[1] = v[1] / k;
-        newDst[2] = v[2] / k;
-        newDst[3] = v[3] / k;
-        return newDst;
+    function divScalar$1(v, k, dst) {
+        dst = dst || new QuatType(4);
+        dst[0] = v[0] / k;
+        dst[1] = v[1] / k;
+        dst[2] = v[2] / k;
+        dst[3] = v[3] / k;
+        return dst;
     }
     /**
      * Computes the dot product of two quaternions
@@ -4598,7 +4809,7 @@ function getAPIImpl$1(Ctor) {
      * @param b - Operand quaternion.
      * @returns dot product
      */
-    function dot(a, b) {
+    function dot$1(a, b) {
         return (a[0] * b[0]) + (a[1] * b[1]) + (a[2] * b[2]) + (a[3] * b[3]);
     }
     /**
@@ -4611,20 +4822,20 @@ function getAPIImpl$1(Ctor) {
      * @param dst - quaternion to hold result. If not passed in a new one is created.
      * @returns The linear interpolated result.
      */
-    function lerp(a, b, t, dst) {
-        const newDst = (dst ?? new Ctor(4));
-        newDst[0] = a[0] + t * (b[0] - a[0]);
-        newDst[1] = a[1] + t * (b[1] - a[1]);
-        newDst[2] = a[2] + t * (b[2] - a[2]);
-        newDst[3] = a[3] + t * (b[3] - a[3]);
-        return newDst;
+    function lerp$1(a, b, t, dst) {
+        dst = dst || new QuatType(4);
+        dst[0] = a[0] + t * (b[0] - a[0]);
+        dst[1] = a[1] + t * (b[1] - a[1]);
+        dst[2] = a[2] + t * (b[2] - a[2]);
+        dst[3] = a[3] + t * (b[3] - a[3]);
+        return dst;
     }
     /**
      * Computes the length of quaternion
      * @param v - quaternion.
      * @returns length of quaternion.
      */
-    function length(v) {
+    function length$1(v) {
         const v0 = v[0];
         const v1 = v[1];
         const v2 = v[2];
@@ -4636,13 +4847,13 @@ function getAPIImpl$1(Ctor) {
      * @param v - quaternion.
      * @returns length of quaternion.
      */
-    const len = length;
+    const len$1 = length$1;
     /**
      * Computes the square of the length of quaternion
      * @param v - quaternion.
      * @returns square of the length of quaternion.
      */
-    function lengthSq(v) {
+    function lengthSq$1(v) {
         const v0 = v[0];
         const v1 = v[1];
         const v2 = v[2];
@@ -4654,33 +4865,33 @@ function getAPIImpl$1(Ctor) {
      * @param v - quaternion.
      * @returns square of the length of quaternion.
      */
-    const lenSq = lengthSq;
+    const lenSq$1 = lengthSq$1;
     /**
      * Divides a quaternion by its Euclidean length and returns the quotient.
      * @param v - The quaternion.
      * @param dst - quaternion to hold result. If not passed in a new one is created.
      * @returns The normalized quaternion.
      */
-    function normalize(v, dst) {
-        const newDst = (dst ?? new Ctor(4));
+    function normalize$1(v, dst) {
+        dst = dst || new QuatType(4);
         const v0 = v[0];
         const v1 = v[1];
         const v2 = v[2];
         const v3 = v[3];
         const len = Math.sqrt(v0 * v0 + v1 * v1 + v2 * v2 + v3 * v3);
         if (len > 0.00001) {
-            newDst[0] = v0 / len;
-            newDst[1] = v1 / len;
-            newDst[2] = v2 / len;
-            newDst[3] = v3 / len;
+            dst[0] = v0 / len;
+            dst[1] = v1 / len;
+            dst[2] = v2 / len;
+            dst[3] = v3 / len;
         }
         else {
-            newDst[0] = 0;
-            newDst[1] = 0;
-            newDst[2] = 0;
-            newDst[3] = 0;
+            dst[0] = 0;
+            dst[1] = 0;
+            dst[2] = 0;
+            dst[3] = 0;
         }
-        return newDst;
+        return dst;
     }
     /**
      * Check if 2 quaternions are approximately equal
@@ -4688,7 +4899,7 @@ function getAPIImpl$1(Ctor) {
      * @param b - Operand quaternion.
      * @returns true if quaternions are approximately equal
      */
-    function equalsApproximately(a, b) {
+    function equalsApproximately$1(a, b) {
         return Math.abs(a[0] - b[0]) < EPSILON &&
             Math.abs(a[1] - b[1]) < EPSILON &&
             Math.abs(a[2] - b[2]) < EPSILON &&
@@ -4700,7 +4911,7 @@ function getAPIImpl$1(Ctor) {
      * @param b - Operand quaternion.
      * @returns true if quaternions are exactly equal
      */
-    function equals(a, b) {
+    function equals$1(a, b) {
         return a[0] === b[0] && a[1] === b[1] && a[2] === b[2] && a[3] === b[3];
     }
     /**
@@ -4709,16 +4920,16 @@ function getAPIImpl$1(Ctor) {
      * @returns an identity quaternion
      */
     function identity(dst) {
-        const newDst = (dst ?? new Ctor(4));
-        newDst[0] = 0;
-        newDst[1] = 0;
-        newDst[2] = 0;
-        newDst[3] = 1;
-        return newDst;
+        dst = dst || new QuatType(4);
+        dst[0] = 0;
+        dst[1] = 0;
+        dst[2] = 0;
+        dst[3] = 1;
+        return dst;
     }
-    const tempVec3 = vec3.create();
-    const xUnitVec3 = vec3.create();
-    const yUnitVec3 = vec3.create();
+    let tempVec3;
+    let xUnitVec3;
+    let yUnitVec3;
     /**
      * Computes a quaternion to represent the shortest rotation from one vector to another.
      *
@@ -4728,35 +4939,38 @@ function getAPIImpl$1(Ctor) {
      * @returns the result
      */
     function rotationTo(aUnit, bUnit, dst) {
-        const newDst = (dst ?? new Ctor(4));
-        const dot = vec3.dot(aUnit, bUnit);
+        dst = dst || new QuatType(4);
+        tempVec3 = tempVec3 || create$4();
+        xUnitVec3 = xUnitVec3 || create$4(1, 0, 0);
+        yUnitVec3 = yUnitVec3 || create$4(0, 1, 0);
+        const dot = dot$2(aUnit, bUnit);
         if (dot < -0.999999) {
-            vec3.cross(xUnitVec3, aUnit, tempVec3);
-            if (vec3.len(tempVec3) < 0.000001) {
-                vec3.cross(yUnitVec3, aUnit, tempVec3);
+            cross(xUnitVec3, aUnit, tempVec3);
+            if (len$2(tempVec3) < 0.000001) {
+                cross(yUnitVec3, aUnit, tempVec3);
             }
-            vec3.normalize(tempVec3, tempVec3);
-            fromAxisAngle(tempVec3, Math.PI, newDst);
-            return newDst;
+            normalize$2(tempVec3, tempVec3);
+            fromAxisAngle(tempVec3, Math.PI, dst);
+            return dst;
         }
         else if (dot > 0.999999) {
-            newDst[0] = 0;
-            newDst[1] = 0;
-            newDst[2] = 0;
-            newDst[3] = 1;
-            return newDst;
+            dst[0] = 0;
+            dst[1] = 0;
+            dst[2] = 0;
+            dst[3] = 1;
+            return dst;
         }
         else {
-            vec3.cross(aUnit, bUnit, tempVec3);
-            newDst[0] = tempVec3[0];
-            newDst[1] = tempVec3[1];
-            newDst[2] = tempVec3[2];
-            newDst[3] = 1 + dot;
-            return normalize(newDst, newDst);
+            cross(aUnit, bUnit, tempVec3);
+            dst[0] = tempVec3[0];
+            dst[1] = tempVec3[1];
+            dst[2] = tempVec3[2];
+            dst[3] = 1 + dot;
+            return normalize$1(dst, dst);
         }
     }
-    const tempQuat1 = new Ctor(4);
-    const tempQuat2 = new Ctor(4);
+    let tempQuat1;
+    let tempQuat2;
     /**
      * Performs a spherical linear interpolation with two control points
      *
@@ -4768,108 +4982,110 @@ function getAPIImpl$1(Ctor) {
      * @returns result
      */
     function sqlerp(a, b, c, d, t, dst) {
-        const newDst = (dst ?? new Ctor(4));
+        dst = dst || new QuatType(4);
+        tempQuat1 = tempQuat1 || new QuatType(4);
+        tempQuat2 = tempQuat2 || new QuatType(4);
         slerp(a, d, t, tempQuat1);
         slerp(b, c, t, tempQuat2);
-        slerp(tempQuat1, tempQuat2, 2 * t * (1 - t), newDst);
-        return newDst;
+        slerp(tempQuat1, tempQuat2, 2 * t * (1 - t), dst);
+        return dst;
     }
-    return {
-        create,
-        fromValues,
-        set,
-        fromAxisAngle,
-        toAxisAngle,
-        angle,
-        multiply,
-        mul,
-        rotateX,
-        rotateY,
-        rotateZ,
-        slerp,
-        inverse,
-        conjugate,
-        fromMat,
-        fromEuler,
-        copy,
-        clone,
-        add,
-        subtract,
-        sub,
-        mulScalar,
-        scale,
-        divScalar,
-        dot,
-        lerp,
-        length,
-        len,
-        lengthSq,
-        lenSq,
-        normalize,
-        equalsApproximately,
-        equals,
-        identity,
-        rotationTo,
-        sqlerp,
-    };
-}
-const cache$1 = new Map();
-/**
- *
- * Quat4 math functions.
- *
- * Almost all functions take an optional `newDst` argument. If it is not passed in the
- * functions will create a new `Quat4`. In other words you can do this
- *
- *     const v = quat4.cross(v1, v2);  // Creates a new Quat4 with the cross product of v1 x v2.
- *
- * or
- *
- *     const v = quat4.create();
- *     quat4.cross(v1, v2, v);  // Puts the cross product of v1 x v2 in v
- *
- * The first style is often easier but depending on where it's used it generates garbage where
- * as there is almost never allocation with the second style.
- *
- * It is always safe to pass any vector as the destination. So for example
- *
- *     quat4.cross(v1, v2, v1);  // Puts the cross product of v1 x v2 in v1
- *
- */
-function getAPI$1(Ctor) {
-    let api = cache$1.get(Ctor);
-    if (!api) {
-        api = getAPIImpl$1(Ctor);
-        cache$1.set(Ctor, api);
-    }
-    return api;
-}
 
-/*
- * Copyright 2022 Gregg Tavares
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
- * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- */
-/**
- * Generates am typed API for Vec4
- * */
-function getAPIImpl(Ctor) {
+    var quatImpl = {
+        __proto__: null,
+        add: add$1,
+        angle: angle,
+        clone: clone$1,
+        conjugate: conjugate,
+        copy: copy$1,
+        create: create$1,
+        divScalar: divScalar$1,
+        dot: dot$1,
+        equals: equals$1,
+        equalsApproximately: equalsApproximately$1,
+        fromAxisAngle: fromAxisAngle,
+        fromEuler: fromEuler,
+        fromMat: fromMat,
+        fromValues: fromValues$1,
+        identity: identity,
+        inverse: inverse$1,
+        len: len$1,
+        lenSq: lenSq$1,
+        length: length$1,
+        lengthSq: lengthSq$1,
+        lerp: lerp$1,
+        mul: mul$1,
+        mulScalar: mulScalar$1,
+        multiply: multiply$1,
+        normalize: normalize$1,
+        rotateX: rotateX,
+        rotateY: rotateY,
+        rotateZ: rotateZ,
+        rotationTo: rotationTo,
+        scale: scale$1,
+        set: set$1,
+        setDefaultType: setDefaultType$2,
+        slerp: slerp,
+        sqlerp: sqlerp,
+        sub: sub$1,
+        subtract: subtract$1,
+        toAxisAngle: toAxisAngle
+    };
+
+    /*
+     * Copyright 2022 Gregg Tavares
+     *
+     * Permission is hereby granted, free of charge, to any person obtaining a
+     * copy of this software and associated documentation files (the "Software"),
+     * to deal in the Software without restriction, including without limitation
+     * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+     * and/or sell copies of the Software, and to permit persons to whom the
+     * Software is furnished to do so, subject to the following conditions:
+     *
+     * The above copyright notice and this permission notice shall be included in
+     * all copies or substantial portions of the Software.
+     *
+     * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+     * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+     * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+     * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+     * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+     * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+     * DEALINGS IN THE SOFTWARE.
+     */
+    /**
+     *
+     * Vec4 math functions.
+     *
+     * Almost all functions take an optional `dst` argument. If it is not passed in the
+     * functions will create a new `Vec4`. In other words you can do this
+     *
+     *     const v = vec4.cross(v1, v2);  // Creates a new Vec4 with the cross product of v1 x v2.
+     *
+     * or
+     *
+     *     const v = vec4.create();
+     *     vec4.cross(v1, v2, v);  // Puts the cross product of v1 x v2 in v
+     *
+     * The first style is often easier but depending on where it's used it generates garbage where
+     * as there is almost never allocation with the second style.
+     *
+     * It is always safe to pass any vector as the destination. So for example
+     *
+     *     vec4.cross(v1, v2, v1);  // Puts the cross product of v1 x v2 in v1
+     *
+     */
+    let VecType = Float32Array;
+    /**
+     * Sets the type this library creates for a Vec4
+     * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`
+     * @returns previous constructor for Vec4
+     */
+    function setDefaultType$1(ctor) {
+        const oldType = VecType;
+        VecType = ctor;
+        return oldType;
+    }
     /**
      * Creates a vec4; may be called with x, y, z to set initial values.
      * @param x - Initial x value.
@@ -4879,21 +5095,43 @@ function getAPIImpl(Ctor) {
      * @returns the created vector
      */
     function create(x, y, z, w) {
-        const newDst = new Ctor(4);
+        const dst = new VecType(4);
         if (x !== undefined) {
-            newDst[0] = x;
+            dst[0] = x;
             if (y !== undefined) {
-                newDst[1] = y;
+                dst[1] = y;
                 if (z !== undefined) {
-                    newDst[2] = z;
+                    dst[2] = z;
                     if (w !== undefined) {
-                        newDst[3] = w;
+                        dst[3] = w;
                     }
                 }
             }
         }
-        return newDst;
+        return dst;
     }
+
+    /*
+     * Copyright 2022 Gregg Tavares
+     *
+     * Permission is hereby granted, free of charge, to any person obtaining a
+     * copy of this software and associated documentation files (the "Software"),
+     * to deal in the Software without restriction, including without limitation
+     * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+     * and/or sell copies of the Software, and to permit persons to whom the
+     * Software is furnished to do so, subject to the following conditions:
+     *
+     * The above copyright notice and this permission notice shall be included in
+     * all copies or substantial portions of the Software.
+     *
+     * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+     * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+     * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+     * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+     * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+     * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+     * DEALINGS IN THE SOFTWARE.
+     */
     /**
      * Creates a vec4; may be called with x, y, z to set initial values. (same as create)
      * @param x - Initial x value.
@@ -4915,12 +5153,12 @@ function getAPIImpl(Ctor) {
      * @returns A vector with its elements set.
      */
     function set(x, y, z, w, dst) {
-        const newDst = (dst ?? new Ctor(4));
-        newDst[0] = x;
-        newDst[1] = y;
-        newDst[2] = z;
-        newDst[3] = w;
-        return newDst;
+        dst = dst || new VecType(4);
+        dst[0] = x;
+        dst[1] = y;
+        dst[2] = z;
+        dst[3] = w;
+        return dst;
     }
     /**
      * Applies Math.ceil to each element of vector
@@ -4929,12 +5167,12 @@ function getAPIImpl(Ctor) {
      * @returns A vector that is the ceil of each element of v.
      */
     function ceil(v, dst) {
-        const newDst = (dst ?? new Ctor(4));
-        newDst[0] = Math.ceil(v[0]);
-        newDst[1] = Math.ceil(v[1]);
-        newDst[2] = Math.ceil(v[2]);
-        newDst[3] = Math.ceil(v[3]);
-        return newDst;
+        dst = dst || new VecType(4);
+        dst[0] = Math.ceil(v[0]);
+        dst[1] = Math.ceil(v[1]);
+        dst[2] = Math.ceil(v[2]);
+        dst[3] = Math.ceil(v[3]);
+        return dst;
     }
     /**
      * Applies Math.floor to each element of vector
@@ -4943,12 +5181,12 @@ function getAPIImpl(Ctor) {
      * @returns A vector that is the floor of each element of v.
      */
     function floor(v, dst) {
-        const newDst = (dst ?? new Ctor(4));
-        newDst[0] = Math.floor(v[0]);
-        newDst[1] = Math.floor(v[1]);
-        newDst[2] = Math.floor(v[2]);
-        newDst[3] = Math.floor(v[3]);
-        return newDst;
+        dst = dst || new VecType(4);
+        dst[0] = Math.floor(v[0]);
+        dst[1] = Math.floor(v[1]);
+        dst[2] = Math.floor(v[2]);
+        dst[3] = Math.floor(v[3]);
+        return dst;
     }
     /**
      * Applies Math.round to each element of vector
@@ -4957,12 +5195,12 @@ function getAPIImpl(Ctor) {
      * @returns A vector that is the round of each element of v.
      */
     function round(v, dst) {
-        const newDst = (dst ?? new Ctor(4));
-        newDst[0] = Math.round(v[0]);
-        newDst[1] = Math.round(v[1]);
-        newDst[2] = Math.round(v[2]);
-        newDst[3] = Math.round(v[3]);
-        return newDst;
+        dst = dst || new VecType(4);
+        dst[0] = Math.round(v[0]);
+        dst[1] = Math.round(v[1]);
+        dst[2] = Math.round(v[2]);
+        dst[3] = Math.round(v[3]);
+        return dst;
     }
     /**
      * Clamp each element of vector between min and max
@@ -4973,12 +5211,12 @@ function getAPIImpl(Ctor) {
      * @returns A vector that the clamped value of each element of v.
      */
     function clamp(v, min = 0, max = 1, dst) {
-        const newDst = (dst ?? new Ctor(4));
-        newDst[0] = Math.min(max, Math.max(min, v[0]));
-        newDst[1] = Math.min(max, Math.max(min, v[1]));
-        newDst[2] = Math.min(max, Math.max(min, v[2]));
-        newDst[3] = Math.min(max, Math.max(min, v[3]));
-        return newDst;
+        dst = dst || new VecType(4);
+        dst[0] = Math.min(max, Math.max(min, v[0]));
+        dst[1] = Math.min(max, Math.max(min, v[1]));
+        dst[2] = Math.min(max, Math.max(min, v[2]));
+        dst[3] = Math.min(max, Math.max(min, v[3]));
+        return dst;
     }
     /**
      * Adds two vectors; assumes a and b have the same dimension.
@@ -4988,12 +5226,12 @@ function getAPIImpl(Ctor) {
      * @returns A vector that is the sum of a and b.
      */
     function add(a, b, dst) {
-        const newDst = (dst ?? new Ctor(4));
-        newDst[0] = a[0] + b[0];
-        newDst[1] = a[1] + b[1];
-        newDst[2] = a[2] + b[2];
-        newDst[3] = a[3] + b[3];
-        return newDst;
+        dst = dst || new VecType(4);
+        dst[0] = a[0] + b[0];
+        dst[1] = a[1] + b[1];
+        dst[2] = a[2] + b[2];
+        dst[3] = a[3] + b[3];
+        return dst;
     }
     /**
      * Adds two vectors, scaling the 2nd; assumes a and b have the same dimension.
@@ -5004,12 +5242,12 @@ function getAPIImpl(Ctor) {
      * @returns A vector that is the sum of a + b * scale.
      */
     function addScaled(a, b, scale, dst) {
-        const newDst = (dst ?? new Ctor(4));
-        newDst[0] = a[0] + b[0] * scale;
-        newDst[1] = a[1] + b[1] * scale;
-        newDst[2] = a[2] + b[2] * scale;
-        newDst[3] = a[3] + b[3] * scale;
-        return newDst;
+        dst = dst || new VecType(4);
+        dst[0] = a[0] + b[0] * scale;
+        dst[1] = a[1] + b[1] * scale;
+        dst[2] = a[2] + b[2] * scale;
+        dst[3] = a[3] + b[3] * scale;
+        return dst;
     }
     /**
      * Subtracts two vectors.
@@ -5019,12 +5257,12 @@ function getAPIImpl(Ctor) {
      * @returns A vector that is the difference of a and b.
      */
     function subtract(a, b, dst) {
-        const newDst = (dst ?? new Ctor(4));
-        newDst[0] = a[0] - b[0];
-        newDst[1] = a[1] - b[1];
-        newDst[2] = a[2] - b[2];
-        newDst[3] = a[3] - b[3];
-        return newDst;
+        dst = dst || new VecType(4);
+        dst[0] = a[0] - b[0];
+        dst[1] = a[1] - b[1];
+        dst[2] = a[2] - b[2];
+        dst[3] = a[3] - b[3];
+        return dst;
     }
     /**
      * Subtracts two vectors.
@@ -5066,12 +5304,12 @@ function getAPIImpl(Ctor) {
      * @returns The linear interpolated result.
      */
     function lerp(a, b, t, dst) {
-        const newDst = (dst ?? new Ctor(4));
-        newDst[0] = a[0] + t * (b[0] - a[0]);
-        newDst[1] = a[1] + t * (b[1] - a[1]);
-        newDst[2] = a[2] + t * (b[2] - a[2]);
-        newDst[3] = a[3] + t * (b[3] - a[3]);
-        return newDst;
+        dst = dst || new VecType(4);
+        dst[0] = a[0] + t * (b[0] - a[0]);
+        dst[1] = a[1] + t * (b[1] - a[1]);
+        dst[2] = a[2] + t * (b[2] - a[2]);
+        dst[3] = a[3] + t * (b[3] - a[3]);
+        return dst;
     }
     /**
      * Performs linear interpolation on two vectors.
@@ -5084,12 +5322,12 @@ function getAPIImpl(Ctor) {
      * @returns the linear interpolated result.
      */
     function lerpV(a, b, t, dst) {
-        const newDst = (dst ?? new Ctor(4));
-        newDst[0] = a[0] + t[0] * (b[0] - a[0]);
-        newDst[1] = a[1] + t[1] * (b[1] - a[1]);
-        newDst[2] = a[2] + t[2] * (b[2] - a[2]);
-        newDst[3] = a[3] + t[3] * (b[3] - a[3]);
-        return newDst;
+        dst = dst || new VecType(4);
+        dst[0] = a[0] + t[0] * (b[0] - a[0]);
+        dst[1] = a[1] + t[1] * (b[1] - a[1]);
+        dst[2] = a[2] + t[2] * (b[2] - a[2]);
+        dst[3] = a[3] + t[3] * (b[3] - a[3]);
+        return dst;
     }
     /**
      * Return max values of two vectors.
@@ -5101,12 +5339,12 @@ function getAPIImpl(Ctor) {
      * @returns The max components vector.
      */
     function max(a, b, dst) {
-        const newDst = (dst ?? new Ctor(4));
-        newDst[0] = Math.max(a[0], b[0]);
-        newDst[1] = Math.max(a[1], b[1]);
-        newDst[2] = Math.max(a[2], b[2]);
-        newDst[3] = Math.max(a[3], b[3]);
-        return newDst;
+        dst = dst || new VecType(4);
+        dst[0] = Math.max(a[0], b[0]);
+        dst[1] = Math.max(a[1], b[1]);
+        dst[2] = Math.max(a[2], b[2]);
+        dst[3] = Math.max(a[3], b[3]);
+        return dst;
     }
     /**
      * Return min values of two vectors.
@@ -5118,12 +5356,12 @@ function getAPIImpl(Ctor) {
      * @returns The min components vector.
      */
     function min(a, b, dst) {
-        const newDst = (dst ?? new Ctor(4));
-        newDst[0] = Math.min(a[0], b[0]);
-        newDst[1] = Math.min(a[1], b[1]);
-        newDst[2] = Math.min(a[2], b[2]);
-        newDst[3] = Math.min(a[3], b[3]);
-        return newDst;
+        dst = dst || new VecType(4);
+        dst[0] = Math.min(a[0], b[0]);
+        dst[1] = Math.min(a[1], b[1]);
+        dst[2] = Math.min(a[2], b[2]);
+        dst[3] = Math.min(a[3], b[3]);
+        return dst;
     }
     /**
      * Multiplies a vector by a scalar.
@@ -5133,12 +5371,12 @@ function getAPIImpl(Ctor) {
      * @returns The scaled vector.
      */
     function mulScalar(v, k, dst) {
-        const newDst = (dst ?? new Ctor(4));
-        newDst[0] = v[0] * k;
-        newDst[1] = v[1] * k;
-        newDst[2] = v[2] * k;
-        newDst[3] = v[3] * k;
-        return newDst;
+        dst = dst || new VecType(4);
+        dst[0] = v[0] * k;
+        dst[1] = v[1] * k;
+        dst[2] = v[2] * k;
+        dst[3] = v[3] * k;
+        return dst;
     }
     /**
      * Multiplies a vector by a scalar. (same as mulScalar)
@@ -5156,12 +5394,12 @@ function getAPIImpl(Ctor) {
      * @returns The scaled vector.
      */
     function divScalar(v, k, dst) {
-        const newDst = (dst ?? new Ctor(4));
-        newDst[0] = v[0] / k;
-        newDst[1] = v[1] / k;
-        newDst[2] = v[2] / k;
-        newDst[3] = v[3] / k;
-        return newDst;
+        dst = dst || new VecType(4);
+        dst[0] = v[0] / k;
+        dst[1] = v[1] / k;
+        dst[2] = v[2] / k;
+        dst[3] = v[3] / k;
+        return dst;
     }
     /**
      * Inverse a vector.
@@ -5170,12 +5408,12 @@ function getAPIImpl(Ctor) {
      * @returns The inverted vector.
      */
     function inverse(v, dst) {
-        const newDst = (dst ?? new Ctor(4));
-        newDst[0] = 1 / v[0];
-        newDst[1] = 1 / v[1];
-        newDst[2] = 1 / v[2];
-        newDst[3] = 1 / v[3];
-        return newDst;
+        dst = dst || new VecType(4);
+        dst[0] = 1 / v[0];
+        dst[1] = 1 / v[1];
+        dst[2] = 1 / v[2];
+        dst[3] = 1 / v[3];
+        return dst;
     }
     /**
      * Invert a vector. (same as inverse)
@@ -5276,25 +5514,25 @@ function getAPIImpl(Ctor) {
      * @returns The normalized vector.
      */
     function normalize(v, dst) {
-        const newDst = (dst ?? new Ctor(4));
+        dst = dst || new VecType(4);
         const v0 = v[0];
         const v1 = v[1];
         const v2 = v[2];
         const v3 = v[3];
         const len = Math.sqrt(v0 * v0 + v1 * v1 + v2 * v2 + v3 * v3);
         if (len > 0.00001) {
-            newDst[0] = v0 / len;
-            newDst[1] = v1 / len;
-            newDst[2] = v2 / len;
-            newDst[3] = v3 / len;
+            dst[0] = v0 / len;
+            dst[1] = v1 / len;
+            dst[2] = v2 / len;
+            dst[3] = v3 / len;
         }
         else {
-            newDst[0] = 0;
-            newDst[1] = 0;
-            newDst[2] = 0;
-            newDst[3] = 0;
+            dst[0] = 0;
+            dst[1] = 0;
+            dst[2] = 0;
+            dst[3] = 0;
         }
-        return newDst;
+        return dst;
     }
     /**
      * Negates a vector.
@@ -5303,12 +5541,12 @@ function getAPIImpl(Ctor) {
      * @returns -v.
      */
     function negate(v, dst) {
-        const newDst = (dst ?? new Ctor(4));
-        newDst[0] = -v[0];
-        newDst[1] = -v[1];
-        newDst[2] = -v[2];
-        newDst[3] = -v[3];
-        return newDst;
+        dst = dst || new VecType(4);
+        dst[0] = -v[0];
+        dst[1] = -v[1];
+        dst[2] = -v[2];
+        dst[3] = -v[3];
+        return dst;
     }
     /**
      * Copies a vector. (same as {@link vec4.clone})
@@ -5318,12 +5556,12 @@ function getAPIImpl(Ctor) {
      * @returns A copy of v.
      */
     function copy(v, dst) {
-        const newDst = (dst ?? new Ctor(4));
-        newDst[0] = v[0];
-        newDst[1] = v[1];
-        newDst[2] = v[2];
-        newDst[3] = v[3];
-        return newDst;
+        dst = dst || new VecType(4);
+        dst[0] = v[0];
+        dst[1] = v[1];
+        dst[2] = v[2];
+        dst[3] = v[3];
+        return dst;
     }
     /**
      * Clones a vector. (same as {@link vec4.copy})
@@ -5342,12 +5580,12 @@ function getAPIImpl(Ctor) {
      * @returns The vector of products of entries of a and b.
      */
     function multiply(a, b, dst) {
-        const newDst = (dst ?? new Ctor(4));
-        newDst[0] = a[0] * b[0];
-        newDst[1] = a[1] * b[1];
-        newDst[2] = a[2] * b[2];
-        newDst[3] = a[3] * b[3];
-        return newDst;
+        dst = dst || new VecType(4);
+        dst[0] = a[0] * b[0];
+        dst[1] = a[1] * b[1];
+        dst[2] = a[2] * b[2];
+        dst[3] = a[3] * b[3];
+        return dst;
     }
     /**
      * Multiplies a vector by another vector (component-wise); assumes a and
@@ -5367,12 +5605,12 @@ function getAPIImpl(Ctor) {
      * @returns The vector of quotients of entries of a and b.
      */
     function divide(a, b, dst) {
-        const newDst = (dst ?? new Ctor(4));
-        newDst[0] = a[0] / b[0];
-        newDst[1] = a[1] / b[1];
-        newDst[2] = a[2] / b[2];
-        newDst[3] = a[3] / b[3];
-        return newDst;
+        dst = dst || new VecType(4);
+        dst[0] = a[0] / b[0];
+        dst[1] = a[1] / b[1];
+        dst[2] = a[2] / b[2];
+        dst[3] = a[3] / b[3];
+        return dst;
     }
     /**
      * Divides a vector by another vector (component-wise); assumes a and
@@ -5389,12 +5627,12 @@ function getAPIImpl(Ctor) {
      * @returns The zeroed vector.
      */
     function zero(dst) {
-        const newDst = (dst ?? new Ctor(4));
-        newDst[0] = 0;
-        newDst[1] = 0;
-        newDst[2] = 0;
-        newDst[3] = 0;
-        return newDst;
+        dst = dst || new VecType(4);
+        dst[0] = 0;
+        dst[1] = 0;
+        dst[2] = 0;
+        dst[3] = 0;
+        return dst;
     }
     /**
      * transform vec4 by 4x4 matrix
@@ -5404,16 +5642,16 @@ function getAPIImpl(Ctor) {
      * @returns the transformed vector
      */
     function transformMat4(v, m, dst) {
-        const newDst = (dst ?? new Ctor(4));
+        dst = dst || new VecType(4);
         const x = v[0];
         const y = v[1];
         const z = v[2];
         const w = v[3];
-        newDst[0] = m[0] * x + m[4] * y + m[8] * z + m[12] * w;
-        newDst[1] = m[1] * x + m[5] * y + m[9] * z + m[13] * w;
-        newDst[2] = m[2] * x + m[6] * y + m[10] * z + m[14] * w;
-        newDst[3] = m[3] * x + m[7] * y + m[11] * z + m[15] * w;
-        return newDst;
+        dst[0] = m[0] * x + m[4] * y + m[8] * z + m[12] * w;
+        dst[1] = m[1] * x + m[5] * y + m[9] * z + m[13] * w;
+        dst[2] = m[2] * x + m[6] * y + m[10] * z + m[14] * w;
+        dst[3] = m[3] * x + m[7] * y + m[11] * z + m[15] * w;
+        return dst;
     }
     /**
      * Treat a 4D vector as a direction and set it's length
@@ -5423,9 +5661,9 @@ function getAPIImpl(Ctor) {
      * @returns The lengthened vector
      */
     function setLength(a, len, dst) {
-        const newDst = (dst ?? new Ctor(4));
-        normalize(a, newDst);
-        return mulScalar(newDst, len, newDst);
+        dst = dst || new VecType(4);
+        normalize(a, dst);
+        return mulScalar(dst, len, dst);
     }
     /**
      * Ensure a vector is not longer than a max length
@@ -5435,11 +5673,11 @@ function getAPIImpl(Ctor) {
      * @returns The vector, shortened to maxLen if it's too long
      */
     function truncate(a, maxLen, dst) {
-        const newDst = (dst ?? new Ctor(4));
+        dst = dst || new VecType(4);
         if (length(a) > maxLen) {
-            return setLength(a, maxLen, newDst);
+            return setLength(a, maxLen, dst);
         }
-        return copy(a, newDst);
+        return copy(a, dst);
     }
     /**
      * Return the vector exactly between 2 endpoint vectors
@@ -5449,146 +5687,87 @@ function getAPIImpl(Ctor) {
      * @returns The vector exactly residing between endpoints 1 and 2
      */
     function midpoint(a, b, dst) {
-        const newDst = (dst ?? new Ctor(4));
-        return lerp(a, b, 0.5, newDst);
+        dst = dst || new VecType(4);
+        return lerp(a, b, 0.5, dst);
     }
-    return {
-        create,
-        fromValues,
-        set,
-        ceil,
-        floor,
-        round,
-        clamp,
-        add,
-        addScaled,
-        subtract,
-        sub,
-        equalsApproximately,
-        equals,
-        lerp,
-        lerpV,
-        max,
-        min,
-        mulScalar,
-        scale,
-        divScalar,
-        inverse,
-        invert,
-        dot,
-        length,
-        len,
-        lengthSq,
-        lenSq,
-        distance,
-        dist,
-        distanceSq,
-        distSq,
-        normalize,
-        negate,
-        copy,
-        clone,
-        multiply,
-        mul,
-        divide,
-        div,
-        zero,
-        transformMat4,
-        setLength,
-        truncate,
-        midpoint,
+
+    var vec4Impl = {
+        __proto__: null,
+        add: add,
+        addScaled: addScaled,
+        ceil: ceil,
+        clamp: clamp,
+        clone: clone,
+        copy: copy,
+        create: create,
+        dist: dist,
+        distSq: distSq,
+        distance: distance,
+        distanceSq: distanceSq,
+        div: div,
+        divScalar: divScalar,
+        divide: divide,
+        dot: dot,
+        equals: equals,
+        equalsApproximately: equalsApproximately,
+        floor: floor,
+        fromValues: fromValues,
+        inverse: inverse,
+        invert: invert,
+        len: len,
+        lenSq: lenSq,
+        length: length,
+        lengthSq: lengthSq,
+        lerp: lerp,
+        lerpV: lerpV,
+        max: max,
+        midpoint: midpoint,
+        min: min,
+        mul: mul,
+        mulScalar: mulScalar,
+        multiply: multiply,
+        negate: negate,
+        normalize: normalize,
+        round: round,
+        scale: scale,
+        set: set,
+        setDefaultType: setDefaultType$1,
+        setLength: setLength,
+        sub: sub,
+        subtract: subtract,
+        transformMat4: transformMat4,
+        truncate: truncate,
+        zero: zero
     };
-}
-const cache = new Map();
-/**
- *
- * Vec4 math functions.
- *
- * Almost all functions take an optional `newDst` argument. If it is not passed in the
- * functions will create a new `Vec4`. In other words you can do this
- *
- *     const v = vec4.cross(v1, v2);  // Creates a new Vec4 with the cross product of v1 x v2.
- *
- * or
- *
- *     const v = vec4.create();
- *     vec4.cross(v1, v2, v);  // Puts the cross product of v1 x v2 in v
- *
- * The first style is often easier but depending on where it's used it generates garbage where
- * as there is almost never allocation with the second style.
- *
- * It is always safe to pass any vector as the destination. So for example
- *
- *     vec4.cross(v1, v2, v1);  // Puts the cross product of v1 x v2 in v1
- *
- */
-function getAPI(Ctor) {
-    let api = cache.get(Ctor);
-    if (!api) {
-        api = getAPIImpl(Ctor);
-        cache.set(Ctor, api);
+
+    /**
+     * Sets the type this library creates for all types
+     *
+     * example:
+     *
+     * ```
+     * setDefaultType(Float64Array);
+     * ```
+     *
+     * @param ctor - the constructor for the type. Either `Float32Array`, `Float64Array`, or `Array`
+     */
+    function setDefaultType(ctor) {
+        setDefaultType$4(ctor);
+        setDefaultType$3(ctor);
+        setDefaultType$2(ctor);
+        setDefaultType$6(ctor);
+        setDefaultType$5(ctor);
+        setDefaultType$1(ctor);
     }
-    return api;
-}
 
-/**
- * Generate wgpu-matrix API for type
- */
-function wgpuMatrixAPI(Mat3Ctor, Mat4Ctor, QuatCtor, Vec2Ctor, Vec3Ctor, Vec4Ctor) {
-    return {
-        /** @namespace mat4 */
-        mat4: getAPI$2(Mat3Ctor),
-        /** @namespace mat3 */
-        mat3: getAPI$4(Mat4Ctor),
-        /** @namespace quat */
-        quat: getAPI$1(QuatCtor),
-        /** @namespace vec2 */
-        vec2: getAPI$5(Vec2Ctor),
-        /** @namespace vec3 */
-        vec3: getAPI$3(Vec3Ctor),
-        /** @namespace vec4 */
-        vec4: getAPI(Vec4Ctor),
-    };
-}
-const { 
-/** @namespace */
-mat4, 
-/** @namespace */
-mat3, 
-/** @namespace */
-quat, 
-/** @namespace */
-vec2, 
-/** @namespace */
-vec3, 
-/** @namespace */
-vec4, } = wgpuMatrixAPI(Float32Array, Float32Array, Float32Array, Float32Array, Float32Array, Float32Array);
-const { 
-/** @namespace */
-mat4: mat4d, 
-/** @namespace */
-mat3: mat3d, 
-/** @namespace */
-quat: quatd, 
-/** @namespace */
-vec2: vec2d, 
-/** @namespace */
-vec3: vec3d, 
-/** @namespace */
-vec4: vec4d, } = wgpuMatrixAPI(Float64Array, Float64Array, Float64Array, Float64Array, Float64Array, Float64Array);
-const { 
-/** @namespace */
-mat4: mat4n, 
-/** @namespace */
-mat3: mat3n, 
-/** @namespace */
-quat: quatn, 
-/** @namespace */
-vec2: vec2n, 
-/** @namespace */
-vec3: vec3n, 
-/** @namespace */
-vec4: vec4n, } = wgpuMatrixAPI(ZeroArray, Array, Array, Array, Array, Array);
+    exports.mat3 = mat3Impl;
+    exports.mat4 = mat4Impl;
+    exports.quat = quatImpl;
+    exports.setDefaultType = setDefaultType;
+    exports.utils = utils;
+    exports.vec2 = vec2Impl;
+    exports.vec3 = vec3Impl;
+    exports.vec4 = vec4Impl;
 
-export { mat3, mat3d, mat3n, mat4, mat4d, mat4n, quat, quatd, quatn, utils, vec2, vec2d, vec2n, vec3, vec3d, vec3n, vec4, vec4d, vec4n };
-//# sourceMappingURL=wgpu-matrix.module.js.map
+}));
+//# sourceMappingURL=wgpu-matrix.js.map
