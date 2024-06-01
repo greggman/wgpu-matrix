@@ -20,13 +20,47 @@
  * DEALINGS IN THE SOFTWARE.
  */
 import * as utils from './utils.js';
-import { Mat3 } from './mat3';
-import { Mat4 } from './mat4';
-import { Vec2, create, setDefaultType, VecType } from './vec2';
-import { Vec3, VecType as Vec3Type } from './vec3';
+import { Mat3Arg } from './mat3';
+import { Mat4Arg } from './mat4';
+import { Vec2Arg, Vec2Type } from './vec2';
+import { Vec3Arg } from './vec3';
+import { BaseArgType } from './types';
 
-export default Vec2;
-export { create, setDefaultType };
+export { Vec2Arg, Vec2Type };
+
+type Vec2Ctor<T extends Vec2Arg = Float32Array>  = new (n: number) => T;
+
+/**
+ * Generates am typed API for Vec3
+ */
+function getAPIImpl<VecType extends Vec2Arg = Float32Array>(Ctor: Vec2Ctor<VecType>) {
+
+/**
+ * Creates a Vec2; may be called with x, y, z to set initial values.
+ *
+ * Note: Since passing in a raw JavaScript array
+ * is valid in all circumstances, if you want to
+ * force a JavaScript array into a Vec2's specified type
+ * it would be faster to use
+ *
+ * ```
+ * const v = vec2.clone(someJSArray);
+ * ```
+ *
+ * @param x - Initial x value.
+ * @param y - Initial y value.
+ * @returns the created vector
+ */
+function create(x = 0, y = 0) {
+  const newDst = new Ctor(2);
+  if (x !== undefined) {
+    newDst[0] = x;
+    if (y !== undefined) {
+      newDst[1] = y;
+    }
+  }
+  return newDst;
+}
 
 /**
  * Creates a Vec2; may be called with x, y, z to set initial values. (same as create)
@@ -34,7 +68,7 @@ export { create, setDefaultType };
  * @param y - Initial y value.
  * @returns the created vector
  */
-export const fromValues = create;
+const fromValues = create;
 
 /**
  * Sets the values of a Vec2
@@ -45,13 +79,13 @@ export const fromValues = create;
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector with its elements set.
  */
-export function set(x: number, y: number, dst?: Vec2) {
-  dst = dst || new VecType(2);
+function set<T extends Vec2Arg = VecType>(x: number, y: number, dst?: T) {
+  const newDst = (dst ?? new Ctor(2)) as T;
 
-  dst[0] = x;
-  dst[1] = y;
+  newDst[0] = x;
+  newDst[1] = y;
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -60,13 +94,13 @@ export function set(x: number, y: number, dst?: Vec2) {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector that is the ceil of each element of v.
  */
-export function ceil(v: Vec2, dst?: Vec2): Vec2 {
-  dst = dst || new VecType(2);
+function ceil<T extends Vec2Arg = VecType>(v: Vec2Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(2)) as T;
 
-  dst[0] = Math.ceil(v[0]);
-  dst[1] = Math.ceil(v[1]);
+  newDst[0] = Math.ceil(v[0]);
+  newDst[1] = Math.ceil(v[1]);
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -75,13 +109,13 @@ export function ceil(v: Vec2, dst?: Vec2): Vec2 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector that is the floor of each element of v.
  */
-export function floor(v: Vec2, dst?: Vec2): Vec2 {
-  dst = dst || new VecType(2);
+function floor<T extends Vec2Arg = VecType>(v: Vec2Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(2)) as T;
 
-  dst[0] = Math.floor(v[0]);
-  dst[1] = Math.floor(v[1]);
+  newDst[0] = Math.floor(v[0]);
+  newDst[1] = Math.floor(v[1]);
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -90,13 +124,13 @@ export function floor(v: Vec2, dst?: Vec2): Vec2 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector that is the round of each element of v.
  */
-export function round(v: Vec2, dst?: Vec2): Vec2 {
-  dst = dst || new VecType(2);
+function round<T extends Vec2Arg = VecType>(v: Vec2Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(2)) as T;
 
-  dst[0] = Math.round(v[0]);
-  dst[1] = Math.round(v[1]);
+  newDst[0] = Math.round(v[0]);
+  newDst[1] = Math.round(v[1]);
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -107,13 +141,13 @@ export function round(v: Vec2, dst?: Vec2): Vec2 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector that the clamped value of each element of v.
  */
-export function clamp(v: Vec2, min = 0, max = 1, dst?: Vec2): Vec2 {
-  dst = dst || new VecType(2);
+function clamp<T extends Vec2Arg = VecType>(v: Vec2Arg, min = 0, max = 1, dst?: T) {
+  const newDst = (dst ?? new Ctor(2)) as T;
 
-  dst[0] = Math.min(max, Math.max(min, v[0]));
-  dst[1] = Math.min(max, Math.max(min, v[1]));
+  newDst[0] = Math.min(max, Math.max(min, v[0]));
+  newDst[1] = Math.min(max, Math.max(min, v[1]));
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -123,13 +157,13 @@ export function clamp(v: Vec2, min = 0, max = 1, dst?: Vec2): Vec2 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector that is the sum of a and b.
  */
-export function add(a: Vec2, b: Vec2, dst?: Vec2): Vec2 {
-  dst = dst || new VecType(2);
+function add<T extends Vec2Arg = VecType>(a: Vec2Arg, b: Vec2Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(2)) as T;
 
-  dst[0] = a[0] + b[0];
-  dst[1] = a[1] + b[1];
+  newDst[0] = a[0] + b[0];
+  newDst[1] = a[1] + b[1];
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -140,13 +174,13 @@ export function add(a: Vec2, b: Vec2, dst?: Vec2): Vec2 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector that is the sum of a + b * scale.
  */
-export function addScaled(a: Vec2, b: Vec2, scale: number, dst?: Vec2) {
-  dst = dst || new VecType(2);
+function addScaled<T extends Vec2Arg = VecType>(a: Vec2Arg, b: Vec2Arg, scale: number, dst?: T) {
+  const newDst = (dst ?? new Ctor(2)) as T;
 
-  dst[0] = a[0] + b[0] * scale;
-  dst[1] = a[1] + b[1] * scale;
+  newDst[0] = a[0] + b[0] * scale;
+  newDst[1] = a[1] + b[1] * scale;
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -155,7 +189,7 @@ export function addScaled(a: Vec2, b: Vec2, scale: number, dst?: Vec2) {
  * @param b - Operand vector.
  * @returns The angle in radians between the 2 vectors.
  */
-export function angle(a: Vec2, b: Vec2): number {
+function angle(a: Vec2Arg, b: Vec2Arg): number {
   const ax = a[0];
   const ay = a[1];
   const bx = b[0];
@@ -174,13 +208,13 @@ export function angle(a: Vec2, b: Vec2): number {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector that is the difference of a and b.
  */
-export function subtract(a: Vec2, b: Vec2, dst?: Vec2): Vec2 {
-  dst = dst || new VecType(2);
+function subtract<T extends Vec2Arg = VecType>(a: Vec2Arg, b: Vec2Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(2)) as T;
 
-  dst[0] = a[0] - b[0];
-  dst[1] = a[1] - b[1];
+  newDst[0] = a[0] - b[0];
+  newDst[1] = a[1] - b[1];
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -190,7 +224,7 @@ export function subtract(a: Vec2, b: Vec2, dst?: Vec2): Vec2 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector that is the difference of a and b.
  */
-export const sub = subtract;
+const sub = subtract;
 
 /**
  * Check if 2 vectors are approximately equal
@@ -198,7 +232,7 @@ export const sub = subtract;
  * @param b - Operand vector.
  * @returns true if vectors are approximately equal
  */
-export function equalsApproximately(a: Vec2, b: Vec2): boolean {
+function equalsApproximately(a: Vec2Arg, b: Vec2Arg): boolean {
   return Math.abs(a[0] - b[0]) < utils.EPSILON &&
          Math.abs(a[1] - b[1]) < utils.EPSILON;
 }
@@ -209,7 +243,7 @@ export function equalsApproximately(a: Vec2, b: Vec2): boolean {
  * @param b - Operand vector.
  * @returns true if vectors are exactly equal
  */
-export function equals(a: Vec2, b: Vec2): boolean {
+function equals(a: Vec2Arg, b: Vec2Arg): boolean {
   return a[0] === b[0] && a[1] === b[1];
 }
 
@@ -223,13 +257,13 @@ export function equals(a: Vec2, b: Vec2): boolean {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The linear interpolated result.
  */
-export function lerp(a: Vec2, b: Vec2, t: number, dst?: Vec2): Vec2 {
-  dst = dst || new VecType(2);
+function lerp<T extends Vec2Arg = VecType>(a: Vec2Arg, b: Vec2Arg, t: number, dst?: T) {
+  const newDst = (dst ?? new Ctor(2)) as T;
 
-  dst[0] = a[0] + t * (b[0] - a[0]);
-  dst[1] = a[1] + t * (b[1] - a[1]);
+  newDst[0] = a[0] + t * (b[0] - a[0]);
+  newDst[1] = a[1] + t * (b[1] - a[1]);
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -242,13 +276,13 @@ export function lerp(a: Vec2, b: Vec2, t: number, dst?: Vec2): Vec2 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns the linear interpolated result.
  */
-export function lerpV(a: Vec2, b: Vec2, t: Vec2, dst?: Vec2): Vec2 {
-  dst = dst || new VecType(2);
+function lerpV<T extends Vec2Arg = VecType>(a: Vec2Arg, b: Vec2Arg, t: Vec2Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(2)) as T;
 
-  dst[0] = a[0] + t[0] * (b[0] - a[0]);
-  dst[1] = a[1] + t[1] * (b[1] - a[1]);
+  newDst[0] = a[0] + t[0] * (b[0] - a[0]);
+  newDst[1] = a[1] + t[1] * (b[1] - a[1]);
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -260,13 +294,13 @@ export function lerpV(a: Vec2, b: Vec2, t: Vec2, dst?: Vec2): Vec2 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The max components vector.
  */
-export function max(a: Vec2, b: Vec2, dst?: Vec2): Vec2 {
-  dst = dst || new VecType(2);
+function max<T extends Vec2Arg = VecType>(a: Vec2Arg, b: Vec2Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(2)) as T;
 
-  dst[0] = Math.max(a[0], b[0]);
-  dst[1] = Math.max(a[1], b[1]);
+  newDst[0] = Math.max(a[0], b[0]);
+  newDst[1] = Math.max(a[1], b[1]);
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -278,13 +312,13 @@ export function max(a: Vec2, b: Vec2, dst?: Vec2): Vec2 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The min components vector.
  */
-export function min(a: Vec2, b: Vec2, dst?: Vec2): Vec2 {
-  dst = dst || new VecType(2);
+function min<T extends Vec2Arg = VecType>(a: Vec2Arg, b: Vec2Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(2)) as T;
 
-  dst[0] = Math.min(a[0], b[0]);
-  dst[1] = Math.min(a[1], b[1]);
+  newDst[0] = Math.min(a[0], b[0]);
+  newDst[1] = Math.min(a[1], b[1]);
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -294,13 +328,13 @@ export function min(a: Vec2, b: Vec2, dst?: Vec2): Vec2 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The scaled vector.
  */
-export function mulScalar(v: Vec2, k: number, dst?: Vec2): Vec2 {
-  dst = dst || new VecType(2);
+function mulScalar<T extends Vec2Arg = VecType>(v: Vec2Arg, k: number, dst?: T) {
+  const newDst = (dst ?? new Ctor(2)) as T;
 
-  dst[0] = v[0] * k;
-  dst[1] = v[1] * k;
+  newDst[0] = v[0] * k;
+  newDst[1] = v[1] * k;
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -310,7 +344,7 @@ export function mulScalar(v: Vec2, k: number, dst?: Vec2): Vec2 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The scaled vector.
  */
-export const scale = mulScalar;
+const scale = mulScalar;
 
 /**
  * Divides a vector by a scalar.
@@ -319,13 +353,13 @@ export const scale = mulScalar;
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The scaled vector.
  */
-export function divScalar(v: Vec2, k: number, dst?: Vec2): Vec2 {
-  dst = dst || new VecType(2);
+function divScalar<T extends Vec2Arg = VecType>(v: Vec2Arg, k: number, dst?: T) {
+  const newDst = (dst ?? new Ctor(2)) as T;
 
-  dst[0] = v[0] / k;
-  dst[1] = v[1] / k;
+  newDst[0] = v[0] / k;
+  newDst[1] = v[1] / k;
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -334,13 +368,13 @@ export function divScalar(v: Vec2, k: number, dst?: Vec2): Vec2 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The inverted vector.
  */
-export function inverse(v: Vec2, dst?: Vec2): Vec2 {
-  dst = dst || new VecType(2);
+function inverse<T extends Vec2Arg = VecType>(v: Vec2Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(2)) as T;
 
-  dst[0] = 1 / v[0];
-  dst[1] = 1 / v[1];
+  newDst[0] = 1 / v[0];
+  newDst[1] = 1 / v[1];
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -349,7 +383,7 @@ export function inverse(v: Vec2, dst?: Vec2): Vec2 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The inverted vector.
  */
-export const invert = inverse;
+const invert = inverse;
 
 /**
  * Computes the cross product of two vectors; assumes both vectors have
@@ -359,14 +393,14 @@ export const invert = inverse;
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The vector of a cross b.
  */
-export function cross(a: Vec2, b: Vec2, dst?: Vec3): Vec3 {
-  dst = dst || new Vec3Type(3);
+function cross<T extends Vec3Arg = VecType>(a: Vec2Arg, b: Vec2Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(3)) as T;
   const z = a[0] * b[1] - a[1] * b[0];
-  dst[0] = 0;
-  dst[1] = 0;
-  dst[2] = z;
+  newDst[0] = 0;
+  newDst[1] = 0;
+  newDst[2] = z;
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -376,7 +410,7 @@ export function cross(a: Vec2, b: Vec2, dst?: Vec3): Vec3 {
  * @param b - Operand vector.
  * @returns dot product
  */
-export function dot(a: Vec2, b: Vec2): number {
+function dot(a: Vec2Arg, b: Vec2Arg): number {
   return a[0] * b[0] + a[1] * b[1];
 }
 
@@ -385,7 +419,7 @@ export function dot(a: Vec2, b: Vec2): number {
  * @param v - vector.
  * @returns length of vector.
  */
-export function length(v: Vec2): number {
+function length(v: Vec2Arg): number {
   const v0 = v[0];
   const v1 = v[1];
   return Math.sqrt(v0 * v0 + v1 * v1);
@@ -396,14 +430,14 @@ export function length(v: Vec2): number {
  * @param v - vector.
  * @returns length of vector.
  */
-export const len = length;
+const len = length;
 
 /**
  * Computes the square of the length of vector
  * @param v - vector.
  * @returns square of the length of vector.
  */
-export function lengthSq(v: Vec2): number {
+function lengthSq(v: Vec2Arg): number {
   const v0 = v[0];
   const v1 = v[1];
   return v0 * v0 + v1 * v1;
@@ -414,7 +448,7 @@ export function lengthSq(v: Vec2): number {
  * @param v - vector.
  * @returns square of the length of vector.
  */
-export const lenSq = lengthSq;
+const lenSq = lengthSq;
 
 /**
  * Computes the distance between 2 points
@@ -422,7 +456,7 @@ export const lenSq = lengthSq;
  * @param b - vector.
  * @returns distance between a and b
  */
-export function distance(a: Vec2, b: Vec2): number {
+function distance(a: Vec2Arg, b: Vec2Arg): number {
   const dx = a[0] - b[0];
   const dy = a[1] - b[1];
   return Math.sqrt(dx * dx + dy * dy);
@@ -434,7 +468,7 @@ export function distance(a: Vec2, b: Vec2): number {
  * @param b - vector.
  * @returns distance between a and b
  */
-export const dist = distance;
+const dist = distance;
 
 /**
  * Computes the square of the distance between 2 points
@@ -442,7 +476,7 @@ export const dist = distance;
  * @param b - vector.
  * @returns square of the distance between a and b
  */
-export function distanceSq(a: Vec2, b: Vec2): number {
+function distanceSq(a: Vec2Arg, b: Vec2Arg): number {
   const dx = a[0] - b[0];
   const dy = a[1] - b[1];
   return dx * dx + dy * dy;
@@ -454,7 +488,7 @@ export function distanceSq(a: Vec2, b: Vec2): number {
  * @param b - vector.
  * @returns square of the distance between a and b
  */
-export const distSq = distanceSq;
+const distSq = distanceSq;
 
 /**
  * Divides a vector by its Euclidean length and returns the quotient.
@@ -462,22 +496,22 @@ export const distSq = distanceSq;
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The normalized vector.
  */
-export function normalize(v: Vec2, dst?: Vec2): Vec2 {
-  dst = dst || new VecType(2);
+function normalize<T extends Vec2Arg = VecType>(v: Vec2Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(2)) as T;
 
   const v0 = v[0];
   const v1 = v[1];
   const len = Math.sqrt(v0 * v0 + v1 * v1);
 
   if (len > 0.00001) {
-    dst[0] = v0 / len;
-    dst[1] = v1 / len;
+    newDst[0] = v0 / len;
+    newDst[1] = v1 / len;
   } else {
-    dst[0] = 0;
-    dst[1] = 0;
+    newDst[0] = 0;
+    newDst[1] = 0;
   }
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -486,13 +520,13 @@ export function normalize(v: Vec2, dst?: Vec2): Vec2 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns -v.
  */
-export function negate(v: Vec2, dst?: Vec2): Vec2 {
-  dst = dst || new VecType(2);
+function negate<T extends Vec2Arg = VecType>(v: Vec2Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(2)) as T;
 
-  dst[0] = -v[0];
-  dst[1] = -v[1];
+  newDst[0] = -v[0];
+  newDst[1] = -v[1];
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -502,13 +536,13 @@ export function negate(v: Vec2, dst?: Vec2): Vec2 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A copy of v.
  */
-export function copy(v: Vec2, dst?: Vec2): Vec2 {
-  dst = dst || new VecType(2);
+function copy<T extends Vec2Arg = VecType>(v: Vec2Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(2)) as T;
 
-  dst[0] = v[0];
-  dst[1] = v[1];
+  newDst[0] = v[0];
+  newDst[1] = v[1];
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -518,7 +552,7 @@ export function copy(v: Vec2, dst?: Vec2): Vec2 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A copy of v.
  */
-export const clone = copy;
+const clone = copy;
 
 /**
  * Multiplies a vector by another vector (component-wise); assumes a and
@@ -528,13 +562,13 @@ export const clone = copy;
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The vector of products of entries of a and b.
  */
-export function multiply(a: Vec2, b: Vec2, dst?: Vec2) {
-  dst = dst || new VecType(2);
+function multiply<T extends Vec2Arg = VecType>(a: Vec2Arg, b: Vec2Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(2)) as T;
 
-  dst[0] = a[0] * b[0];
-  dst[1] = a[1] * b[1];
+  newDst[0] = a[0] * b[0];
+  newDst[1] = a[1] * b[1];
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -545,7 +579,7 @@ export function multiply(a: Vec2, b: Vec2, dst?: Vec2) {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The vector of products of entries of a and b.
  */
-export const mul = multiply;
+const mul = multiply;
 
 /**
  * Divides a vector by another vector (component-wise); assumes a and
@@ -555,13 +589,13 @@ export const mul = multiply;
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The vector of quotients of entries of a and b.
  */
-export function divide(a: Vec2, b: Vec2, dst?: Vec2): Vec2 {
-  dst = dst || new VecType(2);
+function divide<T extends Vec2Arg = VecType>(a: Vec2Arg, b: Vec2Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(2)) as T;
 
-  dst[0] = a[0] / b[0];
-  dst[1] = a[1] / b[1];
+  newDst[0] = a[0] / b[0];
+  newDst[1] = a[1] / b[1];
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -572,7 +606,7 @@ export function divide(a: Vec2, b: Vec2, dst?: Vec2): Vec2 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The vector of quotients of entries of a and b.
  */
-export const div = divide;
+const div = divide;
 
 /**
  * Creates a random unit vector * scale
@@ -580,14 +614,14 @@ export const div = divide;
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The random vector.
  */
-export function random(scale = 1, dst?: Vec2): Vec2 {
-  dst = dst || new VecType(2);
+function random<T extends Vec2Arg = VecType>(scale = 1, dst?: T) {
+  const newDst = (dst ?? new Ctor(2)) as T;
 
   const angle = Math.random() * 2 * Math.PI;
-  dst[0] = Math.cos(angle) * scale;
-  dst[1] = Math.sin(angle) * scale;
+  newDst[0] = Math.cos(angle) * scale;
+  newDst[1] = Math.sin(angle) * scale;
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -595,13 +629,13 @@ export function random(scale = 1, dst?: Vec2): Vec2 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The zeroed vector.
  */
-export function zero(dst?: Vec2): Vec2 {
-  dst = dst || new VecType(2);
+function zero<T extends Vec2Arg = VecType>(dst?: T) {
+  const newDst = (dst ?? new Ctor(2)) as T;
 
-  dst[0] = 0;
-  dst[1] = 0;
+  newDst[0] = 0;
+  newDst[1] = 0;
 
-  return dst;
+  return newDst;
 }
 
 
@@ -612,16 +646,16 @@ export function zero(dst?: Vec2): Vec2 {
  * @param dst - optional Vec2 to store result. If not passed a new one is created.
  * @returns the transformed vector
  */
-export function transformMat4(v: Vec2, m: Mat4, dst?: Vec2): Vec2 {
-  dst = dst || new VecType(2);
+function transformMat4<T extends Vec2Arg = VecType>(v: Vec2Arg, m: Mat4Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(2)) as T;
 
   const x = v[0];
   const y = v[1];
 
-  dst[0] = x * m[0] + y * m[4] + m[12];
-  dst[1] = x * m[1] + y * m[5] + m[13];
+  newDst[0] = x * m[0] + y * m[4] + m[12];
+  newDst[1] = x * m[1] + y * m[5] + m[13];
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -632,16 +666,16 @@ export function transformMat4(v: Vec2, m: Mat4, dst?: Vec2): Vec2 {
  * @param dst - optional Vec2 to store result. If not passed a new one is created.
  * @returns the transformed vector
  */
-export function transformMat3(v: Vec2, m: Mat3, dst?: Vec2): Vec2 {
-  dst = dst || new VecType(2);
+function transformMat3<T extends Vec2Arg = VecType>(v: Vec2Arg, m: Mat3Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(2)) as T;
 
   const x = v[0];
   const y = v[1];
 
-  dst[0] = m[0] * x + m[4] * y + m[8];
-  dst[1] = m[1] * x + m[5] * y + m[9];
+  newDst[0] = m[0] * x + m[4] * y + m[8];
+  newDst[1] = m[1] * x + m[5] * y + m[9];
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -652,8 +686,8 @@ export function transformMat3(v: Vec2, m: Mat3, dst?: Vec2): Vec2 {
  * @param rad The angle of rotation in radians
  * @returns the rotated vector
  */
-export function rotate(a: Vec2, b: Vec2, rad: number, dst?: Vec2) {
-  dst = dst || new VecType(2);
+function rotate<T extends Vec2Arg = VecType>(a: Vec2Arg, b: Vec2Arg, rad: number, dst?: T) {
+  const newDst = (dst ?? new Ctor(2)) as T;
 
   // Translate point to the origin
   const p0 = a[0] - b[0];
@@ -662,10 +696,10 @@ export function rotate(a: Vec2, b: Vec2, rad: number, dst?: Vec2) {
   const cosC = Math.cos(rad);
 
   //perform rotation and translate to correct position
-  dst[0] = p0 * cosC - p1 * sinC + b[0];
-  dst[1] = p0 * sinC + p1 * cosC + b[1];
+  newDst[0] = p0 * cosC - p1 * sinC + b[0];
+  newDst[1] = p0 * sinC + p1 * cosC + b[1];
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -675,10 +709,10 @@ export function rotate(a: Vec2, b: Vec2, rad: number, dst?: Vec2) {
  * @param len The length of the resulting vector
  * @returns The lengthened vector
  */
-export function setLength(a: Vec2, len: number, dst?: Vec2) {
-  dst = dst || new VecType(2);
-  normalize(a, dst);
-  return mulScalar(dst, len, dst);
+function setLength<T extends Vec2Arg = VecType>(a: Vec2Arg, len: number, dst?: T) {
+  const newDst = (dst ?? new Ctor(2)) as T;
+  normalize(a, newDst);
+  return mulScalar(newDst, len, newDst);
 }
 
 /**
@@ -688,14 +722,14 @@ export function setLength(a: Vec2, len: number, dst?: Vec2) {
  * @param maxLen The longest length of the resulting vector
  * @returns The vector, shortened to maxLen if it's too long
  */
-export function truncate(a: Vec2, maxLen: number, dst?: Vec2) {
-  dst = dst || new VecType(2);
+function truncate<T extends Vec2Arg = VecType>(a: Vec2Arg, maxLen: number, dst?: T) {
+  const newDst = (dst ?? new Ctor(2)) as T;
 
   if (length(a) > maxLen) {
-    return setLength(a, maxLen, dst);
+    return setLength(a, maxLen, newDst);
   }
 
-  return copy(a, dst);
+  return copy(a, newDst);
 }
 
 /**
@@ -705,7 +739,73 @@ export function truncate(a: Vec2, maxLen: number, dst?: Vec2) {
  * @param b Endpoint 2
  * @returns The vector exactly residing between endpoints 1 and 2
  */
-export function midpoint(a: Vec2, b: Vec2, dst?: Vec2) {
-  dst = dst || new VecType(2);
-  return lerp(a, b, 0.5, dst);
+function midpoint<T extends Vec2Arg = VecType>(a: Vec2Arg, b: Vec2Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(2)) as T;
+  return lerp(a, b, 0.5, newDst);
+}
+
+return {
+  create,
+  fromValues,
+  set,
+  ceil,
+  floor,
+  round,
+  clamp,
+  add,
+  addScaled,
+  angle,
+  subtract,
+  sub,
+  equalsApproximately,
+  equals,
+  lerp,
+  lerpV,
+  max,
+  min,
+  mulScalar,
+  scale,
+  divScalar,
+  inverse,
+  invert,
+  cross,
+  dot,
+  length,
+  len,
+  lengthSq,
+  lenSq,
+  distance,
+  dist,
+  distanceSq,
+  distSq,
+  normalize,
+  negate,
+  copy,
+  clone,
+  multiply,
+  mul,
+  divide,
+  div,
+  random,
+  zero,
+  transformMat4,
+  transformMat3,
+  rotate,
+  setLength,
+  truncate,
+  midpoint,
+};
+}
+
+type API<T extends BaseArgType = Float32Array> = ReturnType<typeof getAPIImpl<T>>;
+
+const cache = new Map();
+
+export function getAPI<T extends Vec2Arg = Float32Array>(Ctor: Vec2Ctor<T>) {
+  let api = cache.get(Ctor);
+  if (!api) {
+    api = getAPIImpl<T>(Ctor);
+    cache.set(Ctor, api);
+  }
+  return api as API<T>;
 }

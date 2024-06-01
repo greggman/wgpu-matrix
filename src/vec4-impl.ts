@@ -20,11 +20,43 @@
  * DEALINGS IN THE SOFTWARE.
  */
 import * as utils from './utils.js';
-import { Vec4, create, setDefaultType, VecType } from './vec4';
-import { Mat4 } from './mat4';
+import { Vec4Arg, Vec4Type } from './vec4';
+import { Mat4Arg } from './mat4';
+import { BaseArgType } from './types';
 
-export default Vec4;
-export { create, setDefaultType };
+export { Vec4Arg, Vec4Type };
+
+type Vec4Ctor<T extends Vec4Arg = Float32Array>  = new (n: number) => T;
+
+/**
+ * Generates am typed API for Vec4
+ * */
+function getAPIImpl<VecType extends Vec4Arg = Float32Array>(Ctor: Vec4Ctor<VecType>) {
+
+/**
+ * Creates a vec4; may be called with x, y, z to set initial values.
+ * @param x - Initial x value.
+ * @param y - Initial y value.
+ * @param z - Initial z value.
+ * @param w - Initial w value.
+ * @returns the created vector
+ */
+function create(x?: number, y?: number, z?: number, w?: number) {
+  const newDst = new Ctor(4);
+  if (x !== undefined) {
+    newDst[0] = x;
+    if (y !== undefined) {
+      newDst[1] = y;
+      if (z !== undefined) {
+        newDst[2] = z;
+        if (w !== undefined) {
+          newDst[3] = w;
+        }
+      }
+    }
+  }
+  return newDst;
+}
 
 /**
  * Creates a vec4; may be called with x, y, z to set initial values. (same as create)
@@ -34,7 +66,7 @@ export { create, setDefaultType };
  * @param z - Initial w value.
  * @returns the created vector
  */
-export const fromValues = create;
+const fromValues = create;
 
 /**
  * Sets the values of a Vec4
@@ -47,15 +79,15 @@ export const fromValues = create;
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector with its elements set.
  */
-export function set(x: number, y: number, z: number, w: number, dst?: Vec4) {
-  dst = dst || new VecType(4);
+function set<T extends Vec4Arg = VecType>(x: number, y: number, z: number, w: number, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
-  dst[0] = x;
-  dst[1] = y;
-  dst[2] = z;
-  dst[3] = w;
+  newDst[0] = x;
+  newDst[1] = y;
+  newDst[2] = z;
+  newDst[3] = w;
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -64,15 +96,15 @@ export function set(x: number, y: number, z: number, w: number, dst?: Vec4) {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector that is the ceil of each element of v.
  */
-export function ceil(v: Vec4, dst?: Vec4): Vec4 {
-  dst = dst || new VecType(4);
+function ceil<T extends Vec4Arg = VecType>(v: Vec4Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
-  dst[0] = Math.ceil(v[0]);
-  dst[1] = Math.ceil(v[1]);
-  dst[2] = Math.ceil(v[2]);
-  dst[3] = Math.ceil(v[3]);
+  newDst[0] = Math.ceil(v[0]);
+  newDst[1] = Math.ceil(v[1]);
+  newDst[2] = Math.ceil(v[2]);
+  newDst[3] = Math.ceil(v[3]);
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -81,15 +113,15 @@ export function ceil(v: Vec4, dst?: Vec4): Vec4 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector that is the floor of each element of v.
  */
-export function floor(v: Vec4, dst?: Vec4): Vec4 {
-  dst = dst || new VecType(4);
+function floor<T extends Vec4Arg = VecType>(v: Vec4Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
-  dst[0] = Math.floor(v[0]);
-  dst[1] = Math.floor(v[1]);
-  dst[2] = Math.floor(v[2]);
-  dst[3] = Math.floor(v[3]);
+  newDst[0] = Math.floor(v[0]);
+  newDst[1] = Math.floor(v[1]);
+  newDst[2] = Math.floor(v[2]);
+  newDst[3] = Math.floor(v[3]);
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -98,15 +130,15 @@ export function floor(v: Vec4, dst?: Vec4): Vec4 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector that is the round of each element of v.
  */
-export function round(v: Vec4, dst?: Vec4): Vec4 {
-  dst = dst || new VecType(4);
+function round<T extends Vec4Arg = VecType>(v: Vec4Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
-  dst[0] = Math.round(v[0]);
-  dst[1] = Math.round(v[1]);
-  dst[2] = Math.round(v[2]);
-  dst[3] = Math.round(v[3]);
+  newDst[0] = Math.round(v[0]);
+  newDst[1] = Math.round(v[1]);
+  newDst[2] = Math.round(v[2]);
+  newDst[3] = Math.round(v[3]);
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -117,15 +149,15 @@ export function round(v: Vec4, dst?: Vec4): Vec4 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector that the clamped value of each element of v.
  */
-export function clamp(v: Vec4, min = 0, max = 1, dst?: Vec4): Vec4 {
-  dst = dst || new VecType(4);
+function clamp<T extends Vec4Arg = VecType>(v: Vec4Arg, min = 0, max = 1, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
-  dst[0] = Math.min(max, Math.max(min, v[0]));
-  dst[1] = Math.min(max, Math.max(min, v[1]));
-  dst[2] = Math.min(max, Math.max(min, v[2]));
-  dst[3] = Math.min(max, Math.max(min, v[3]));
+  newDst[0] = Math.min(max, Math.max(min, v[0]));
+  newDst[1] = Math.min(max, Math.max(min, v[1]));
+  newDst[2] = Math.min(max, Math.max(min, v[2]));
+  newDst[3] = Math.min(max, Math.max(min, v[3]));
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -135,15 +167,15 @@ export function clamp(v: Vec4, min = 0, max = 1, dst?: Vec4): Vec4 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector that is the sum of a and b.
  */
-export function add(a: Vec4, b: Vec4, dst?: Vec4): Vec4 {
-  dst = dst || new VecType(4);
+function add<T extends Vec4Arg = VecType>(a: Vec4Arg, b: Vec4Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
-  dst[0] = a[0] + b[0];
-  dst[1] = a[1] + b[1];
-  dst[2] = a[2] + b[2];
-  dst[3] = a[3] + b[3];
+  newDst[0] = a[0] + b[0];
+  newDst[1] = a[1] + b[1];
+  newDst[2] = a[2] + b[2];
+  newDst[3] = a[3] + b[3];
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -154,15 +186,15 @@ export function add(a: Vec4, b: Vec4, dst?: Vec4): Vec4 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector that is the sum of a + b * scale.
  */
-export function addScaled(a: Vec4, b: Vec4, scale: number, dst?: Vec4): Vec4 {
-  dst = dst || new VecType(4);
+function addScaled<T extends Vec4Arg = VecType>(a: Vec4Arg, b: Vec4Arg, scale: number, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
-  dst[0] = a[0] + b[0] * scale;
-  dst[1] = a[1] + b[1] * scale;
-  dst[2] = a[2] + b[2] * scale;
-  dst[3] = a[3] + b[3] * scale;
+  newDst[0] = a[0] + b[0] * scale;
+  newDst[1] = a[1] + b[1] * scale;
+  newDst[2] = a[2] + b[2] * scale;
+  newDst[3] = a[3] + b[3] * scale;
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -172,15 +204,15 @@ export function addScaled(a: Vec4, b: Vec4, scale: number, dst?: Vec4): Vec4 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector that is the difference of a and b.
  */
-export function subtract(a: Vec4, b: Vec4, dst?: Vec4): Vec4 {
-  dst = dst || new VecType(4);
+function subtract<T extends Vec4Arg = VecType>(a: Vec4Arg, b: Vec4Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
-  dst[0] = a[0] - b[0];
-  dst[1] = a[1] - b[1];
-  dst[2] = a[2] - b[2];
-  dst[3] = a[3] - b[3];
+  newDst[0] = a[0] - b[0];
+  newDst[1] = a[1] - b[1];
+  newDst[2] = a[2] - b[2];
+  newDst[3] = a[3] - b[3];
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -190,7 +222,7 @@ export function subtract(a: Vec4, b: Vec4, dst?: Vec4): Vec4 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A vector that is the difference of a and b.
  */
-export const sub = subtract;
+const sub = subtract;
 
 /**
  * Check if 2 vectors are approximately equal
@@ -198,7 +230,7 @@ export const sub = subtract;
  * @param b - Operand vector.
  * @returns true if vectors are approximately equal
  */
-export function equalsApproximately(a: Vec4, b: Vec4): boolean {
+function equalsApproximately(a: Vec4Arg, b: Vec4Arg): boolean {
   return Math.abs(a[0] - b[0]) < utils.EPSILON &&
          Math.abs(a[1] - b[1]) < utils.EPSILON &&
          Math.abs(a[2] - b[2]) < utils.EPSILON &&
@@ -211,7 +243,7 @@ export function equalsApproximately(a: Vec4, b: Vec4): boolean {
  * @param b - Operand vector.
  * @returns true if vectors are exactly equal
  */
-export function equals(a: Vec4, b: Vec4): boolean {
+function equals(a: Vec4Arg, b: Vec4Arg): boolean {
   return a[0] === b[0] && a[1] === b[1] && a[2] === b[2] && a[3] === b[3];
 }
 
@@ -225,15 +257,15 @@ export function equals(a: Vec4, b: Vec4): boolean {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The linear interpolated result.
  */
-export function lerp(a: Vec4, b: Vec4, t: number, dst?: Vec4): Vec4 {
-  dst = dst || new VecType(4);
+function lerp<T extends Vec4Arg = VecType>(a: Vec4Arg, b: Vec4Arg, t: number, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
-  dst[0] = a[0] + t * (b[0] - a[0]);
-  dst[1] = a[1] + t * (b[1] - a[1]);
-  dst[2] = a[2] + t * (b[2] - a[2]);
-  dst[3] = a[3] + t * (b[3] - a[3]);
+  newDst[0] = a[0] + t * (b[0] - a[0]);
+  newDst[1] = a[1] + t * (b[1] - a[1]);
+  newDst[2] = a[2] + t * (b[2] - a[2]);
+  newDst[3] = a[3] + t * (b[3] - a[3]);
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -246,15 +278,15 @@ export function lerp(a: Vec4, b: Vec4, t: number, dst?: Vec4): Vec4 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns the linear interpolated result.
  */
-export function lerpV(a: Vec4, b: Vec4, t: Vec4, dst?: Vec4): Vec4 {
-  dst = dst || new VecType(4);
+function lerpV<T extends Vec4Arg = VecType>(a: Vec4Arg, b: Vec4Arg, t: Vec4Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
-  dst[0] = a[0] + t[0] * (b[0] - a[0]);
-  dst[1] = a[1] + t[1] * (b[1] - a[1]);
-  dst[2] = a[2] + t[2] * (b[2] - a[2]);
-  dst[3] = a[3] + t[3] * (b[3] - a[3]);
+  newDst[0] = a[0] + t[0] * (b[0] - a[0]);
+  newDst[1] = a[1] + t[1] * (b[1] - a[1]);
+  newDst[2] = a[2] + t[2] * (b[2] - a[2]);
+  newDst[3] = a[3] + t[3] * (b[3] - a[3]);
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -266,15 +298,15 @@ export function lerpV(a: Vec4, b: Vec4, t: Vec4, dst?: Vec4): Vec4 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The max components vector.
  */
-export function max(a: Vec4, b: Vec4, dst?: Vec4): Vec4 {
-  dst = dst || new VecType(4);
+function max<T extends Vec4Arg = VecType>(a: Vec4Arg, b: Vec4Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
-  dst[0] = Math.max(a[0], b[0]);
-  dst[1] = Math.max(a[1], b[1]);
-  dst[2] = Math.max(a[2], b[2]);
-  dst[3] = Math.max(a[3], b[3]);
+  newDst[0] = Math.max(a[0], b[0]);
+  newDst[1] = Math.max(a[1], b[1]);
+  newDst[2] = Math.max(a[2], b[2]);
+  newDst[3] = Math.max(a[3], b[3]);
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -286,15 +318,15 @@ export function max(a: Vec4, b: Vec4, dst?: Vec4): Vec4 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The min components vector.
  */
-export function min(a: Vec4, b: Vec4, dst?: Vec4): Vec4 {
-  dst = dst || new VecType(4);
+function min<T extends Vec4Arg = VecType>(a: Vec4Arg, b: Vec4Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
-  dst[0] = Math.min(a[0], b[0]);
-  dst[1] = Math.min(a[1], b[1]);
-  dst[2] = Math.min(a[2], b[2]);
-  dst[3] = Math.min(a[3], b[3]);
+  newDst[0] = Math.min(a[0], b[0]);
+  newDst[1] = Math.min(a[1], b[1]);
+  newDst[2] = Math.min(a[2], b[2]);
+  newDst[3] = Math.min(a[3], b[3]);
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -304,15 +336,15 @@ export function min(a: Vec4, b: Vec4, dst?: Vec4): Vec4 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The scaled vector.
  */
-export function mulScalar(v: Vec4, k: number, dst?: Vec4): Vec4 {
-  dst = dst || new VecType(4);
+function mulScalar<T extends Vec4Arg = VecType>(v: Vec4Arg, k: number, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
-  dst[0] = v[0] * k;
-  dst[1] = v[1] * k;
-  dst[2] = v[2] * k;
-  dst[3] = v[3] * k;
+  newDst[0] = v[0] * k;
+  newDst[1] = v[1] * k;
+  newDst[2] = v[2] * k;
+  newDst[3] = v[3] * k;
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -322,7 +354,7 @@ export function mulScalar(v: Vec4, k: number, dst?: Vec4): Vec4 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The scaled vector.
  */
-export const scale = mulScalar;
+const scale = mulScalar;
 
 /**
  * Divides a vector by a scalar.
@@ -331,15 +363,15 @@ export const scale = mulScalar;
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The scaled vector.
  */
-export function divScalar(v: Vec4, k: number, dst?: Vec4): Vec4 {
-  dst = dst || new VecType(4);
+function divScalar<T extends Vec4Arg = VecType>(v: Vec4Arg, k: number, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
-  dst[0] = v[0] / k;
-  dst[1] = v[1] / k;
-  dst[2] = v[2] / k;
-  dst[3] = v[3] / k;
+  newDst[0] = v[0] / k;
+  newDst[1] = v[1] / k;
+  newDst[2] = v[2] / k;
+  newDst[3] = v[3] / k;
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -348,15 +380,15 @@ export function divScalar(v: Vec4, k: number, dst?: Vec4): Vec4 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The inverted vector.
  */
-export function inverse(v: Vec4, dst?: Vec4): Vec4 {
-  dst = dst || new VecType(4);
+function inverse<T extends Vec4Arg = VecType>(v: Vec4Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
-  dst[0] = 1 / v[0];
-  dst[1] = 1 / v[1];
-  dst[2] = 1 / v[2];
-  dst[3] = 1 / v[3];
+  newDst[0] = 1 / v[0];
+  newDst[1] = 1 / v[1];
+  newDst[2] = 1 / v[2];
+  newDst[3] = 1 / v[3];
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -365,7 +397,7 @@ export function inverse(v: Vec4, dst?: Vec4): Vec4 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The inverted vector.
  */
-export const invert = inverse;
+const invert = inverse;
 
 /**
  * Computes the dot product of two vectors
@@ -373,7 +405,7 @@ export const invert = inverse;
  * @param b - Operand vector.
  * @returns dot product
  */
-export function dot(a: Vec4, b: Vec4): number {
+function dot(a: Vec4Arg, b: Vec4Arg): number {
   return (a[0] * b[0]) + (a[1] * b[1]) + (a[2] * b[2]) + (a[3] * b[3]);
 }
 
@@ -382,7 +414,7 @@ export function dot(a: Vec4, b: Vec4): number {
  * @param v - vector.
  * @returns length of vector.
  */
-export function length(v: Vec4): number {
+function length(v: Vec4Arg): number {
   const v0 = v[0];
   const v1 = v[1];
   const v2 = v[2];
@@ -395,14 +427,14 @@ export function length(v: Vec4): number {
  * @param v - vector.
  * @returns length of vector.
  */
-export const len = length;
+const len = length;
 
 /**
  * Computes the square of the length of vector
  * @param v - vector.
  * @returns square of the length of vector.
  */
-export function lengthSq(v: Vec4): number {
+function lengthSq(v: Vec4Arg): number {
   const v0 = v[0];
   const v1 = v[1];
   const v2 = v[2];
@@ -415,7 +447,7 @@ export function lengthSq(v: Vec4): number {
  * @param v - vector.
  * @returns square of the length of vector.
  */
-export const lenSq = lengthSq;
+const lenSq = lengthSq;
 
 /**
  * Computes the distance between 2 points
@@ -423,7 +455,7 @@ export const lenSq = lengthSq;
  * @param b - vector.
  * @returns distance between a and b
  */
-export function distance(a: Vec4, b: Vec4): number {
+function distance(a: Vec4Arg, b: Vec4Arg): number {
   const dx = a[0] - b[0];
   const dy = a[1] - b[1];
   const dz = a[2] - b[2];
@@ -437,7 +469,7 @@ export function distance(a: Vec4, b: Vec4): number {
  * @param b - vector.
  * @returns distance between a and b
  */
-export const dist = distance;
+const dist = distance;
 
 /**
  * Computes the square of the distance between 2 points
@@ -445,7 +477,7 @@ export const dist = distance;
  * @param b - vector.
  * @returns square of the distance between a and b
  */
-export function distanceSq(a: Vec4, b: Vec4): number {
+function distanceSq(a: Vec4Arg, b: Vec4Arg): number {
   const dx = a[0] - b[0];
   const dy = a[1] - b[1];
   const dz = a[2] - b[2];
@@ -459,7 +491,7 @@ export function distanceSq(a: Vec4, b: Vec4): number {
  * @param b - vector.
  * @returns square of the distance between a and b
  */
-export const distSq = distanceSq;
+const distSq = distanceSq;
 
 /**
  * Divides a vector by its Euclidean length and returns the quotient.
@@ -467,8 +499,8 @@ export const distSq = distanceSq;
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The normalized vector.
  */
-export function normalize(v: Vec4, dst?: Vec4): Vec4 {
-  dst = dst || new VecType(4);
+function normalize<T extends Vec4Arg = VecType>(v: Vec4Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
   const v0 = v[0];
   const v1 = v[1];
@@ -477,18 +509,18 @@ export function normalize(v: Vec4, dst?: Vec4): Vec4 {
   const len = Math.sqrt(v0 * v0 + v1 * v1 + v2 * v2 + v3 * v3);
 
   if (len > 0.00001) {
-    dst[0] = v0 / len;
-    dst[1] = v1 / len;
-    dst[2] = v2 / len;
-    dst[3] = v3 / len;
+    newDst[0] = v0 / len;
+    newDst[1] = v1 / len;
+    newDst[2] = v2 / len;
+    newDst[3] = v3 / len;
   } else {
-    dst[0] = 0;
-    dst[1] = 0;
-    dst[2] = 0;
-    dst[3] = 0;
+    newDst[0] = 0;
+    newDst[1] = 0;
+    newDst[2] = 0;
+    newDst[3] = 0;
   }
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -497,15 +529,15 @@ export function normalize(v: Vec4, dst?: Vec4): Vec4 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns -v.
  */
-export function negate(v: Vec4, dst?: Vec4): Vec4 {
-  dst = dst || new VecType(4);
+function negate<T extends Vec4Arg = VecType>(v: Vec4Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
-  dst[0] = -v[0];
-  dst[1] = -v[1];
-  dst[2] = -v[2];
-  dst[3] = -v[3];
+  newDst[0] = -v[0];
+  newDst[1] = -v[1];
+  newDst[2] = -v[2];
+  newDst[3] = -v[3];
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -515,15 +547,15 @@ export function negate(v: Vec4, dst?: Vec4): Vec4 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A copy of v.
  */
-export function copy(v: Vec4, dst?: Vec4): Vec4 {
-  dst = dst || new VecType(4);
+function copy<T extends Vec4Arg = VecType>(v: Vec4Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
-  dst[0] = v[0];
-  dst[1] = v[1];
-  dst[2] = v[2];
-  dst[3] = v[3];
+  newDst[0] = v[0];
+  newDst[1] = v[1];
+  newDst[2] = v[2];
+  newDst[3] = v[3];
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -533,7 +565,7 @@ export function copy(v: Vec4, dst?: Vec4): Vec4 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns A copy of v.
  */
-export const clone = copy;
+const clone = copy;
 
 /**
  * Multiplies a vector by another vector (component-wise); assumes a and
@@ -543,15 +575,15 @@ export const clone = copy;
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The vector of products of entries of a and b.
  */
-export function multiply(a: Vec4, b: Vec4, dst?: Vec4): Vec4 {
-  dst = dst || new VecType(4);
+function multiply<T extends Vec4Arg = VecType>(a: Vec4Arg, b: Vec4Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
-  dst[0] = a[0] * b[0];
-  dst[1] = a[1] * b[1];
-  dst[2] = a[2] * b[2];
-  dst[3] = a[3] * b[3];
+  newDst[0] = a[0] * b[0];
+  newDst[1] = a[1] * b[1];
+  newDst[2] = a[2] * b[2];
+  newDst[3] = a[3] * b[3];
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -562,7 +594,7 @@ export function multiply(a: Vec4, b: Vec4, dst?: Vec4): Vec4 {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The vector of products of entries of a and b.
  */
-export const mul = multiply;
+const mul = multiply;
 
 /**
  * Divides a vector by another vector (component-wise); assumes a and
@@ -572,15 +604,15 @@ export const mul = multiply;
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The vector of quotients of entries of a and b.
  */
-export function divide(a: Vec4, b: Vec4, dst?: Vec4) {
-  dst = dst || new VecType(4);
+function divide<T extends Vec4Arg = VecType>(a: Vec4Arg, b: Vec4Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
-  dst[0] = a[0] / b[0];
-  dst[1] = a[1] / b[1];
-  dst[2] = a[2] / b[2];
-  dst[3] = a[3] / b[3];
+  newDst[0] = a[0] / b[0];
+  newDst[1] = a[1] / b[1];
+  newDst[2] = a[2] / b[2];
+  newDst[3] = a[3] / b[3];
 
-  return dst;
+  return newDst;
 }
 
 /**
@@ -591,22 +623,22 @@ export function divide(a: Vec4, b: Vec4, dst?: Vec4) {
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The vector of quotients of entries of a and b.
  */
-export const div = divide;
+const div = divide;
 
 /**
  * Zero's a vector
  * @param dst - vector to hold result. If not passed in a new one is created.
  * @returns The zeroed vector.
  */
-export function zero(dst?: Vec4): Vec4 {
-  dst = dst || new VecType(4);
+function zero<T extends Vec4Arg = VecType>(dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
-  dst[0] = 0;
-  dst[1] = 0;
-  dst[2] = 0;
-  dst[3] = 0;
+  newDst[0] = 0;
+  newDst[1] = 0;
+  newDst[2] = 0;
+  newDst[3] = 0;
 
-  return dst;
+  return newDst;
 }
 
 
@@ -617,20 +649,20 @@ export function zero(dst?: Vec4): Vec4 {
  * @param dst - optional vec4 to store result. If not passed a new one is created.
  * @returns the transformed vector
  */
-export function transformMat4(v: Vec4, m: Mat4, dst?: Vec4): Vec4 {
-  dst = dst || new VecType(4);
+function transformMat4<T extends Vec4Arg = VecType>(v: Vec4Arg, m: Mat4Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
   const x = v[0];
   const y = v[1];
   const z = v[2];
   const w = v[3];
 
-  dst[0] = m[0] * x + m[4] * y + m[ 8] * z + m[12] * w;
-  dst[1] = m[1] * x + m[5] * y + m[ 9] * z + m[13] * w;
-  dst[2] = m[2] * x + m[6] * y + m[10] * z + m[14] * w;
-  dst[3] = m[3] * x + m[7] * y + m[11] * z + m[15] * w;
+  newDst[0] = m[0] * x + m[4] * y + m[ 8] * z + m[12] * w;
+  newDst[1] = m[1] * x + m[5] * y + m[ 9] * z + m[13] * w;
+  newDst[2] = m[2] * x + m[6] * y + m[10] * z + m[14] * w;
+  newDst[3] = m[3] * x + m[7] * y + m[11] * z + m[15] * w;
 
-  return dst;
+  return newDst;
 }
 
 
@@ -641,10 +673,10 @@ export function transformMat4(v: Vec4, m: Mat4, dst?: Vec4): Vec4 {
  * @param len The length of the resulting vector
  * @returns The lengthened vector
  */
-export function setLength(a: Vec4, len: number, dst?: Vec4) {
-  dst = dst || new VecType(4);
-  normalize(a, dst);
-  return mulScalar(dst, len, dst);
+function setLength<T extends Vec4Arg = VecType>(a: Vec4Arg, len: number, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
+  normalize(a, newDst);
+  return mulScalar(newDst, len, newDst);
 }
 
 /**
@@ -654,14 +686,14 @@ export function setLength(a: Vec4, len: number, dst?: Vec4) {
  * @param maxLen The longest length of the resulting vector
  * @returns The vector, shortened to maxLen if it's too long
  */
-export function truncate(a: Vec4, maxLen: number, dst?: Vec4) {
-  dst = dst || new VecType(4);
+function truncate<T extends Vec4Arg = VecType>(a: Vec4Arg, maxLen: number, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
 
   if (length(a) > maxLen) {
-    return setLength(a, maxLen, dst);
+    return setLength(a, maxLen, newDst);
   }
 
-  return copy(a, dst);
+  return copy(a, newDst);
 }
 
 /**
@@ -671,7 +703,91 @@ export function truncate(a: Vec4, maxLen: number, dst?: Vec4) {
  * @param b Endpoint 2
  * @returns The vector exactly residing between endpoints 1 and 2
  */
-export function midpoint(a: Vec4, b: Vec4, dst?: Vec4) {
-  dst = dst || new VecType(4);
-  return lerp(a, b, 0.5, dst);
+function midpoint<T extends Vec4Arg = VecType>(a: Vec4Arg, b: Vec4Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(4)) as T;
+  return lerp(a, b, 0.5, newDst);
 }
+
+return {
+  create,
+  fromValues,
+  set,
+  ceil,
+  floor,
+  round,
+  clamp,
+  add,
+  addScaled,
+  subtract,
+  sub,
+  equalsApproximately,
+  equals,
+  lerp,
+  lerpV,
+  max,
+  min,
+  mulScalar,
+  scale,
+  divScalar,
+  inverse,
+  invert,
+  dot,
+  length,
+  len,
+  lengthSq,
+  lenSq,
+  distance,
+  dist,
+  distanceSq,
+  distSq,
+  normalize,
+  negate,
+  copy,
+  clone,
+  multiply,
+  mul,
+  divide,
+  div,
+  zero,
+  transformMat4,
+  setLength,
+  truncate,
+  midpoint,
+};
+}
+
+type API<T extends BaseArgType = Float32Array> = ReturnType<typeof getAPIImpl<T>>;
+
+const cache = new Map();
+
+/**
+ *
+ * Vec4 math functions.
+ *
+ * Almost all functions take an optional `newDst` argument. If it is not passed in the
+ * functions will create a new `Vec4`. In other words you can do this
+ *
+ *     const v = vec4.cross(v1, v2);  // Creates a new Vec4 with the cross product of v1 x v2.
+ *
+ * or
+ *
+ *     const v = vec4.create();
+ *     vec4.cross(v1, v2, v);  // Puts the cross product of v1 x v2 in v
+ *
+ * The first style is often easier but depending on where it's used it generates garbage where
+ * as there is almost never allocation with the second style.
+ *
+ * It is always safe to pass any vector as the destination. So for example
+ *
+ *     vec4.cross(v1, v2, v1);  // Puts the cross product of v1 x v2 in v1
+ *
+ */
+export function getAPI<T extends Mat4Arg = Float32Array>(Ctor: Vec4Ctor<T>) {
+  let api = cache.get(Ctor);
+  if (!api) {
+    api = getAPIImpl<T>(Ctor);
+    cache.set(Ctor, api);
+  }
+  return api as API<T>;
+}
+

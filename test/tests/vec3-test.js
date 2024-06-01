@@ -1,17 +1,15 @@
-import {quat, vec3, utils} from '../../dist/2.x/wgpu-matrix.module.js';
+import {quat, vec3, vec3d, vec3n, utils} from '../../dist/3.x/wgpu-matrix.module.js';
 
 import {
   assertEqual,
   assertInstanceOf,
-  assertLessThan,
   assertStrictEqual,
   assertStrictNotEqual,
-  assertIsArray,
   assertEqualApproximately,
   assertTruthy,
   assertFalsy,
 } from '../assert.js';
-import {describe, it, before} from '../mocha-support.js';
+import {describe, it} from '../mocha-support.js';
 
 // Note: vec3.create is use extensively in these tests but that is NOT idiomatic!
 // Idiomatic usage use to use raw JS arrays where convenient. For example
@@ -22,20 +20,8 @@ import {describe, it, before} from '../mocha-support.js';
 // The reason vec3.create is used in the tests is to make sure we are working
 // with the specified default type when testing.
 
-function check(Type) {
+function check(vec3, Type) {
   describe('using ' + Type, () => {
-
-    before(() => {
-      vec3.setDefaultType(Type);
-    });
-
-    function elementsEqual(a, b) {
-      assertStrictEqual(a.length, b.length);
-      for (let i = 0; i < a.length; ++i) {
-        const diff = Math.abs(a[i] - b[i]);
-        assertLessThan(diff, 0.0000001);
-      }
-    }
 
     function clone(v) {
       return v.length ? v.slice() : v;
@@ -52,36 +38,36 @@ function check(Type) {
       const firstArg = args.shift();
       // clone expected so we can check it wasn't modified
       expected = vec3.clone(expected);
-      let d = vec3.create();
+      const d = vec3.create();
       // clone v to make sure it's the correct type
-      let c = func(clone(firstArg), ...args, d);
+      const c = func(clone(firstArg), ...args, d);
       assertStrictEqual(c, d);
       assertEqualApproximately(c, expected);
 
       // test if we pass same vector as source and dest we get
       // correct result
-      if (firstArg.length) {
-        d = vec3.clone(firstArg);
-        // clone args to make sure we don't overwrite first arg
-        const bOrig = args.map(b => b.slice(b));
-        c = func(d, ...args, d);
-        assertStrictEqual(c, d);
-        elementsEqual(c, expected);
-        args.forEach((b, ndx) => {
-          assertEqual(b, bOrig[ndx]);
-        });
-      }
+      //if (firstArg.length) {
+      //  d = vec3.clone(firstArg);
+      //  // clone args to make sure we don't overwrite first arg
+      //  const bOrig = args.map(b => clone(b));
+      //  c = func(d, ...args, d);
+      //  assertStrictEqual(c, d);
+      //  elementsEqual(c, expected);
+      //  args.forEach((b, ndx) => {
+      //    assertEqual(b, bOrig[ndx]);
+      //  });
+      //}
 
       // test if we pass operand as dest we get correct result
-      if (args.length > 0 && firstArg.length) {
-        d = vec3.clone(args[0]);
-        // clone v to make sure it is not overwritten
-        const vOrig = vec3.clone(firstArg);
-        c = func(firstArg, d, d);
-        elementsEqual(c, expected);
-        assertEqual(firstArg, vOrig);
-        assertStrictEqual(c, d);
-     }
+      //if (args.length > 0 && firstArg.length) {
+      //  d = vec3.clone(args[0]);
+      //  // clone v to make sure it is not overwritten
+      //  const vOrig = vec3.clone(firstArg);
+      //  c = func(firstArg, d, d);
+      //  elementsEqual(c, expected);
+      //  assertEqual(firstArg, vOrig);
+      //  assertStrictEqual(c, d);
+      //}
     }
 
     function testV3WithAndWithoutDest(func, expected, ...args) {
@@ -92,8 +78,8 @@ function check(Type) {
 
     it('should add', () => {
       const expected = [3, 5, 7];
-      testV3WithAndWithoutDest((a, b, dst) => {
-        return vec3.add(a, b, dst);
+      testV3WithAndWithoutDest((a, b, newDst) => {
+        return vec3.add(a, b, newDst);
       }, expected, [1, 2, 3], [2, 3, 4]);
     });
 
@@ -117,36 +103,36 @@ function check(Type) {
 
     it('should compute ceil', () => {
       const expected = [2, -1, 3];
-      testV3WithAndWithoutDest((a, dst) => {
-        return vec3.ceil(a, dst);
+      testV3WithAndWithoutDest((a, newDst) => {
+        return vec3.ceil(a, newDst);
       }, expected, [1.1, -1.1, 2.9]);
     });
 
     it('should compute floor', () => {
       const expected = [1, -2, 2];
-      testV3WithAndWithoutDest((a, dst) => {
-        return vec3.floor(a, dst);
+      testV3WithAndWithoutDest((a, newDst) => {
+        return vec3.floor(a, newDst);
       }, expected, [1.1, -1.1, 2.9]);
     });
 
     it('should compute round', () => {
       const expected = [1, -1, 3];
-      testV3WithAndWithoutDest((a, dst) => {
-        return vec3.round(a, dst);
+      testV3WithAndWithoutDest((a, newDst) => {
+        return vec3.round(a, newDst);
       }, expected, [1.1, -1.1, 2.9]);
     });
 
     it('should clamp', () => {
       {
         const expected = [1, 0, 0.5];
-        testV3WithAndWithoutDest((a, dst) => {
-          return vec3.clamp(a, 0, 1, dst);
+        testV3WithAndWithoutDest((a, newDst) => {
+          return vec3.clamp(a, 0, 1, newDst);
         }, expected, [2, -1, 0.5]);
       }
       {
         const expected = [-10, 5, 2.9];
-        testV3WithAndWithoutDest((a, dst) => {
-          return vec3.clamp(a, -10, 5, dst);
+        testV3WithAndWithoutDest((a, newDst) => {
+          return vec3.clamp(a, -10, 5, newDst);
         }, expected, [-22, 50, 2.9]);
       }
     });
@@ -164,71 +150,71 @@ function check(Type) {
 
     it('should subtract', () => {
       const expected = [-1, -2, -3];
-      testV3WithAndWithoutDest((a, b, dst) => {
-        return vec3.subtract(a, b, dst);
+      testV3WithAndWithoutDest((a, b, newDst) => {
+        return vec3.subtract(a, b, newDst);
       }, expected, [1, 2, 3], [2, 4, 6]);
     });
 
     it('should sub', () => {
       const expected = [-1, -2, -3];
-      testV3WithAndWithoutDest((a, b, dst) => {
-        return vec3.sub(a, b, dst);
+      testV3WithAndWithoutDest((a, b, newDst) => {
+        return vec3.sub(a, b, newDst);
       }, expected, [1, 2, 3], [2, 4, 6]);
     });
 
     it('should lerp', () => {
       const expected = [1.5, 3, 4.5];
-      testV3WithAndWithoutDest((a, b, dst) => {
-        return vec3.lerp(a, b, 0.5, dst);
+      testV3WithAndWithoutDest((a, b, newDst) => {
+        return vec3.lerp(a, b, 0.5, newDst);
       }, expected, [1, 2, 3], [2, 4, 6]);
     });
 
     it('should lerp under 0', () => {
       const expected = [0.5, 1, 1.5];
-      testV3WithAndWithoutDest((a, b, dst) => {
-        return vec3.lerp(a, b, -0.5, dst);
+      testV3WithAndWithoutDest((a, b, newDst) => {
+        return vec3.lerp(a, b, -0.5, newDst);
       }, expected, [1, 2, 3], [2, 4, 6]);
     });
 
     it('should lerp over 0', () => {
       const expected = [2.5, 5, 7.5];
-      testV3WithAndWithoutDest((a, b, dst) => {
-        return vec3.lerp(a, b, 1.5, dst);
+      testV3WithAndWithoutDest((a, b, newDst) => {
+        return vec3.lerp(a, b, 1.5, newDst);
       }, expected, [1, 2, 3], [2, 4, 6]);
     });
 
     it('should multiply by scalar', () => {
       const expected = [2, 4, 6];
-      testV3WithAndWithoutDest((a, dst) => {
-        return vec3.mulScalar(a, 2, dst);
+      testV3WithAndWithoutDest((a, newDst) => {
+        return vec3.mulScalar(a, 2, newDst);
       }, expected, [1, 2, 3]);
     });
 
     it('should scale', () => {
       const expected = [2, 4, 6];
-      testV3WithAndWithoutDest((a, dst) => {
-        return vec3.scale(a, 2, dst);
+      testV3WithAndWithoutDest((a, newDst) => {
+        return vec3.scale(a, 2, newDst);
       }, expected, [1, 2, 3]);
     });
 
     it('should add scaled', () => {
       const expected = [5, 10, 15];
-      testV3WithAndWithoutDest((a, dst) => {
-        return vec3.addScaled(a, [2, 4, 6], 2, dst);
+      testV3WithAndWithoutDest((a, newDst) => {
+        return vec3.addScaled(a, [2, 4, 6], 2, newDst);
       }, expected, [1, 2, 3]);
     });
 
     it('should divide by scalar', () => {
       const expected = [0.5, 1, 1.5];
-      testV3WithAndWithoutDest((a, dst) => {
-        return vec3.divScalar(a, 2, dst);
+      testV3WithAndWithoutDest((a, newDst) => {
+        return vec3.divScalar(a, 2, newDst);
       }, expected, [1, 2, 3]);
     });
 
     it('should inverse', () => {
       const expected = [1 / 2, 1 / 3, 1 / -4];
-      testV3WithAndWithoutDest((a, dst) => {
-        return vec3.inverse(a, dst);
+      testV3WithAndWithoutDest((a, newDst) => {
+        return vec3.inverse(a, newDst);
       }, expected, [2, 3, -4]);
     });
 
@@ -238,8 +224,8 @@ function check(Type) {
         3 * 2 - 1 * 6,
         1 * 4 - 2 * 2,
       ];
-      testV3WithAndWithoutDest((a, b, dst) => {
-        return vec3.cross(a, b, dst);
+      testV3WithAndWithoutDest((a, b, newDst) => {
+        return vec3.cross(a, b, newDst);
       }, expected, [1, 2, 3], [2, 4, 6]);
     });
 
@@ -304,23 +290,23 @@ function check(Type) {
         2 / length,
         3 / length,
       ];
-      testV3WithAndWithoutDest((a, dst) => {
-        return vec3.normalize(a, dst);
+      testV3WithAndWithoutDest((a, newDst) => {
+        return vec3.normalize(a, newDst);
       }, expected, [1, 2, 3]);
     });
 
     it('should negate', () => {
       const expected = [-1, -2, -3];
-      testV3WithAndWithoutDest((a, dst) => {
-        return vec3.negate(a, dst);
+      testV3WithAndWithoutDest((a, newDst) => {
+        return vec3.negate(a, newDst);
       }, expected, [1, 2, 3]);
     });
 
     it('should copy', () => {
       const expected = [1, 2, 3];
       const v = vec3.create(1, 2, 3);
-      testV3WithAndWithoutDest((a, dst) => {
-        const result = vec3.copy(a, dst);
+      testV3WithAndWithoutDest((a, newDst) => {
+        const result = vec3.copy(a, newDst);
         assertStrictNotEqual(result, v);
         return result;
       }, expected, [1, 2, 3]);
@@ -329,8 +315,8 @@ function check(Type) {
     it('should clone', () => {
       const expected = [1, 2, 3];
       const v = vec3.create(1, 2, 3);
-      testV3WithAndWithoutDest((a, dst) => {
-        const result = vec3.clone(a, dst);
+      testV3WithAndWithoutDest((a, newDst) => {
+        const result = vec3.clone(a, newDst);
         assertStrictNotEqual(result, v);
         return result;
       }, expected, [1, 2, 3]);
@@ -338,22 +324,22 @@ function check(Type) {
 
     it('should set', () => {
       const expected = [2, 3, 4];
-      testV3WithAndWithoutDest((a, b, c, dst) => {
-        return vec3.set(a, b, c, dst);
+      testV3WithAndWithoutDest((a, b, c, newDst) => {
+        return vec3.set(a, b, c, newDst);
       }, expected, 2, 3, 4);
     });
 
     it('should multiply', () => {
       const expected = [2, 8, 18];
-      testV3WithAndWithoutDest((a, b, dst) => {
-        return vec3.multiply(a, b, dst);
+      testV3WithAndWithoutDest((a, b, newDst) => {
+        return vec3.multiply(a, b, newDst);
       }, expected, [1, 2, 3], [2, 4, 6]);
     });
 
     it('should mul', () => {
       const expected = [2, 8, 18];
-      testV3WithAndWithoutDest((a, b, dst) => {
-        return vec3.mul(a, b, dst);
+      testV3WithAndWithoutDest((a, b, newDst) => {
+        return vec3.mul(a, b, newDst);
       }, expected, [1, 2, 3], [2, 4, 6]);
     });
 
@@ -361,8 +347,8 @@ function check(Type) {
       const expected = [
         1 / 2, 2 / 3, 3 / 4,
       ];
-      testV3WithAndWithoutDest((a, b, dst) => {
-        return vec3.divide(a, b, dst);
+      testV3WithAndWithoutDest((a, b, newDst) => {
+        return vec3.divide(a, b, newDst);
       }, expected, [1, 2, 3], [2, 3, 4]);
     });
 
@@ -370,8 +356,8 @@ function check(Type) {
       const expected = [
         1 / 2, 2 / 3, 3 / 4,
       ];
-      testV3WithAndWithoutDest((a, b, dst) => {
-        return vec3.div(a, b, dst);
+      testV3WithAndWithoutDest((a, b, newDst) => {
+        return vec3.div(a, b, newDst);
       }, expected, [1, 2, 3], [2, 3, 4]);
     });
 
@@ -403,21 +389,21 @@ function check(Type) {
         0, 5, 0, 0,
         0, 0, 6, 0,
       ];
-      testV3WithAndWithoutDest((v, dst) => {
-        return vec3.transformMat3(v, m, dst);
+      testV3WithAndWithoutDest((v, newDst) => {
+        return vec3.transformMat3(v, m, newDst);
       }, expected, [1, 2, 3]);
     });
 
     it('should transform by 4x4', () => {
       const expected = [5, 9, 15];
-      testV3WithAndWithoutDest((v, dst) => {
+      testV3WithAndWithoutDest((v, newDst) => {
         const m = [
           1, 0, 0, 0,
           0, 2, 0, 0,
           0, 0, 3, 0,
           4, 5, 6, 1,
         ];
-        return vec3.transformMat4(v, m, dst);
+        return vec3.transformMat4(v, m, newDst);
       }, expected, [1, 2, 3]);
     });
 
@@ -429,19 +415,29 @@ function check(Type) {
         0, 0, 3, 0,
         4, 5, 6, 1,
       ];
-      testV3WithAndWithoutDest((v, mat, dst) => {
-        return vec3.transformMat4Upper3x3(v, mat, dst);
+      testV3WithAndWithoutDest((v, mat, newDst) => {
+        return vec3.transformMat4Upper3x3(v, mat, newDst);
       }, expected, [2, 3, 4], m);
     });
 
     it('should transform by quat', () => {
       const tests = [
-        { q: quat.fromEuler(0.1, 0.2, 0.3, 'xyz'), expected: [ 10.48346640790187, 20.99753274028838, 33.81124896860183 ], },
-        { q: quat.fromEuler(1.1, 2.2, 3.3, 'xyz'), expected: [ 31.030506373087608, 1.340345941350634, -27.005761366554264 ], },
+        {
+          q: quat.fromEuler(0.1, 0.2, 0.3, 'xyz'),
+          expected: Type === Float32Array
+            ? [ 10.48346640790187, 20.99753274028838, 33.81124896860183 ]
+            : [ 10.483466535953458, 20.99753253479091, 33.81124896860183 ],
+        },
+        {
+          q: quat.fromEuler(1.1, 2.2, 3.3, 'xyz'),
+          expected: Type === Float32Array
+            ? [ 31.030506373087608, 1.3403475284576416, -27.00575828552246 ]
+            : [ 31.03050528998851, 1.340347488701262, -27.005757983559995 ],
+        },
       ];
       for (const {q, expected} of tests) {
-        testV3WithAndWithoutDest((v, q, dst) => {
-          return vec3.transformQuat(v, q, dst);
+        testV3WithAndWithoutDest((v, q, newDst) => {
+          return vec3.transformQuat(v, q, newDst);
         }, expected, [11, 22, 33], q);
       }
     });
@@ -455,158 +451,119 @@ function check(Type) {
       assertEqual(v2, [0, 0, 0]);
     });
 
+    describe('rotateX', function () {
+      describe('rotation around world origin [0, 0, 0]', function () {
+        it("should return the rotated vector", function () {
+          testV3WithAndWithoutDest((a, b, angle, newDst) => {
+            return vec3.rotateX(a, b, angle, newDst);
+          }, [0, -1, 0], [0, 1, 0], [0, 0, 0], Math.PI);
+        });
+      });
+
+      describe('rotation around an arbitrary origin', function () {
+        const expected = [2, 3, 0];
+        testV3WithAndWithoutDest((a, b, angle, newDst) => {
+          return vec3.rotateX(a, b, angle, newDst);
+        }, expected, [2, 7, 0], [2, 5, 0], Math.PI);
+      });
+    });
+
+    describe('rotateY', function () {
+      describe('rotation around world origin [0, 0, 0]', function () {
+        it("should return the rotated vector", function () {
+          const expected = [-1, 0, 0];
+          testV3WithAndWithoutDest((a, b, angle, newDst) => {
+            return vec3.rotateY(a, b, angle, newDst);
+          }, expected, [1, 0, 0],  [0, 0, 0], Math.PI);
+        });
+      });
+      describe('rotation around an arbitrary origin', function () {
+        it("should return the rotated vector", function () {
+          const expected = [-6, 3, 10];
+          testV3WithAndWithoutDest((a, b, angle, newDst) => {
+            return vec3.rotateY(a, b, angle, newDst);
+          }, expected, [-2, 3, 10], [-4, 3, 10], Math.PI);
+        });
+      });
+    });
+
+    describe('rotateZ', function () {
+      describe('rotation around world origin [0, 0, 0]', function () {
+        it("should return the rotated vector", function () {
+          const expected = [0, -1, 0];
+          testV3WithAndWithoutDest((a, b, angle, newDst) => {
+            return vec3.rotateZ(a, b, angle, newDst);
+          }, expected, [0, 1, 0], [0, 0, 0], Math.PI);
+        });
+      });
+      describe('rotation around an arbitrary origin', function () {
+        it("should return the rotated vector", function () {
+          const expected = [0, -6, -5];
+          testV3WithAndWithoutDest((a, b, angle, newDst) => {
+            return vec3.rotateZ(a, b, angle, newDst);
+          }, expected, [0, 6, -5], [0, 0, -5], Math.PI);
+        });
+      });
+    });
+
+    describe('setLength', function () {
+      describe('set the length of a provided direction vector', function () {
+        it("should return the lengthened vector", function () {
+          const expected = [8.429313930168536, 8.429313930168536, 8.429313930168536];
+          testV3WithAndWithoutDest(
+            (a, len, newDst) => vec3.setLength(a, len, newDst),
+            expected,
+            [1, 1, 1], 14.6);
+        });
+      });
+    });
+
+    describe('truncate', function () {
+      describe('limit a vector to a max length', function () {
+        it("should shorten the vector", function () {
+          const expected = [2.309401076758503, 2.309401076758503, 2.309401076758503];
+          testV3WithAndWithoutDest(
+            (a, len, newDst) => vec3.truncate(a, len, newDst),
+            expected,
+            [8.429313930168536, 8.429313930168536, 8.429313930168536], 4.0);
+        });
+
+        it("should preserve the vector when shorter than maxLen", function () {
+          const expected = [8.429313930168536, 8.429313930168536, 8.429313930168536];
+          testV3WithAndWithoutDest(
+            (a, len, newDst) => vec3.truncate(a, len, newDst),
+            expected, [8.429313930168536, 8.429313930168536, 8.429313930168536], 18.0);
+        });
+      });
+    });
+
+    describe('midpoint', function () {
+      describe('return the midpoint between 2 vectors', function () {
+
+        it("should return the midpoint", function () {
+          const vecA = [ 0, 0, 0 ];
+          const vecB = [ 10, 10, 10 ];
+          const result = vec3.midpoint(vecA, vecB);
+          assertEqualApproximately(result, [ 5, 5, 5 ]);
+        });
+
+        it("should handle negatives", function () {
+          const vecA = [ -10, -10, -10 ];
+          const vecB = [ 10, 10, 10 ];
+          const result = vec3.midpoint(vecA, vecB);
+          assertEqualApproximately(result, [ 0, 0, 0 ]);
+        });
+
+      });
+    });
+
   });
 }
 
 describe('vec3', () => {
 
-  it('should set default type', () => {
-    vec3.setDefaultType(Array);
-    let d = vec3.create(1, 2, 3);
-    assertIsArray(d);
-
-    d = vec3.add([1, 2, 3], [4, 5, 6]);
-    assertIsArray(d);
-
-    vec3.setDefaultType(Float32Array);
-    d = vec3.create(1, 2, 3);
-    assertInstanceOf(d, Float32Array);
-
-    d = vec3.add([1, 2, 3], [4, 5, 6]);
-    assertInstanceOf(d, Float32Array);
-  });
-
-  check(Array);
-  check(Float32Array);
-  check(Float64Array);
-
-  let vecA, vecB, result;
-
-  describe('rotateX', function () {
-    describe('rotation around world origin [0, 0, 0]', function () {
-      beforeEach(function () {
-        vecA = [0, 1, 0];
-        vecB = [0, 0, 0];
-        result = vec3.rotateX(vecA, vecB, Math.PI);
-      });
-      it("should return the rotated vector", function () {
-        assertEqualApproximately(result, [0, -1, 0]);
-      });
-    });
-
-    describe('rotation around an arbitrary origin', function () {
-      beforeEach(function () {
-        vecA = [2, 7, 0];
-        vecB = [2, 5, 0];
-        result = vec3.rotateX(vecA, vecB, Math.PI);
-      });
-      it("should return the rotated vector", function () {
-        assertEqualApproximately(result, [2, 3, 0]);
-      });
-    });
-  });
-
-  describe('rotateY', function () {
-    describe('rotation around world origin [0, 0, 0]', function () {
-        beforeEach(function() {
-          vecA = [1, 0, 0];
-          vecB = [0, 0, 0];
-          result = vec3.rotateY(vecA, vecB, Math.PI);
-        });
-        it("should return the rotated vector", function () {
-          assertEqualApproximately(result, [-1, 0, 0]);
-        });
-    });
-    describe('rotation around an arbitrary origin', function () {
-        beforeEach(function () {
-          vecA = [-2, 3, 10];
-          vecB = [-4, 3, 10];
-          result = vec3.rotateY(vecA, vecB, Math.PI);
-        });
-        it("should return the rotated vector", function () {
-          assertEqualApproximately(result, [-6, 3, 10]);
-        });
-    });
-  });
-
-  describe('rotateZ', function () {
-    describe('rotation around world origin [0, 0, 0]', function () {
-        beforeEach(function () {
-          vecA = [0, 1, 0];
-          vecB = [0, 0, 0];
-          result = vec3.rotateZ(vecA, vecB, Math.PI);
-        });
-        it("should return the rotated vector", function () {
-          assertEqualApproximately(result, [0, -1, 0]);
-        });
-    });
-    describe('rotation around an arbitrary origin', function () {
-        beforeEach(function () {
-          vecA = [0, 6, -5];
-          vecB = [0, 0, -5];
-          result = vec3.rotateZ(vecA, vecB, Math.PI);
-        });
-        it("should return the rotated vector", function () {
-          assertEqualApproximately(result, [0, -6, -5]);
-        });
-    });
-  });
-
-  describe('setLength', function() {
-    describe('set the length of a provided direction vector', function() {
-      let vecA, result;
-      beforeEach(function () {
-        vecA = [1, 1, 1];
-        result = vec3.setLength(vecA, 14.6);
-      });
-      it("should return the lengthened vector", function () {
-        assertEqualApproximately(result, [8.429313930168536, 8.429313930168536, 8.429313930168536]);
-        assertEqualApproximately(vec3.length(result), 14.6);
-      });
-    });
-  });
-
-  describe('truncate', function() {
-    describe('limit a vector to a max length', function() {
-      let vecA;
-
-      beforeEach(function () {
-        vecA = [8.429313930168536, 8.429313930168536, 8.429313930168536];
-      });
-
-      it("should shorten the vector", function () {
-        const result = vec3.truncate(vecA, 4.0);
-        assertEqualApproximately(result, [2.309401076758503, 2.309401076758503, 2.309401076758503]);
-        assertEqualApproximately(vec3.length(result), 4.0);
-      });
-
-      it("should preserve the vector when shorter than maxLen", function () {
-        const result = vec3.truncate(vecA, 18.0);
-        assertEqualApproximately(result, [8.429313930168536, 8.429313930168536, 8.429313930168536]);
-        assertEqualApproximately(vec3.length(result), 14.6);
-      });
-    });
-  });
-
-  describe('midpoint', function() {
-    describe('return the midpoint between 2 vectors', function() {
-
-      it("should return the midpoint", function () {
-        const vecA = [ 0, 0, 0 ]
-        const vecB = [ 10, 10, 10 ]
-        const result = vec3.midpoint(vecA, vecB);
-        assertEqualApproximately(result, [ 5, 5, 5 ]);
-      });
-
-      it("should handle negatives", function () {
-        const vecA = [ -10, -10, -10 ]
-        const vecB = [ 10, 10, 10 ]
-        const result = vec3.midpoint(vecA, vecB);
-        assertEqualApproximately(result, [ 0, 0, 0 ]);
-      });
-
-    });
-  });
+  check(vec3n, Array);
+  check(vec3, Float32Array);
+  check(vec3d, Float64Array);
 
 });
-

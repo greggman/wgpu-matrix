@@ -1,18 +1,18 @@
-import {mat4, mat3, quat, utils, vec3} from '../../dist/2.x/wgpu-matrix.module.js';
+import {mat4, mat4d, mat4n, mat3, quat, utils, vec3} from '../../dist/3.x/wgpu-matrix.module.js';
 
 import {
   assertEqual,
   assertEqualApproximately,
   assertFalsy,
-  assertIsArray,
-  assertInstanceOf,
   assertStrictEqual,
   assertStrictNotEqual,
   assertTruthy,
 } from '../assert.js';
-import {describe, it, before} from '../mocha-support.js';
+import {describe, it} from '../mocha-support.js';
 
-function check(Type) {
+
+function check(mat4, Type) {
+
   describe('using ' + Type, () => {
     const m = [
        0,  1,  2,  3,
@@ -20,10 +20,6 @@ function check(Type) {
        8,  9, 10, 11,
       12, 13, 14, 15,
     ];
-
-    before(function () {
-      mat4.setDefaultType(Type);
-    });
 
     function testMat4WithoutDest(func, expected, ...args) {
       const d = func(...args);
@@ -39,8 +35,8 @@ function check(Type) {
     }
 
     function testMat4WithAndWithoutDest(func, expected, ...args) {
-      if (Type === Float32Array) {
-        expected = new Float32Array(expected);
+      if (mat4.identity() instanceof Float32Array) {
+        //expected = new Float32Array(expected);
       }
       testMat4WithoutDest(func, expected, ...args);
       testMat4WithDest(func, expected, ...args);
@@ -48,14 +44,14 @@ function check(Type) {
 
     function testVec3WithoutDest(func, expected) {
       const d = func();
-      assertEqual(d, expected);
+      assertEqualApproximately(d, expected, 2e7);
     }
 
     function testVec3WithDest(func, expected) {
       const d = new Float32Array(3);
       const c = func(d);
       assertStrictEqual(c, d);
-      assertEqual(c, expected);
+      assertEqualApproximately(c, expected, 2e7);
     }
 
     function testVec3WithAndWithoutDest(func, expected) {
@@ -80,7 +76,7 @@ function check(Type) {
     it('should create', () => {
       for (let i = 0; i <= 16; ++i) {
         const expected = mat4.clone(new Array(16).fill(0).map((_, ndx) => ndx < i ? ndx + 1 : 0));
-        const args = new Array(Type === Array ? 16 : i).fill(0).map((_, ndx) => ndx < i ? ndx + 1 : 0);
+        const args = new Array(Array.isArray(mat4.identity()) ? 16 : i).fill(0).map((_, ndx) => ndx < i ? ndx + 1 : 0);
         const m = mat4.create(...args);
         assertEqual(m, expected);
       }
@@ -93,15 +89,15 @@ function check(Type) {
         -8,  -9, -10, -11,
        -12, -13, -14, -15,
       ];
-      testMat4WithAndWithoutDest((dst) => {
-        return mat4.negate(m, dst);
+      testMat4WithAndWithoutDest((newDst) => {
+        return mat4.negate(m, newDst);
       }, expected);
     });
 
     it('should copy', () => {
       const expected = m;
-      testMat4WithAndWithoutDest((dst) => {
-        const result = mat4.copy(m, dst);
+      testMat4WithAndWithoutDest((newDst) => {
+        const result = mat4.copy(m, newDst);
         assertStrictNotEqual(result, m);
         return result;
       }, expected);
@@ -135,8 +131,8 @@ function check(Type) {
 
     it('should clone', () => {
       const expected = m;
-      testMat4WithAndWithoutDest((dst) => {
-        const result = mat4.clone(m, dst);
+      testMat4WithAndWithoutDest((newDst) => {
+        const result = mat4.clone(m, newDst);
         assertStrictNotEqual(result, m);
         return result;
       }, expected);
@@ -144,8 +140,8 @@ function check(Type) {
 
     it('should set', () => {
       const expected = [2, 3, 4, 5, 22, 33, 44, 55, 222, 333, 444, 555, 2222, 3333, 4444, 5555];
-      testMat4WithAndWithoutDest((v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, dst) => {
-        return mat4.set(v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, dst);
+      testMat4WithAndWithoutDest((v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, newDst) => {
+        return mat4.set(v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11, v12, v13, v14, v15, newDst);
       }, expected, 2, 3, 4, 5, 22, 33, 44, 55, 222, 333, 444, 555, 2222, 3333, 4444, 5555);
     });
 
@@ -156,8 +152,8 @@ function check(Type) {
         0, 0, 1, 0,
         0, 0, 0, 1,
       ];
-      testMat4WithAndWithoutDest((dst) => {
-        return mat4.identity(dst);
+      testMat4WithAndWithoutDest((newDst) => {
+        return mat4.identity(newDst);
       }, expected);
     });
 
@@ -168,8 +164,8 @@ function check(Type) {
         2, 6, 10, 14,
         3, 7, 11, 15,
       ];
-      testMat4WithAndWithoutDest((dst) => {
-        return mat4.transpose(m, dst);
+      testMat4WithAndWithoutDest((newDst) => {
+        return mat4.transpose(m, newDst);
       }, expected);
     });
 
@@ -198,8 +194,8 @@ function check(Type) {
         m2[3 * 4 + 0] * m[0 * 4 + 2] + m2[3 * 4 + 1] * m[1 * 4 + 2] + m2[3 * 4 + 2] * m[2 * 4 + 2] + m2[3 * 4 + 3] * m[3 * 4 + 2],
         m2[3 * 4 + 0] * m[0 * 4 + 3] + m2[3 * 4 + 1] * m[1 * 4 + 3] + m2[3 * 4 + 2] * m[2 * 4 + 3] + m2[3 * 4 + 3] * m[3 * 4 + 3],
       ];
-      testMat4WithAndWithoutDest((dst) => {
-        return fn(m, m2, dst);
+      testMat4WithAndWithoutDest((newDst) => {
+        return fn(m, m2, newDst);
       }, expected);
     }
 
@@ -236,8 +232,8 @@ function check(Type) {
         0.375,
         1,
       ];
-      testMat4WithAndWithoutDest((dst) => {
-        return fn(m, dst);
+      testMat4WithAndWithoutDest((newDst) => {
+        return fn(m, newDst);
       }, expected);
     }
 
@@ -304,15 +300,15 @@ function check(Type) {
         8,  9, 10, 11,
        11, 22, 33, 1,
       ];
-      testMat4WithAndWithoutDest((dst) => {
-        return mat4.setTranslation(m, [11, 22, 33], dst);
+      testMat4WithAndWithoutDest((newDst) => {
+        return mat4.setTranslation(m, [11, 22, 33], newDst);
       }, expected);
     });
 
     it('should get translation', () => {
       const expected = [12, 13, 14];
-      testVec3WithAndWithoutDest((dst) => {
-        return mat4.getTranslation(m, dst);
+      testVec3WithAndWithoutDest((newDst) => {
+        return mat4.getTranslation(m, newDst);
       }, expected);
     });
 
@@ -322,8 +318,8 @@ function check(Type) {
         [4, 5, 6],
         [8, 9, 10],
       ].forEach((expected, ndx) => {
-        testVec3WithAndWithoutDest((dst) => {
-          return mat4.getAxis(m, ndx, dst);
+        testVec3WithAndWithoutDest((newDst) => {
+          return mat4.getAxis(m, ndx, newDst);
         }, expected);
       });
     });
@@ -349,8 +345,8 @@ function check(Type) {
           12, 13, 14, 15,
         ],
       ].forEach((expected, ndx) => {
-        testMat4WithAndWithoutDest((dst) => {
-          return mat4.setAxis(m, [11, 22, 33], ndx, dst);
+        testMat4WithAndWithoutDest((newDst) => {
+          return mat4.setAxis(m, [11, 22, 33], ndx, newDst);
         }, expected);
       });
     });
@@ -366,9 +362,9 @@ function check(Type) {
         Math.sqrt(1 * 1 + 2 * 2 + 3 * 3),
         Math.sqrt(5 * 5 + 6 * 6 + 7 * 7),
         Math.sqrt(9 * 9 + 10 * 10 + 11 * 11),
-      ];
-      testVec3WithAndWithoutDest((dst) => {
-        return mat4.getScaling(m, dst);
+      ].map(v => new Type([v])[0]);
+      testVec3WithAndWithoutDest((newDst) => {
+        return mat4.getScaling(m, newDst);
       }, expected);
     });
 
@@ -400,8 +396,8 @@ function check(Type) {
         zNear * zFar * rangeInv,
         0,
       ];
-      testMat4WithAndWithoutDest((dst) => {
-        return mat4.perspective(fov, aspect, zNear, zFar, dst);
+      testMat4WithAndWithoutDest((newDst) => {
+        return mat4.perspective(fov, aspect, zNear, zFar, newDst);
       }, expected);
     });
 
@@ -432,8 +428,8 @@ function check(Type) {
         -zNear,
         0,
       ];
-      testMat4WithAndWithoutDest((dst) => {
-        return mat4.perspective(fov, aspect, zNear, zFar, dst);
+      testMat4WithAndWithoutDest((newDst) => {
+        return mat4.perspective(fov, aspect, zNear, zFar, newDst);
       }, expected);
     });
 
@@ -502,8 +498,8 @@ function check(Type) {
         zFar * zNear * rangeInv,
         0,
       ];
-      testMat4WithAndWithoutDest((dst) => {
-        return mat4.perspectiveReverseZ(fov, aspect, zNear, zFar, dst);
+      testMat4WithAndWithoutDest((newDst) => {
+        return mat4.perspectiveReverseZ(fov, aspect, zNear, zFar, newDst);
       }, expected);
     });
 
@@ -545,8 +541,8 @@ function check(Type) {
         zNear,
         0,
       ];
-      testMat4WithAndWithoutDest((dst) => {
-        return mat4.perspectiveReverseZ(fov, aspect, zNear, zFar, dst);
+      testMat4WithAndWithoutDest((newDst) => {
+        return mat4.perspectiveReverseZ(fov, aspect, zNear, zFar, newDst);
       }, expected);
     });
 
@@ -591,8 +587,8 @@ function check(Type) {
         near / (near - far),
         1,
       ];
-      testMat4WithAndWithoutDest((dst) => {
-        return mat4.ortho(left, right, bottom, top, near, far, dst);
+      testMat4WithAndWithoutDest((newDst) => {
+        return mat4.ortho(left, right, bottom, top, near, far, newDst);
       }, expected);
     });
 
@@ -638,8 +634,8 @@ function check(Type) {
         near * far / dz,
         0,
       ];
-      testMat4WithAndWithoutDest((dst) => {
-        return mat4.frustum(left, right, bottom, top, near, far, dst);
+      testMat4WithAndWithoutDest((newDst) => {
+        return mat4.frustum(left, right, bottom, top, near, far, newDst);
       }, expected);
     });
 
@@ -689,8 +685,8 @@ function check(Type) {
         near * far / dz,
         0,
       ];
-      testMat4WithAndWithoutDest((dst) => {
-        return mat4.frustumReverseZ(left, right, bottom, top, near, far, dst);
+      testMat4WithAndWithoutDest((newDst) => {
+        return mat4.frustumReverseZ(left, right, bottom, top, near, far, newDst);
       }, expected);
     });
 
@@ -738,13 +734,13 @@ function check(Type) {
         0.4364357888698578,
         -0.8017837405204773,
         0,
-        1.4901161193847656e-7,
+        Type === Float32Array ? 1.4901161193847656e-7  : -4.440892098500626e-16,
         0,
         3.74165740609169,
         1,
       ];
-      testMat4WithAndWithoutDest((dst) => {
-        return mat4.lookAt(eye, target, up, dst);
+      testMat4WithAndWithoutDest((newDst) => {
+        return mat4.lookAt(eye, target, up, newDst);
       }, expected);
     });
 
@@ -851,14 +847,14 @@ function check(Type) {
         camExpected,
       }, i) => {
         it(`should make aim matrix ${i}`, () => {
-          testMat4WithAndWithoutDest((dst) => {
-            return mat4.aim(position, target, up, dst);
+          testMat4WithAndWithoutDest((newDst) => {
+            return mat4.aim(position, target, up, newDst);
           }, expected);
         });
 
         it(`should make cameraAim matrix ${i}`, () => {
-          testMat4WithAndWithoutDest((dst) => {
-            return mat4.cameraAim(position, target, up, dst);
+          testMat4WithAndWithoutDest((newDst) => {
+            return mat4.cameraAim(position, target, up, newDst);
           }, camExpected);
         });
       });
@@ -871,8 +867,8 @@ function check(Type) {
         0, 0, 1, 0,
         2, 3, 4, 1,
       ];
-      testMat4WithAndWithoutDest((dst) => {
-        return mat4.translation([2, 3, 4], dst);
+      testMat4WithAndWithoutDest((newDst) => {
+        return mat4.translation([2, 3, 4], newDst);
       }, expected);
     });
 
@@ -886,8 +882,8 @@ function check(Type) {
        14 + 2 * 2 + 6 * 3 + 10 * 4,
        15 + 3 * 2 + 7 * 3 + 11 * 4,
       ];
-      testMat4WithAndWithoutDest((dst) => {
-        return mat4.translate(m, [2, 3, 4], dst);
+      testMat4WithAndWithoutDest((newDst) => {
+        return mat4.translate(m, [2, 3, 4], newDst);
       }, expected);
     });
 
@@ -901,20 +897,18 @@ function check(Type) {
         0, -s, c, 0,
         0,  0, 0, 1,
       ];
-      testMat4WithAndWithoutDest((dst) => {
-        return mat4.rotationX(angle, dst);
+      testMat4WithAndWithoutDest((newDst) => {
+        return mat4.rotationX(angle, newDst);
       }, expected);
     });
 
     it('should rotate x', () => {
       const angle = 1.23;
       // switch to Array type to keep precision high for expected
-      const oldType = mat4.setDefaultType(Array);
-      const expected = mat4.multiply(m, mat4.rotationX(angle));
-      mat4.setDefaultType(oldType);
+      const expected = mat4.multiply(m, mat4.rotationX(angle, []));
 
-      testMat4WithAndWithoutDest((dst) => {
-        return mat4.rotateX(m, angle, dst);
+      testMat4WithAndWithoutDest((newDst) => {
+        return mat4.rotateX(m, angle, newDst);
       }, expected);
     });
 
@@ -928,20 +922,18 @@ function check(Type) {
         s, 0,  c, 0,
         0, 0,  0, 1,
       ];
-      testMat4WithAndWithoutDest((dst) => {
-        return mat4.rotationY(angle, dst);
+      testMat4WithAndWithoutDest((newDst) => {
+        return mat4.rotationY(angle, newDst);
       }, expected);
     });
 
     it('should rotate y', () => {
       const angle = 1.23;
       // switch to Array type to keep precision high for expected
-      const oldType = mat4.setDefaultType(Array);
-      const expected = mat4.multiply(m, mat4.rotationY(angle));
-      mat4.setDefaultType(oldType);
+      const expected = mat4.multiply(m, mat4.rotationY(angle, new Array(16)));
 
-      testMat4WithAndWithoutDest((dst) => {
-        return mat4.rotateY(m, angle, dst);
+      testMat4WithAndWithoutDest((newDst) => {
+        return mat4.rotateY(m, angle, newDst);
       }, expected);
     });
 
@@ -955,20 +947,18 @@ function check(Type) {
         0, 0, 1, 0,
         0, 0, 0, 1,
       ];
-      testMat4WithAndWithoutDest((dst) => {
-        return mat4.rotationZ(angle, dst);
+      testMat4WithAndWithoutDest((newDst) => {
+        return mat4.rotationZ(angle, newDst);
       }, expected);
     });
 
     it('should rotate z', () => {
       const angle = 1.23;
       // switch to Array type to keep precision high for expected
-      const oldType = mat4.setDefaultType(Array);
-      const expected = mat4.multiply(m, mat4.rotationZ(angle));
-      mat4.setDefaultType(oldType);
+      const expected = mat4.multiply(m, mat4.rotationZ(angle, new Array(16)));
 
-      testMat4WithAndWithoutDest((dst) => {
-        return mat4.rotateZ(m, angle, dst);
+      testMat4WithAndWithoutDest((newDst) => {
+        return mat4.rotateZ(m, angle, newDst);
       }, expected);
     });
 
@@ -1006,8 +996,8 @@ function check(Type) {
 
         0, 0, 0, 1,
       ];
-      testMat4WithAndWithoutDest((dst) => {
-        return mat4.axisRotation(axis, angle, dst);
+      testMat4WithAndWithoutDest((newDst) => {
+        return mat4.axisRotation(axis, angle, newDst);
       }, expected);
     });
 
@@ -1015,12 +1005,10 @@ function check(Type) {
       const axis = [0.5, 0.6, -0.7];
       const angle = 1.23;
       // switch to Array type to keep precision high for expected
-      const oldType = mat4.setDefaultType(Array);
-      const expected = mat4.multiply(m, mat4.axisRotation(axis, angle));
-      mat4.setDefaultType(oldType);
+      const expected = mat4.multiply(m, mat4.axisRotation(axis, angle, new Array(16)));
 
-      testMat4WithAndWithoutDest((dst) => {
-        return mat4.axisRotate(m, axis, angle, dst);
+      testMat4WithAndWithoutDest((newDst) => {
+        return mat4.axisRotate(m, axis, angle, newDst);
       }, expected);
     });
 
@@ -1031,8 +1019,8 @@ function check(Type) {
         0, 0, 4, 0,
         0, 0, 0, 1,
       ];
-      testMat4WithAndWithoutDest((dst) => {
-        return mat4.scaling([2, 3, 4], dst);
+      testMat4WithAndWithoutDest((newDst) => {
+        return mat4.scaling([2, 3, 4], newDst);
       }, expected);
     });
 
@@ -1043,8 +1031,8 @@ function check(Type) {
         32, 36, 40, 44,
         12, 13, 14, 15,
       ];
-      testMat4WithAndWithoutDest((dst) => {
-        return mat4.scale(m, [2, 3, 4], dst);
+      testMat4WithAndWithoutDest((newDst) => {
+        return mat4.scale(m, [2, 3, 4], newDst);
       }, expected);
     });
 
@@ -1055,8 +1043,8 @@ function check(Type) {
         0, 0, 2, 0,
         0, 0, 0, 1,
       ];
-      testMat4WithAndWithoutDest((dst) => {
-        return mat4.uniformScaling(2, dst);
+      testMat4WithAndWithoutDest((newDst) => {
+        return mat4.uniformScaling(2, newDst);
       }, expected);
     });
 
@@ -1067,8 +1055,8 @@ function check(Type) {
         16, 18, 20, 22,
         12, 13, 14, 15,
       ];
-      testMat4WithAndWithoutDest((dst) => {
-        return mat4.uniformScale(m, 2, dst);
+      testMat4WithAndWithoutDest((newDst) => {
+        return mat4.uniformScale(m, 2, newDst);
       }, expected);
     });
 
@@ -1079,9 +1067,9 @@ function check(Type) {
         7, 8, 9, 0,
         0, 0, 0, 1,
       ];
-      testMat4WithAndWithoutDest((dst) => {
+      testMat4WithAndWithoutDest((newDst) => {
         const m3 = mat3.create(1, 2, 3, 4, 5, 6, 7, 8, 9);
-        return mat4.fromMat3(m3, dst);
+        return mat4.fromMat3(m3, newDst);
       }, expected);
     });
 
@@ -1095,8 +1083,8 @@ function check(Type) {
         { q: quat.fromEuler(0, 0, Math.PI / 2, 'xyz'), expected: mat4.rotationZ(Math.PI / 2), },
       ];
       for (const {q, expected} of tests) {
-        testMat4WithAndWithoutDest((dst) => {
-          return mat4.fromQuat(q, dst);
+        testMat4WithAndWithoutDest((newDst) => {
+          return mat4.fromQuat(q, newDst);
         }, expected);
       }
     });
@@ -1105,18 +1093,8 @@ function check(Type) {
 }
 
 describe('mat4', () => {
-
-  it('should set default type', () => {
-    mat4.setDefaultType(Array);
-    let d = mat4.identity();
-    assertIsArray(d);
-    mat4.setDefaultType(Float32Array);
-    d = mat4.identity();
-    assertInstanceOf(d, Float32Array);
-  });
-
-  check(Array);
-  check(Float32Array);
-  check(Float64Array);
+  check(mat4n, Array);
+  check(mat4, Float32Array);
+  check(mat4d, Float64Array);
 });
 

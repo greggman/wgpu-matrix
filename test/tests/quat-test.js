@@ -1,4 +1,4 @@
-import {mat3, mat4, quat, utils, vec3} from '../../dist/2.x/wgpu-matrix.module.js';
+import {mat3, mat4, quat, quatn, quatd, utils, vec3} from '../../dist/3.x/wgpu-matrix.module.js';
 
 import {
   assertEqual,
@@ -6,12 +6,11 @@ import {
   assertInstanceOf,
   assertStrictEqual,
   assertStrictNotEqual,
-  assertIsArray,
   assertTruthy,
   assertFalsy,
   assertDeepEqualApproximately,
 } from '../assert.js';
-import {describe, it, before} from '../mocha-support.js';
+import {describe, it} from '../mocha-support.js';
 
 // Note: quat.create is use extensively in these tests but that is NOT idiomatic!
 // Idiomatic usage use to use raw JS arrays where convenient. For example
@@ -22,12 +21,8 @@ import {describe, it, before} from '../mocha-support.js';
 // The reason quat.create is used in the tests is to make sure we are working
 // with the specified default type when testing.
 
-function check(Type) {
-  describe('using ' + Type, () => {
-
-    before(() => {
-      quat.setDefaultType(Type);
-    });
+function check(quat, Type) {
+  describe('using ' + quat, () => {
 
     function clone(v) {
       return v.slice ? v.slice() : v;
@@ -456,25 +451,9 @@ function check(Type) {
 
 describe('quat', () => {
 
-  it('should set default type', () => {
-    quat.setDefaultType(Array);
-    let d = quat.create(1, 2, 3, 4);
-    assertIsArray(d);
-
-    d = quat.add([1, 2, 3, 4], [5, 6, 7, 8]);
-    assertIsArray(d);
-
-    quat.setDefaultType(Float32Array);
-    d = quat.create(1, 2, 3, 4);
-    assertInstanceOf(d, Float32Array);
-
-    d = quat.add([1, 2, 3, 4], [5, 6, 7, 8]);
-    assertInstanceOf(d, Float32Array);
-  });
-
-  check(Array);
-  check(Float32Array);
-  check(Float64Array);
+  check(quatn, Array);
+  check(quat, Float32Array);
+  check(quatd, Float64Array);
 
 });
 

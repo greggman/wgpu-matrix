@@ -3,7 +3,7 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "esnext",
-    "outDir": "dist/2.x",
+    "outDir": "dist/3.x",
   },
   "files": [
     "src/wgpu-matrix.ts",
