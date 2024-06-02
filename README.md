@@ -276,7 +276,7 @@ a destination it returns the type of the destination
 ```ts
 mat4.identity()                       // returns Float32Array
 mat4.identity(new Float32Array(16));  // returns Float32Array
-mat4.identity(new Float64Array(16));  // returns Float32Array
+mat4.identity(new Float64Array(16));  // returns Float64Array
 mat4.identity(new Array(16));         // returns number[]
 ```
 
