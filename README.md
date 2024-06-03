@@ -5,7 +5,7 @@
 Fast 3d math library for webgpu
 
 * [Docs](https://wgpu-matrix.org/docs)
-* [Repo](https://github.com/greggman/wgpu-matrix)
+* [Github](https://github.com/greggman/wgpu-matrix)
 * [Tests](https://wgpu-matrix.org/test/)
 
 ## Why another 3d math library?
@@ -146,6 +146,80 @@ import {vec3, mat3} from 'wgpu-matrix';
 * [tar](https://github.com/greggman/wgpu-matrix/tarball/main)
 * [github](https://github.com/greggman/wgpu-matrix)
 
+## Types
+
+### wgpu-matrix functions take any compatible type as input. 
+
+Examples:
+
+```ts
+const view = mat4.lookAt(        //  view is Float32Array
+  [10, 20, 30],  // position
+  [0, 5, 0],     // target
+  [0, 1, 0],     // up
+);
+
+const view2 = mat4.lookAt(         //  view2 is Float32Array
+  new Float32Array([10, 20, 30]),  // position
+  new Float64Array([0, 5, 0],      // target
+  [0, 1, 0],     // up
+);
+```
+
+### wgpu-matrix functions return the type passed as the destination or their default
+
+```ts
+const a = vec2.add([1, 2], [3, 4]);           // a is Float32Array
+const b = vec2.add([1, 2], [3, 4], [0, 0]);   // b is number[]
+
+const j = vec2d.add([1, 2], [3, 4]);          // j is Float64Array
+const k = vec2d.add([1, 2], [3, 4], [0, 0]);  // b is number[]
+
+const f32 = new Float32Array(2);
+const x = vec2d.add([1, 2], [3, 4]);          // x is number[]
+const y = vec2d.add([1, 2], [3, 4], f32);     // y is Float32Array
+```
+
+etc...
+
+Note: You're unlikely to need any thing except `mat3`, `mat4`, `quat`,
+`vec2`, `vec3`, and `vec4` but, there are 3 sets of functions, 
+each one returning a different default
+
+```ts
+mat4.identity()   // returns Float32Array
+mat4d.identity()  // returns Float64Array
+mat4n.identity()  // returns number[]
+```
+
+Similarly there's `mat3d`, `mat3n`, `quatd`, `quatn`,
+`vec2d`, `vec2n`, `vec3d`, `vec3n`, `vec4d`, `vec4n`.
+
+Just to be clear, `identity`, like most functions, takes a destination so
+
+```ts
+const f32 = new Float32Array(16);
+const f64 = new Float64Array(16);
+const arr = new Array<number>(16).fill(0);
+
+mat4.identity()      // returns Float32Array
+mat4.identity(f32)   // returns Float32Array (f32)
+mat4.identity(f64)   // returns Float64Array (f64)
+mat4.identity(arr)   // returns number[] (arr)
+
+mat4d.identity()     // returns Float64Array
+mat4d.identity(f32)  // returns Float32Array (f32)
+mat4d.identity(f64)  // returns Float64Array (f64)
+mat4d.identity(arr)  // returns number[] (arr)
+
+mat4n.identity()     // returns number[]
+mat4n.identity(f32)  // returns Float32Array (f32)
+mat4n.identity(f64)  // returns Float64Array (f64)
+mat4n.identity(arr)  // returns number[] (arr)
+```
+
+The only difference between the sets of functions is what type they default to returning.
+
 ## Notes
 
 [`mat4.perspective`](https://wgpu-matrix.org/docs/functions/mat4.perspective.html),
@@ -280,7 +354,7 @@ mat4.identity(new Float64Array(16));  // returns Float64Array
 mat4.identity(new Array(16));         // returns number[]
 ```
 
-### Types are specific
+#### Types are specific
 
 ```ts
 const a: Mat4 = ...;    // a = Float32Array
@@ -313,7 +387,7 @@ If you really want types for each concrete type there's
 * `Float64Array` types: `Mat3d`, `Mat4d`, `Quatd`, `Vec2d`, `Vec3d`, `Vec4d`,
 * `number[]` types: `Mat3n`, `Mat4n`, `Quatn`, `Vec2n`, `Vec3n`, `Vec4n`
 
-### There are 3 sets of functions, each one returning a different default
+#### There are 3 sets of functions, each one returning a different default
 
 ```ts
 mat4.identity()   // returns Float32Array
