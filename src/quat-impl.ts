@@ -728,7 +728,7 @@ function normalize<T extends QuatArg = QuatType>(v: QuatArg, dst?: T) {
     newDst[0] = 0;
     newDst[1] = 0;
     newDst[2] = 0;
-    newDst[3] = 0;
+    newDst[3] = 1;
   }
 
   return newDst;
