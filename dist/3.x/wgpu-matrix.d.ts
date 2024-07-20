@@ -1,3 +1,7 @@
+/**
+ * Some docs
+ * @namespace wgpu-matrix
+ */
 import { BaseArgType } from './types';
 import { Mat3Arg, Mat3Type } from './mat3-impl';
 import { Mat4Arg, Mat4Type } from './mat4-impl';
@@ -27,7 +31,10 @@ export type Vec2n = Vec2Type<number[]>;
 export type Vec3n = Vec3Type<number[]>;
 export type Vec4n = Vec4Type<number[]>;
 export declare const 
-/** @namespace */
+/**
+ * 4x4 Matrix functions that default to returning `Float32Array`
+ * @namespace
+ */
 mat4: {
     create: (v0?: number | undefined, v1?: number | undefined, v2?: number | undefined, v3?: number | undefined, v4?: number | undefined, v5?: number | undefined, v6?: number | undefined, v7?: number | undefined, v8?: number | undefined, v9?: number | undefined, v10?: number | undefined, v11?: number | undefined, v12?: number | undefined, v13?: number | undefined, v14?: number | undefined, v15?: number | undefined) => Float32Array;
     set: <T extends BaseArgType = Float32Array>(v0: number, v1: number, v2: number, v3: number, v4: number, v5: number, v6: number, v7: number, v8: number, v9: number, v10: number, v11: number, v12: number, v13: number, v14: number, v15: number, dst?: T | undefined) => T;
@@ -75,7 +82,10 @@ mat4: {
     uniformScaling: <T_34 extends BaseArgType = Float32Array>(s: number, dst?: T_34 | undefined) => T_34;
     uniformScale: <T_35 extends BaseArgType = Float32Array>(m: BaseArgType, s: number, dst?: T_35 | undefined) => T_35;
 }, 
-/** @namespace */
+/**
+ * 3x3 Matrix functions that default to returning `Float32Array`
+ * @namespace
+ */
 mat3: {
     clone: <T extends BaseArgType = Float32Array>(m: BaseArgType, dst?: T | undefined) => T;
     create: (v0?: number | undefined, v1?: number | undefined, v2?: number | undefined, v3?: number | undefined, v4?: number | undefined, v5?: number | undefined, v6?: number | undefined, v7?: number | undefined, v8?: number | undefined) => Float32Array;
@@ -107,7 +117,10 @@ mat3: {
     uniformScaling: <T_20 extends BaseArgType = Float32Array>(s: number, dst?: T_20 | undefined) => T_20;
     uniformScale: <T_21 extends BaseArgType = Float32Array>(m: BaseArgType, s: number, dst?: T_21 | undefined) => T_21;
 }, 
-/** @namespace */
+/**
+ * Quaternion functions that default to returning `Float32Array`
+ * @namespace
+ */
 quat: {
     create: (x?: number | undefined, y?: number | undefined, z?: number | undefined, w?: number | undefined) => Float32Array;
     fromValues: (x?: number | undefined, y?: number | undefined, z?: number | undefined, w?: number | undefined) => Float32Array;
@@ -149,7 +162,10 @@ quat: {
     rotationTo: <T_20 extends BaseArgType = Float32Array>(aUnit: BaseArgType, bUnit: BaseArgType, dst?: T_20 | undefined) => T_20;
     sqlerp: <T_21 extends BaseArgType = Float32Array>(a: BaseArgType, b: BaseArgType, c: BaseArgType, d: BaseArgType, t: number, dst?: T_21 | undefined) => T_21;
 }, 
-/** @namespace */
+/**
+ * Vec2 functions that default to returning `Float32Array`
+ * @namespace
+ */
 vec2: {
     create: (x?: number, y?: number) => Float32Array;
     fromValues: (x?: number, y?: number) => Float32Array;
@@ -201,7 +217,10 @@ vec2: {
     truncate: <T_27 extends BaseArgType = Float32Array>(a: BaseArgType, maxLen: number, dst?: T_27 | undefined) => T_27;
     midpoint: <T_28 extends BaseArgType = Float32Array>(a: BaseArgType, b: BaseArgType, dst?: T_28 | undefined) => T_28;
 }, 
-/** @namespace */
+/**
+ * Vec3 functions that default to returning `Float32Array`
+ * @namespace
+ */
 vec3: {
     create: (x?: number | undefined, y?: number | undefined, z?: number | undefined) => Float32Array;
     fromValues: (x?: number | undefined, y?: number | undefined, z?: number | undefined) => Float32Array;
@@ -260,7 +279,10 @@ vec3: {
     truncate: <T_34 extends BaseArgType = Float32Array>(a: BaseArgType, maxLen: number, dst?: T_34 | undefined) => T_34;
     midpoint: <T_35 extends BaseArgType = Float32Array>(a: BaseArgType, b: BaseArgType, dst?: T_35 | undefined) => T_35;
 }, 
-/** @namespace */
+/**
+ * Vec3 functions that default to returning `Float32Array`
+ * @namespace
+ */
 vec4: {
     create: (x?: number | undefined, y?: number | undefined, z?: number | undefined, w?: number | undefined) => Float32Array;
     fromValues: (x?: number | undefined, y?: number | undefined, z?: number | undefined, w?: number | undefined) => Float32Array;

@@ -1,4 +1,4 @@
-/* wgpu-matrix@3.0.1, license MIT */
+/* wgpu-matrix@3.0.2, license MIT */
 function wrapConstructor(OriginalConstructor, modifier) {
     return class extends OriginalConstructor {
         constructor(...args) {
@@ -4678,7 +4678,7 @@ function getAPIImpl$1(Ctor) {
             newDst[0] = 0;
             newDst[1] = 0;
             newDst[2] = 0;
-            newDst[3] = 0;
+            newDst[3] = 1;
         }
         return newDst;
     }
@@ -5532,6 +5532,10 @@ function getAPI(Ctor) {
 }
 
 /**
+ * Some docs
+ * @namespace wgpu-matrix
+ */
+/**
  * Generate wgpu-matrix API for type
  */
 function wgpuMatrixAPI(Mat3Ctor, Mat4Ctor, QuatCtor, Vec2Ctor, Vec3Ctor, Vec4Ctor) {
@@ -5551,43 +5555,97 @@ function wgpuMatrixAPI(Mat3Ctor, Mat4Ctor, QuatCtor, Vec2Ctor, Vec3Ctor, Vec4Cto
     };
 }
 const { 
-/** @namespace */
+/**
+ * 4x4 Matrix functions that default to returning `Float32Array`
+ * @namespace
+ */
 mat4, 
-/** @namespace */
+/**
+ * 3x3 Matrix functions that default to returning `Float32Array`
+ * @namespace
+ */
 mat3, 
-/** @namespace */
+/**
+ * Quaternion functions that default to returning `Float32Array`
+ * @namespace
+ */
 quat, 
-/** @namespace */
+/**
+ * Vec2 functions that default to returning `Float32Array`
+ * @namespace
+ */
 vec2, 
-/** @namespace */
+/**
+ * Vec3 functions that default to returning `Float32Array`
+ * @namespace
+ */
 vec3, 
-/** @namespace */
+/**
+ * Vec3 functions that default to returning `Float32Array`
+ * @namespace
+ */
 vec4, } = wgpuMatrixAPI(Float32Array, Float32Array, Float32Array, Float32Array, Float32Array, Float32Array);
 const { 
-/** @namespace */
+/**
+ * 4x4 Matrix functions that default to returning `Float64Array`
+ * @namespace
+ */
 mat4: mat4d, 
-/** @namespace */
+/**
+ * 3x3 Matrix functions that default to returning `Float64Array`
+ * @namespace
+ */
 mat3: mat3d, 
-/** @namespace */
+/**
+ * Quaternion functions that default to returning `Float64Array`
+ * @namespace
+ */
 quat: quatd, 
-/** @namespace */
+/**
+ * Vec2 functions that default to returning `Float64Array`
+ * @namespace
+ */
 vec2: vec2d, 
-/** @namespace */
+/**
+ * Vec3 functions that default to returning `Float64Array`
+ * @namespace
+ */
 vec3: vec3d, 
-/** @namespace */
+/**
+ * Vec3 functions that default to returning `Float64Array`
+ * @namespace
+ */
 vec4: vec4d, } = wgpuMatrixAPI(Float64Array, Float64Array, Float64Array, Float64Array, Float64Array, Float64Array);
 const { 
-/** @namespace */
+/**
+ * 4x4 Matrix functions that default to returning `number[]`
+ * @namespace
+ */
 mat4: mat4n, 
-/** @namespace */
+/**
+ * 3x3 Matrix functions that default to returning `number[]`
+ * @namespace
+ */
 mat3: mat3n, 
-/** @namespace */
+/**
+ * Quaternion functions that default to returning `number[]`
+ * @namespace
+ */
 quat: quatn, 
-/** @namespace */
+/**
+ * Vec2 functions that default to returning `number[]`
+ * @namespace
+ */
 vec2: vec2n, 
-/** @namespace */
+/**
+ * Vec3 functions that default to returning `number[]`
+ * @namespace
+ */
 vec3: vec3n, 
-/** @namespace */
+/**
+ * Vec3 functions that default to returning `number[]`
+ * @namespace
+ */
 vec4: vec4n, } = wgpuMatrixAPI(ZeroArray, Array, Array, Array, Array, Array);
 
 export { mat3, mat3d, mat3n, mat4, mat4d, mat4n, quat, quatd, quatn, utils, vec2, vec2d, vec2n, vec3, vec3d, vec3n, vec4, vec4d, vec4n };
