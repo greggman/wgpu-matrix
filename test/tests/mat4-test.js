@@ -12,7 +12,6 @@ import {describe, it} from '../mocha-support.js';
 
 
 function check(mat4, Type) {
-
   describe('using ' + Type, () => {
     const m = [
        0,  1,  2,  3,
