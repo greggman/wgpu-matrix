@@ -74,10 +74,10 @@ function wgpuMatrixAPI<
     Vec4Ctor: BaseCtor<Vec4>,
 ) {
   return {
-    /** @namespace mat4 */
-    mat4: getMat4API<Mat3>(Mat3Ctor),
     /** @namespace mat3 */
-    mat3: getMat3API<Mat4>(Mat4Ctor),
+    mat3: getMat3API<Mat3>(Mat3Ctor),
+    /** @namespace mat4 */
+    mat4: getMat4API<Mat4>(Mat4Ctor),
     /** @namespace quat */
     quat: getQuatAPI<Quat>(QuatCtor),
     /** @namespace vec2 */
@@ -91,15 +91,15 @@ function wgpuMatrixAPI<
 
 export const {
   /**
-   * 4x4 Matrix functions that default to returning `Float32Array`
-   * @namespace
-   */
-  mat4,
-  /**
    * 3x3 Matrix functions that default to returning `Float32Array`
    * @namespace
    */
   mat3,
+  /**
+   * 4x4 Matrix functions that default to returning `Float32Array`
+   * @namespace
+   */
+  mat4,
   /**
    * Quaternion functions that default to returning `Float32Array`
    * @namespace
@@ -126,15 +126,15 @@ export const {
 
 export const {
   /**
-   * 4x4 Matrix functions that default to returning `Float64Array`
-   * @namespace
-   */
-  mat4: mat4d,
-  /**
    * 3x3 Matrix functions that default to returning `Float64Array`
    * @namespace
    */
   mat3: mat3d,
+  /**
+   * 4x4 Matrix functions that default to returning `Float64Array`
+   * @namespace
+   */
+  mat4: mat4d,
   /**
    * Quaternion functions that default to returning `Float64Array`
    * @namespace
@@ -161,15 +161,15 @@ export const {
 
 export const {
   /**
-   * 4x4 Matrix functions that default to returning `number[]`
-   * @namespace
-   */
-  mat4: mat4n,
-  /**
    * 3x3 Matrix functions that default to returning `number[]`
    * @namespace
    */
   mat3: mat3n,
+  /**
+   * 4x4 Matrix functions that default to returning `number[]`
+   * @namespace
+   */
+  mat4: mat4n,
   /**
    * Quaternion functions that default to returning `number[]`
    * @namespace

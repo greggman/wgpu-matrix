@@ -32,6 +32,41 @@ export type Vec3n = Vec3Type<number[]>;
 export type Vec4n = Vec4Type<number[]>;
 export declare const 
 /**
+ * 3x3 Matrix functions that default to returning `Float32Array`
+ * @namespace
+ */
+mat3: {
+    clone: <T extends BaseArgType = Float32Array>(m: BaseArgType, dst?: T | undefined) => T;
+    create: (v0?: number | undefined, v1?: number | undefined, v2?: number | undefined, v3?: number | undefined, v4?: number | undefined, v5?: number | undefined, v6?: number | undefined, v7?: number | undefined, v8?: number | undefined) => Float32Array;
+    set: <T_1 extends BaseArgType = Float32Array>(v0: number, v1: number, v2: number, v3: number, v4: number, v5: number, v6: number, v7: number, v8: number, dst?: T_1 | undefined) => T_1;
+    fromMat4: <T_2 extends BaseArgType = Float32Array>(m4: BaseArgType, dst?: T_2 | undefined) => T_2;
+    fromQuat: <T_3 extends BaseArgType = Float32Array>(q: BaseArgType, dst?: T_3 | undefined) => T_3;
+    negate: <T_4 extends BaseArgType = Float32Array>(m: BaseArgType, dst?: T_4 | undefined) => T_4;
+    copy: <T extends BaseArgType = Float32Array>(m: BaseArgType, dst?: T | undefined) => T;
+    equalsApproximately: (a: BaseArgType, b: BaseArgType) => boolean;
+    equals: (a: BaseArgType, b: BaseArgType) => boolean;
+    identity: <T_5 extends BaseArgType = Float32Array>(dst?: T_5 | undefined) => T_5;
+    transpose: <T_6 extends BaseArgType = Float32Array>(m: BaseArgType, dst?: T_6 | undefined) => T_6;
+    inverse: <T_7 extends BaseArgType = Float32Array>(m: BaseArgType, dst?: T_7 | undefined) => T_7;
+    invert: <T_7 extends BaseArgType = Float32Array>(m: BaseArgType, dst?: T_7 | undefined) => T_7;
+    determinant: (m: BaseArgType) => number;
+    mul: <T_8 extends BaseArgType = Float32Array>(a: BaseArgType, b: BaseArgType, dst?: T_8 | undefined) => T_8;
+    multiply: <T_8 extends BaseArgType = Float32Array>(a: BaseArgType, b: BaseArgType, dst?: T_8 | undefined) => T_8;
+    setTranslation: <T_9 extends BaseArgType = Float32Array>(a: BaseArgType, v: BaseArgType, dst?: T_9 | undefined) => T_9;
+    getTranslation: <T_10 extends BaseArgType = Float32Array>(m: BaseArgType, dst?: T_10 | undefined) => T_10;
+    getAxis: <T_11 extends BaseArgType = Float32Array>(m: BaseArgType, axis: number, dst?: T_11 | undefined) => T_11;
+    setAxis: <T_12 extends BaseArgType = Float32Array>(m: BaseArgType, v: BaseArgType, axis: number, dst?: T_12 | undefined) => T_12;
+    getScaling: <T_13 extends BaseArgType = Float32Array>(m: BaseArgType, dst?: T_13 | undefined) => Float32Array | T_13;
+    translation: <T_14 extends BaseArgType = Float32Array>(v: BaseArgType, dst?: T_14 | undefined) => T_14;
+    translate: <T_15 extends BaseArgType = Float32Array>(m: BaseArgType, v: BaseArgType, dst?: T_15 | undefined) => T_15;
+    rotation: <T_16 extends BaseArgType = Float32Array>(angleInRadians: number, dst?: T_16 | undefined) => T_16;
+    rotate: <T_17 extends BaseArgType = Float32Array>(m: BaseArgType, angleInRadians: number, dst?: T_17 | undefined) => T_17;
+    scaling: <T_18 extends BaseArgType = Float32Array>(v: BaseArgType, dst?: T_18 | undefined) => T_18;
+    scale: <T_19 extends BaseArgType = Float32Array>(m: BaseArgType, v: BaseArgType, dst?: T_19 | undefined) => T_19;
+    uniformScaling: <T_20 extends BaseArgType = Float32Array>(s: number, dst?: T_20 | undefined) => T_20;
+    uniformScale: <T_21 extends BaseArgType = Float32Array>(m: BaseArgType, s: number, dst?: T_21 | undefined) => T_21;
+}, 
+/**
  * 4x4 Matrix functions that default to returning `Float32Array`
  * @namespace
  */
@@ -81,41 +116,6 @@ mat4: {
     scale: <T_33 extends BaseArgType = Float32Array>(m: BaseArgType, v: BaseArgType, dst?: T_33 | undefined) => T_33;
     uniformScaling: <T_34 extends BaseArgType = Float32Array>(s: number, dst?: T_34 | undefined) => T_34;
     uniformScale: <T_35 extends BaseArgType = Float32Array>(m: BaseArgType, s: number, dst?: T_35 | undefined) => T_35;
-}, 
-/**
- * 3x3 Matrix functions that default to returning `Float32Array`
- * @namespace
- */
-mat3: {
-    clone: <T extends BaseArgType = Float32Array>(m: BaseArgType, dst?: T | undefined) => T;
-    create: (v0?: number | undefined, v1?: number | undefined, v2?: number | undefined, v3?: number | undefined, v4?: number | undefined, v5?: number | undefined, v6?: number | undefined, v7?: number | undefined, v8?: number | undefined) => Float32Array;
-    set: <T_1 extends BaseArgType = Float32Array>(v0: number, v1: number, v2: number, v3: number, v4: number, v5: number, v6: number, v7: number, v8: number, dst?: T_1 | undefined) => T_1;
-    fromMat4: <T_2 extends BaseArgType = Float32Array>(m4: BaseArgType, dst?: T_2 | undefined) => T_2;
-    fromQuat: <T_3 extends BaseArgType = Float32Array>(q: BaseArgType, dst?: T_3 | undefined) => T_3;
-    negate: <T_4 extends BaseArgType = Float32Array>(m: BaseArgType, dst?: T_4 | undefined) => T_4;
-    copy: <T extends BaseArgType = Float32Array>(m: BaseArgType, dst?: T | undefined) => T;
-    equalsApproximately: (a: BaseArgType, b: BaseArgType) => boolean;
-    equals: (a: BaseArgType, b: BaseArgType) => boolean;
-    identity: <T_5 extends BaseArgType = Float32Array>(dst?: T_5 | undefined) => T_5;
-    transpose: <T_6 extends BaseArgType = Float32Array>(m: BaseArgType, dst?: T_6 | undefined) => T_6;
-    inverse: <T_7 extends BaseArgType = Float32Array>(m: BaseArgType, dst?: T_7 | undefined) => T_7;
-    invert: <T_7 extends BaseArgType = Float32Array>(m: BaseArgType, dst?: T_7 | undefined) => T_7;
-    determinant: (m: BaseArgType) => number;
-    mul: <T_8 extends BaseArgType = Float32Array>(a: BaseArgType, b: BaseArgType, dst?: T_8 | undefined) => T_8;
-    multiply: <T_8 extends BaseArgType = Float32Array>(a: BaseArgType, b: BaseArgType, dst?: T_8 | undefined) => T_8;
-    setTranslation: <T_9 extends BaseArgType = Float32Array>(a: BaseArgType, v: BaseArgType, dst?: T_9 | undefined) => T_9;
-    getTranslation: <T_10 extends BaseArgType = Float32Array>(m: BaseArgType, dst?: T_10 | undefined) => T_10;
-    getAxis: <T_11 extends BaseArgType = Float32Array>(m: BaseArgType, axis: number, dst?: T_11 | undefined) => T_11;
-    setAxis: <T_12 extends BaseArgType = Float32Array>(m: BaseArgType, v: BaseArgType, axis: number, dst?: T_12 | undefined) => T_12;
-    getScaling: <T_13 extends BaseArgType = Float32Array>(m: BaseArgType, dst?: T_13 | undefined) => Float32Array | T_13;
-    translation: <T_14 extends BaseArgType = Float32Array>(v: BaseArgType, dst?: T_14 | undefined) => T_14;
-    translate: <T_15 extends BaseArgType = Float32Array>(m: BaseArgType, v: BaseArgType, dst?: T_15 | undefined) => T_15;
-    rotation: <T_16 extends BaseArgType = Float32Array>(angleInRadians: number, dst?: T_16 | undefined) => T_16;
-    rotate: <T_17 extends BaseArgType = Float32Array>(m: BaseArgType, angleInRadians: number, dst?: T_17 | undefined) => T_17;
-    scaling: <T_18 extends BaseArgType = Float32Array>(v: BaseArgType, dst?: T_18 | undefined) => T_18;
-    scale: <T_19 extends BaseArgType = Float32Array>(m: BaseArgType, v: BaseArgType, dst?: T_19 | undefined) => T_19;
-    uniformScaling: <T_20 extends BaseArgType = Float32Array>(s: number, dst?: T_20 | undefined) => T_20;
-    uniformScale: <T_21 extends BaseArgType = Float32Array>(m: BaseArgType, s: number, dst?: T_21 | undefined) => T_21;
 }, 
 /**
  * Quaternion functions that default to returning `Float32Array`
@@ -329,7 +329,37 @@ vec4: {
     truncate: <T_23 extends BaseArgType = Float32Array>(a: BaseArgType, maxLen: number, dst?: T_23 | undefined) => T_23;
     midpoint: <T_24 extends BaseArgType = Float32Array>(a: BaseArgType, b: BaseArgType, dst?: T_24 | undefined) => T_24;
 };
-export declare const mat4d: {
+export declare const mat3d: {
+    clone: <T extends BaseArgType = Float64Array>(m: BaseArgType, dst?: T | undefined) => T;
+    create: (v0?: number | undefined, v1?: number | undefined, v2?: number | undefined, v3?: number | undefined, v4?: number | undefined, v5?: number | undefined, v6?: number | undefined, v7?: number | undefined, v8?: number | undefined) => Float64Array;
+    set: <T_1 extends BaseArgType = Float64Array>(v0: number, v1: number, v2: number, v3: number, v4: number, v5: number, v6: number, v7: number, v8: number, dst?: T_1 | undefined) => T_1;
+    fromMat4: <T_2 extends BaseArgType = Float64Array>(m4: BaseArgType, dst?: T_2 | undefined) => T_2;
+    fromQuat: <T_3 extends BaseArgType = Float64Array>(q: BaseArgType, dst?: T_3 | undefined) => T_3;
+    negate: <T_4 extends BaseArgType = Float64Array>(m: BaseArgType, dst?: T_4 | undefined) => T_4;
+    copy: <T extends BaseArgType = Float64Array>(m: BaseArgType, dst?: T | undefined) => T;
+    equalsApproximately: (a: BaseArgType, b: BaseArgType) => boolean;
+    equals: (a: BaseArgType, b: BaseArgType) => boolean;
+    identity: <T_5 extends BaseArgType = Float64Array>(dst?: T_5 | undefined) => T_5;
+    transpose: <T_6 extends BaseArgType = Float64Array>(m: BaseArgType, dst?: T_6 | undefined) => T_6;
+    inverse: <T_7 extends BaseArgType = Float64Array>(m: BaseArgType, dst?: T_7 | undefined) => T_7;
+    invert: <T_7 extends BaseArgType = Float64Array>(m: BaseArgType, dst?: T_7 | undefined) => T_7;
+    determinant: (m: BaseArgType) => number;
+    mul: <T_8 extends BaseArgType = Float64Array>(a: BaseArgType, b: BaseArgType, dst?: T_8 | undefined) => T_8;
+    multiply: <T_8 extends BaseArgType = Float64Array>(a: BaseArgType, b: BaseArgType, dst?: T_8 | undefined) => T_8;
+    setTranslation: <T_9 extends BaseArgType = Float64Array>(a: BaseArgType, v: BaseArgType, dst?: T_9 | undefined) => T_9;
+    getTranslation: <T_10 extends BaseArgType = Float64Array>(m: BaseArgType, dst?: T_10 | undefined) => T_10;
+    getAxis: <T_11 extends BaseArgType = Float64Array>(m: BaseArgType, axis: number, dst?: T_11 | undefined) => T_11;
+    setAxis: <T_12 extends BaseArgType = Float64Array>(m: BaseArgType, v: BaseArgType, axis: number, dst?: T_12 | undefined) => T_12;
+    getScaling: <T_13 extends BaseArgType = Float64Array>(m: BaseArgType, dst?: T_13 | undefined) => Float64Array | T_13;
+    translation: <T_14 extends BaseArgType = Float64Array>(v: BaseArgType, dst?: T_14 | undefined) => T_14;
+    translate: <T_15 extends BaseArgType = Float64Array>(m: BaseArgType, v: BaseArgType, dst?: T_15 | undefined) => T_15;
+    rotation: <T_16 extends BaseArgType = Float64Array>(angleInRadians: number, dst?: T_16 | undefined) => T_16;
+    rotate: <T_17 extends BaseArgType = Float64Array>(m: BaseArgType, angleInRadians: number, dst?: T_17 | undefined) => T_17;
+    scaling: <T_18 extends BaseArgType = Float64Array>(v: BaseArgType, dst?: T_18 | undefined) => T_18;
+    scale: <T_19 extends BaseArgType = Float64Array>(m: BaseArgType, v: BaseArgType, dst?: T_19 | undefined) => T_19;
+    uniformScaling: <T_20 extends BaseArgType = Float64Array>(s: number, dst?: T_20 | undefined) => T_20;
+    uniformScale: <T_21 extends BaseArgType = Float64Array>(m: BaseArgType, s: number, dst?: T_21 | undefined) => T_21;
+}, mat4d: {
     create: (v0?: number | undefined, v1?: number | undefined, v2?: number | undefined, v3?: number | undefined, v4?: number | undefined, v5?: number | undefined, v6?: number | undefined, v7?: number | undefined, v8?: number | undefined, v9?: number | undefined, v10?: number | undefined, v11?: number | undefined, v12?: number | undefined, v13?: number | undefined, v14?: number | undefined, v15?: number | undefined) => Float64Array;
     set: <T extends BaseArgType = Float64Array>(v0: number, v1: number, v2: number, v3: number, v4: number, v5: number, v6: number, v7: number, v8: number, v9: number, v10: number, v11: number, v12: number, v13: number, v14: number, v15: number, dst?: T | undefined) => T;
     fromMat3: <T_1 extends BaseArgType = Float64Array>(m3: BaseArgType, dst?: T_1 | undefined) => T_1;
@@ -375,36 +405,6 @@ export declare const mat4d: {
     scale: <T_33 extends BaseArgType = Float64Array>(m: BaseArgType, v: BaseArgType, dst?: T_33 | undefined) => T_33;
     uniformScaling: <T_34 extends BaseArgType = Float64Array>(s: number, dst?: T_34 | undefined) => T_34;
     uniformScale: <T_35 extends BaseArgType = Float64Array>(m: BaseArgType, s: number, dst?: T_35 | undefined) => T_35;
-}, mat3d: {
-    clone: <T extends BaseArgType = Float64Array>(m: BaseArgType, dst?: T | undefined) => T;
-    create: (v0?: number | undefined, v1?: number | undefined, v2?: number | undefined, v3?: number | undefined, v4?: number | undefined, v5?: number | undefined, v6?: number | undefined, v7?: number | undefined, v8?: number | undefined) => Float64Array;
-    set: <T_1 extends BaseArgType = Float64Array>(v0: number, v1: number, v2: number, v3: number, v4: number, v5: number, v6: number, v7: number, v8: number, dst?: T_1 | undefined) => T_1;
-    fromMat4: <T_2 extends BaseArgType = Float64Array>(m4: BaseArgType, dst?: T_2 | undefined) => T_2;
-    fromQuat: <T_3 extends BaseArgType = Float64Array>(q: BaseArgType, dst?: T_3 | undefined) => T_3;
-    negate: <T_4 extends BaseArgType = Float64Array>(m: BaseArgType, dst?: T_4 | undefined) => T_4;
-    copy: <T extends BaseArgType = Float64Array>(m: BaseArgType, dst?: T | undefined) => T;
-    equalsApproximately: (a: BaseArgType, b: BaseArgType) => boolean;
-    equals: (a: BaseArgType, b: BaseArgType) => boolean;
-    identity: <T_5 extends BaseArgType = Float64Array>(dst?: T_5 | undefined) => T_5;
-    transpose: <T_6 extends BaseArgType = Float64Array>(m: BaseArgType, dst?: T_6 | undefined) => T_6;
-    inverse: <T_7 extends BaseArgType = Float64Array>(m: BaseArgType, dst?: T_7 | undefined) => T_7;
-    invert: <T_7 extends BaseArgType = Float64Array>(m: BaseArgType, dst?: T_7 | undefined) => T_7;
-    determinant: (m: BaseArgType) => number;
-    mul: <T_8 extends BaseArgType = Float64Array>(a: BaseArgType, b: BaseArgType, dst?: T_8 | undefined) => T_8;
-    multiply: <T_8 extends BaseArgType = Float64Array>(a: BaseArgType, b: BaseArgType, dst?: T_8 | undefined) => T_8;
-    setTranslation: <T_9 extends BaseArgType = Float64Array>(a: BaseArgType, v: BaseArgType, dst?: T_9 | undefined) => T_9;
-    getTranslation: <T_10 extends BaseArgType = Float64Array>(m: BaseArgType, dst?: T_10 | undefined) => T_10;
-    getAxis: <T_11 extends BaseArgType = Float64Array>(m: BaseArgType, axis: number, dst?: T_11 | undefined) => T_11;
-    setAxis: <T_12 extends BaseArgType = Float64Array>(m: BaseArgType, v: BaseArgType, axis: number, dst?: T_12 | undefined) => T_12;
-    getScaling: <T_13 extends BaseArgType = Float64Array>(m: BaseArgType, dst?: T_13 | undefined) => Float64Array | T_13;
-    translation: <T_14 extends BaseArgType = Float64Array>(v: BaseArgType, dst?: T_14 | undefined) => T_14;
-    translate: <T_15 extends BaseArgType = Float64Array>(m: BaseArgType, v: BaseArgType, dst?: T_15 | undefined) => T_15;
-    rotation: <T_16 extends BaseArgType = Float64Array>(angleInRadians: number, dst?: T_16 | undefined) => T_16;
-    rotate: <T_17 extends BaseArgType = Float64Array>(m: BaseArgType, angleInRadians: number, dst?: T_17 | undefined) => T_17;
-    scaling: <T_18 extends BaseArgType = Float64Array>(v: BaseArgType, dst?: T_18 | undefined) => T_18;
-    scale: <T_19 extends BaseArgType = Float64Array>(m: BaseArgType, v: BaseArgType, dst?: T_19 | undefined) => T_19;
-    uniformScaling: <T_20 extends BaseArgType = Float64Array>(s: number, dst?: T_20 | undefined) => T_20;
-    uniformScale: <T_21 extends BaseArgType = Float64Array>(m: BaseArgType, s: number, dst?: T_21 | undefined) => T_21;
 }, quatd: {
     create: (x?: number | undefined, y?: number | undefined, z?: number | undefined, w?: number | undefined) => Float64Array;
     fromValues: (x?: number | undefined, y?: number | undefined, z?: number | undefined, w?: number | undefined) => Float64Array;
@@ -598,7 +598,37 @@ export declare const mat4d: {
     truncate: <T_23 extends BaseArgType = Float64Array>(a: BaseArgType, maxLen: number, dst?: T_23 | undefined) => T_23;
     midpoint: <T_24 extends BaseArgType = Float64Array>(a: BaseArgType, b: BaseArgType, dst?: T_24 | undefined) => T_24;
 };
-export declare const mat4n: {
+export declare const mat3n: {
+    clone: <T extends BaseArgType = number[]>(m: BaseArgType, dst?: T | undefined) => T;
+    create: (v0?: number | undefined, v1?: number | undefined, v2?: number | undefined, v3?: number | undefined, v4?: number | undefined, v5?: number | undefined, v6?: number | undefined, v7?: number | undefined, v8?: number | undefined) => number[];
+    set: <T_1 extends BaseArgType = number[]>(v0: number, v1: number, v2: number, v3: number, v4: number, v5: number, v6: number, v7: number, v8: number, dst?: T_1 | undefined) => T_1;
+    fromMat4: <T_2 extends BaseArgType = number[]>(m4: BaseArgType, dst?: T_2 | undefined) => T_2;
+    fromQuat: <T_3 extends BaseArgType = number[]>(q: BaseArgType, dst?: T_3 | undefined) => T_3;
+    negate: <T_4 extends BaseArgType = number[]>(m: BaseArgType, dst?: T_4 | undefined) => T_4;
+    copy: <T extends BaseArgType = number[]>(m: BaseArgType, dst?: T | undefined) => T;
+    equalsApproximately: (a: BaseArgType, b: BaseArgType) => boolean;
+    equals: (a: BaseArgType, b: BaseArgType) => boolean;
+    identity: <T_5 extends BaseArgType = number[]>(dst?: T_5 | undefined) => T_5;
+    transpose: <T_6 extends BaseArgType = number[]>(m: BaseArgType, dst?: T_6 | undefined) => T_6;
+    inverse: <T_7 extends BaseArgType = number[]>(m: BaseArgType, dst?: T_7 | undefined) => T_7;
+    invert: <T_7 extends BaseArgType = number[]>(m: BaseArgType, dst?: T_7 | undefined) => T_7;
+    determinant: (m: BaseArgType) => number;
+    mul: <T_8 extends BaseArgType = number[]>(a: BaseArgType, b: BaseArgType, dst?: T_8 | undefined) => T_8;
+    multiply: <T_8 extends BaseArgType = number[]>(a: BaseArgType, b: BaseArgType, dst?: T_8 | undefined) => T_8;
+    setTranslation: <T_9 extends BaseArgType = number[]>(a: BaseArgType, v: BaseArgType, dst?: T_9 | undefined) => T_9;
+    getTranslation: <T_10 extends BaseArgType = number[]>(m: BaseArgType, dst?: T_10 | undefined) => T_10;
+    getAxis: <T_11 extends BaseArgType = number[]>(m: BaseArgType, axis: number, dst?: T_11 | undefined) => T_11;
+    setAxis: <T_12 extends BaseArgType = number[]>(m: BaseArgType, v: BaseArgType, axis: number, dst?: T_12 | undefined) => T_12;
+    getScaling: <T_13 extends BaseArgType = number[]>(m: BaseArgType, dst?: T_13 | undefined) => number[] | T_13;
+    translation: <T_14 extends BaseArgType = number[]>(v: BaseArgType, dst?: T_14 | undefined) => T_14;
+    translate: <T_15 extends BaseArgType = number[]>(m: BaseArgType, v: BaseArgType, dst?: T_15 | undefined) => T_15;
+    rotation: <T_16 extends BaseArgType = number[]>(angleInRadians: number, dst?: T_16 | undefined) => T_16;
+    rotate: <T_17 extends BaseArgType = number[]>(m: BaseArgType, angleInRadians: number, dst?: T_17 | undefined) => T_17;
+    scaling: <T_18 extends BaseArgType = number[]>(v: BaseArgType, dst?: T_18 | undefined) => T_18;
+    scale: <T_19 extends BaseArgType = number[]>(m: BaseArgType, v: BaseArgType, dst?: T_19 | undefined) => T_19;
+    uniformScaling: <T_20 extends BaseArgType = number[]>(s: number, dst?: T_20 | undefined) => T_20;
+    uniformScale: <T_21 extends BaseArgType = number[]>(m: BaseArgType, s: number, dst?: T_21 | undefined) => T_21;
+}, mat4n: {
     create: (v0?: number | undefined, v1?: number | undefined, v2?: number | undefined, v3?: number | undefined, v4?: number | undefined, v5?: number | undefined, v6?: number | undefined, v7?: number | undefined, v8?: number | undefined, v9?: number | undefined, v10?: number | undefined, v11?: number | undefined, v12?: number | undefined, v13?: number | undefined, v14?: number | undefined, v15?: number | undefined) => number[];
     set: <T extends BaseArgType = number[]>(v0: number, v1: number, v2: number, v3: number, v4: number, v5: number, v6: number, v7: number, v8: number, v9: number, v10: number, v11: number, v12: number, v13: number, v14: number, v15: number, dst?: T | undefined) => T;
     fromMat3: <T_1 extends BaseArgType = number[]>(m3: BaseArgType, dst?: T_1 | undefined) => T_1;
@@ -644,36 +674,6 @@ export declare const mat4n: {
     scale: <T_33 extends BaseArgType = number[]>(m: BaseArgType, v: BaseArgType, dst?: T_33 | undefined) => T_33;
     uniformScaling: <T_34 extends BaseArgType = number[]>(s: number, dst?: T_34 | undefined) => T_34;
     uniformScale: <T_35 extends BaseArgType = number[]>(m: BaseArgType, s: number, dst?: T_35 | undefined) => T_35;
-}, mat3n: {
-    clone: <T extends BaseArgType = number[]>(m: BaseArgType, dst?: T | undefined) => T;
-    create: (v0?: number | undefined, v1?: number | undefined, v2?: number | undefined, v3?: number | undefined, v4?: number | undefined, v5?: number | undefined, v6?: number | undefined, v7?: number | undefined, v8?: number | undefined) => number[];
-    set: <T_1 extends BaseArgType = number[]>(v0: number, v1: number, v2: number, v3: number, v4: number, v5: number, v6: number, v7: number, v8: number, dst?: T_1 | undefined) => T_1;
-    fromMat4: <T_2 extends BaseArgType = number[]>(m4: BaseArgType, dst?: T_2 | undefined) => T_2;
-    fromQuat: <T_3 extends BaseArgType = number[]>(q: BaseArgType, dst?: T_3 | undefined) => T_3;
-    negate: <T_4 extends BaseArgType = number[]>(m: BaseArgType, dst?: T_4 | undefined) => T_4;
-    copy: <T extends BaseArgType = number[]>(m: BaseArgType, dst?: T | undefined) => T;
-    equalsApproximately: (a: BaseArgType, b: BaseArgType) => boolean;
-    equals: (a: BaseArgType, b: BaseArgType) => boolean;
-    identity: <T_5 extends BaseArgType = number[]>(dst?: T_5 | undefined) => T_5;
-    transpose: <T_6 extends BaseArgType = number[]>(m: BaseArgType, dst?: T_6 | undefined) => T_6;
-    inverse: <T_7 extends BaseArgType = number[]>(m: BaseArgType, dst?: T_7 | undefined) => T_7;
-    invert: <T_7 extends BaseArgType = number[]>(m: BaseArgType, dst?: T_7 | undefined) => T_7;
-    determinant: (m: BaseArgType) => number;
-    mul: <T_8 extends BaseArgType = number[]>(a: BaseArgType, b: BaseArgType, dst?: T_8 | undefined) => T_8;
-    multiply: <T_8 extends BaseArgType = number[]>(a: BaseArgType, b: BaseArgType, dst?: T_8 | undefined) => T_8;
-    setTranslation: <T_9 extends BaseArgType = number[]>(a: BaseArgType, v: BaseArgType, dst?: T_9 | undefined) => T_9;
-    getTranslation: <T_10 extends BaseArgType = number[]>(m: BaseArgType, dst?: T_10 | undefined) => T_10;
-    getAxis: <T_11 extends BaseArgType = number[]>(m: BaseArgType, axis: number, dst?: T_11 | undefined) => T_11;
-    setAxis: <T_12 extends BaseArgType = number[]>(m: BaseArgType, v: BaseArgType, axis: number, dst?: T_12 | undefined) => T_12;
-    getScaling: <T_13 extends BaseArgType = number[]>(m: BaseArgType, dst?: T_13 | undefined) => number[] | T_13;
-    translation: <T_14 extends BaseArgType = number[]>(v: BaseArgType, dst?: T_14 | undefined) => T_14;
-    translate: <T_15 extends BaseArgType = number[]>(m: BaseArgType, v: BaseArgType, dst?: T_15 | undefined) => T_15;
-    rotation: <T_16 extends BaseArgType = number[]>(angleInRadians: number, dst?: T_16 | undefined) => T_16;
-    rotate: <T_17 extends BaseArgType = number[]>(m: BaseArgType, angleInRadians: number, dst?: T_17 | undefined) => T_17;
-    scaling: <T_18 extends BaseArgType = number[]>(v: BaseArgType, dst?: T_18 | undefined) => T_18;
-    scale: <T_19 extends BaseArgType = number[]>(m: BaseArgType, v: BaseArgType, dst?: T_19 | undefined) => T_19;
-    uniformScaling: <T_20 extends BaseArgType = number[]>(s: number, dst?: T_20 | undefined) => T_20;
-    uniformScale: <T_21 extends BaseArgType = number[]>(m: BaseArgType, s: number, dst?: T_21 | undefined) => T_21;
 }, quatn: {
     create: (x?: number | undefined, y?: number | undefined, z?: number | undefined, w?: number | undefined) => number[];
     fromValues: (x?: number | undefined, y?: number | undefined, z?: number | undefined, w?: number | undefined) => number[];

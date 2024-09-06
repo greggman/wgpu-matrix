@@ -21,7 +21,7 @@ function assertMat3EqualApproximately(a, b) {
   }
 }
 
-function check(Type) {
+function check(mat3, Type) {
   describe('using ' + Type, () => {
     const m = [
        0,  1,  2,  0,
@@ -29,23 +29,25 @@ function check(Type) {
        8,  9, 10,  0,
     ];
 
+    function createCopyOfType(v) {
+      return Type === Array ? new Type(...v) : new Type(v);
+    }
+
     function testM3WithoutDest(func, expected, ...args) {
       const d = func(...args);
       assertMat3EqualApproximately(d, expected);
     }
 
     function testM3WithDest(func, expected, ...args) {
-      expected = new Float32Array(expected);
-      const d = new Float32Array(12);
+      expected = createCopyOfType(expected);
+      const d = new Type(12).fill(0);
       const c = func(...args, d);
       assertStrictEqual(c, d);
       assertMat3EqualApproximately(c, expected);
     }
 
     function testMat3WithAndWithoutDest(func, expected, ...args) {
-      if (Type === Float32Array) {
-        expected = new Float32Array(expected);
-      }
+      expected = createCopyOfType(expected);
       testM3WithoutDest(func, expected, ...args);
       testM3WithDest(func, expected, ...args);
     }
@@ -56,14 +58,14 @@ function check(Type) {
     }
 
     function testV2WithDest(func, expected) {
-      const d = new Float32Array(2);
+      const d = new Type(2).fill(0);
       const c = func(d);
       assertStrictEqual(c, d);
       assertEqual(c, expected);
     }
 
     function testV2WithAndWithoutDest(func, expected) {
-      expected = new Float32Array(expected);
+      expected = createCopyOfType(expected);
       testV2WithoutDest(func, expected);
       testV2WithDest(func, expected);
     }
@@ -90,9 +92,9 @@ function check(Type) {
 
     it('should negate', () => {
       const expected = [
-        -0,  -1,  -2,  -3,
-        -4,  -5,  -6,  -7,
-        -8,  -9, -10, -11,
+        -0,  -1,  -2,  0,
+        -4,  -5,  -6,  0,
+        -8,  -9, -10,  0,
       ];
       testMat3WithAndWithoutDest((newDst) => {
         return mat3.negate(m, newDst);
@@ -350,12 +352,12 @@ function check(Type) {
 
     it('should get scaling', () => {
       const m = [
-        1, 2, 3, 0,
+        2, 8, 3, 0,
         5, 6, 7, 0,
         9, 10, 11, 0,
       ];
       const expected = [
-        Math.sqrt(1 * 1 + 2 * 2),
+        Math.sqrt(2 * 2 + 8 * 8),
         Math.sqrt(5 * 5 + 6 * 6),
       ];
       testV2WithAndWithoutDest((newDst) => {
@@ -491,8 +493,8 @@ function check(Type) {
 }
 
 describe('mat3', () => {
-  check(mat3n);
-  check(mat3);
-  check(mat3d);
+  check(mat3n, Array);
+  check(mat3, Float32Array);
+  check(mat3d, Float64Array);
 });
 

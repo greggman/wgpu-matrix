@@ -1,4 +1,4 @@
-/* wgpu-matrix@3.0.2, license MIT */
+/* wgpu-matrix@3.0.3, license MIT */
 function wrapConstructor(OriginalConstructor, modifier) {
     return class extends OriginalConstructor {
         constructor(...args) {
@@ -5540,10 +5540,10 @@ function getAPI(Ctor) {
  */
 function wgpuMatrixAPI(Mat3Ctor, Mat4Ctor, QuatCtor, Vec2Ctor, Vec3Ctor, Vec4Ctor) {
     return {
-        /** @namespace mat4 */
-        mat4: getAPI$2(Mat3Ctor),
         /** @namespace mat3 */
-        mat3: getAPI$4(Mat4Ctor),
+        mat3: getAPI$4(Mat3Ctor),
+        /** @namespace mat4 */
+        mat4: getAPI$2(Mat4Ctor),
         /** @namespace quat */
         quat: getAPI$1(QuatCtor),
         /** @namespace vec2 */
@@ -5556,15 +5556,15 @@ function wgpuMatrixAPI(Mat3Ctor, Mat4Ctor, QuatCtor, Vec2Ctor, Vec3Ctor, Vec4Cto
 }
 const { 
 /**
- * 4x4 Matrix functions that default to returning `Float32Array`
- * @namespace
- */
-mat4, 
-/**
  * 3x3 Matrix functions that default to returning `Float32Array`
  * @namespace
  */
 mat3, 
+/**
+ * 4x4 Matrix functions that default to returning `Float32Array`
+ * @namespace
+ */
+mat4, 
 /**
  * Quaternion functions that default to returning `Float32Array`
  * @namespace
@@ -5587,15 +5587,15 @@ vec3,
 vec4, } = wgpuMatrixAPI(Float32Array, Float32Array, Float32Array, Float32Array, Float32Array, Float32Array);
 const { 
 /**
- * 4x4 Matrix functions that default to returning `Float64Array`
- * @namespace
- */
-mat4: mat4d, 
-/**
  * 3x3 Matrix functions that default to returning `Float64Array`
  * @namespace
  */
 mat3: mat3d, 
+/**
+ * 4x4 Matrix functions that default to returning `Float64Array`
+ * @namespace
+ */
+mat4: mat4d, 
 /**
  * Quaternion functions that default to returning `Float64Array`
  * @namespace
@@ -5618,15 +5618,15 @@ vec3: vec3d,
 vec4: vec4d, } = wgpuMatrixAPI(Float64Array, Float64Array, Float64Array, Float64Array, Float64Array, Float64Array);
 const { 
 /**
- * 4x4 Matrix functions that default to returning `number[]`
- * @namespace
- */
-mat4: mat4n, 
-/**
  * 3x3 Matrix functions that default to returning `number[]`
  * @namespace
  */
 mat3: mat3n, 
+/**
+ * 4x4 Matrix functions that default to returning `number[]`
+ * @namespace
+ */
+mat4: mat4n, 
 /**
  * Quaternion functions that default to returning `number[]`
  * @namespace
