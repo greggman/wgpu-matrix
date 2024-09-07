@@ -20,23 +20,24 @@ function check(mat4, Type) {
       12, 13, 14, 15,
     ];
 
+    function createCopyOfType(v) {
+      return Type === Array ? new Type(...v) : new Type(v);
+    }
+
     function testMat4WithoutDest(func, expected, ...args) {
       const d = func(...args);
       assertEqualApproximately(d, expected);
     }
 
     function testMat4WithDest(func, expected, ...args) {
-      expected = new Float32Array(expected);
-      const d = new Float32Array(16);
+      expected = createCopyOfType(expected);
+      const d = new Type(16).fill(0);
       const c = func(...args, d);
       assertStrictEqual(c, d);
       assertEqualApproximately(c, expected);
     }
 
     function testMat4WithAndWithoutDest(func, expected, ...args) {
-      if (mat4.identity() instanceof Float32Array) {
-        //expected = new Float32Array(expected);
-      }
       testMat4WithoutDest(func, expected, ...args);
       testMat4WithDest(func, expected, ...args);
     }
@@ -47,14 +48,14 @@ function check(mat4, Type) {
     }
 
     function testVec3WithDest(func, expected) {
-      const d = new Float32Array(3);
+      const d = new Type(3).fill(0);
       const c = func(d);
       assertStrictEqual(c, d);
       assertEqualApproximately(c, expected, 2e7);
     }
 
     function testVec3WithAndWithoutDest(func, expected) {
-      expected = new Float32Array(expected);
+      expected = createCopyOfType(expected);
       testVec3WithoutDest(func, expected);
       testVec3WithDest(func, expected);
     }
@@ -361,7 +362,7 @@ function check(mat4, Type) {
         Math.sqrt(1 * 1 + 2 * 2 + 3 * 3),
         Math.sqrt(5 * 5 + 6 * 6 + 7 * 7),
         Math.sqrt(9 * 9 + 10 * 10 + 11 * 11),
-      ].map(v => new Type([v])[0]);
+      ];
       testVec3WithAndWithoutDest((newDst) => {
         return mat4.getScaling(m, newDst);
       }, expected);

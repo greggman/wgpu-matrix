@@ -57,14 +57,15 @@ mat3: {
     getAxis: <T_11 extends BaseArgType = Float32Array>(m: BaseArgType, axis: number, dst?: T_11 | undefined) => T_11;
     setAxis: <T_12 extends BaseArgType = Float32Array>(m: BaseArgType, v: BaseArgType, axis: number, dst?: T_12 | undefined) => T_12;
     getScaling: <T_13 extends BaseArgType = Float32Array>(m: BaseArgType, dst?: T_13 | undefined) => Float32Array | T_13;
-    translation: <T_14 extends BaseArgType = Float32Array>(v: BaseArgType, dst?: T_14 | undefined) => T_14;
-    translate: <T_15 extends BaseArgType = Float32Array>(m: BaseArgType, v: BaseArgType, dst?: T_15 | undefined) => T_15;
-    rotation: <T_16 extends BaseArgType = Float32Array>(angleInRadians: number, dst?: T_16 | undefined) => T_16;
-    rotate: <T_17 extends BaseArgType = Float32Array>(m: BaseArgType, angleInRadians: number, dst?: T_17 | undefined) => T_17;
-    scaling: <T_18 extends BaseArgType = Float32Array>(v: BaseArgType, dst?: T_18 | undefined) => T_18;
-    scale: <T_19 extends BaseArgType = Float32Array>(m: BaseArgType, v: BaseArgType, dst?: T_19 | undefined) => T_19;
-    uniformScaling: <T_20 extends BaseArgType = Float32Array>(s: number, dst?: T_20 | undefined) => T_20;
-    uniformScale: <T_21 extends BaseArgType = Float32Array>(m: BaseArgType, s: number, dst?: T_21 | undefined) => T_21;
+    get3DScaling: <T_14 extends BaseArgType = Float32Array>(m: BaseArgType, dst?: T_14 | undefined) => Float32Array | T_14;
+    translation: <T_15 extends BaseArgType = Float32Array>(v: BaseArgType, dst?: T_15 | undefined) => T_15;
+    translate: <T_16 extends BaseArgType = Float32Array>(m: BaseArgType, v: BaseArgType, dst?: T_16 | undefined) => T_16;
+    rotation: <T_17 extends BaseArgType = Float32Array>(angleInRadians: number, dst?: T_17 | undefined) => T_17;
+    rotate: <T_18 extends BaseArgType = Float32Array>(m: BaseArgType, angleInRadians: number, dst?: T_18 | undefined) => T_18;
+    scaling: <T_19 extends BaseArgType = Float32Array>(v: BaseArgType, dst?: T_19 | undefined) => T_19;
+    scale: <T_20 extends BaseArgType = Float32Array>(m: BaseArgType, v: BaseArgType, dst?: T_20 | undefined) => T_20;
+    uniformScaling: <T_21 extends BaseArgType = Float32Array>(s: number, dst?: T_21 | undefined) => T_21;
+    uniformScale: <T_22 extends BaseArgType = Float32Array>(m: BaseArgType, s: number, dst?: T_22 | undefined) => T_22;
 }, 
 /**
  * 4x4 Matrix functions that default to returning `Float32Array`
@@ -351,14 +352,15 @@ export declare const mat3d: {
     getAxis: <T_11 extends BaseArgType = Float64Array>(m: BaseArgType, axis: number, dst?: T_11 | undefined) => T_11;
     setAxis: <T_12 extends BaseArgType = Float64Array>(m: BaseArgType, v: BaseArgType, axis: number, dst?: T_12 | undefined) => T_12;
     getScaling: <T_13 extends BaseArgType = Float64Array>(m: BaseArgType, dst?: T_13 | undefined) => Float64Array | T_13;
-    translation: <T_14 extends BaseArgType = Float64Array>(v: BaseArgType, dst?: T_14 | undefined) => T_14;
-    translate: <T_15 extends BaseArgType = Float64Array>(m: BaseArgType, v: BaseArgType, dst?: T_15 | undefined) => T_15;
-    rotation: <T_16 extends BaseArgType = Float64Array>(angleInRadians: number, dst?: T_16 | undefined) => T_16;
-    rotate: <T_17 extends BaseArgType = Float64Array>(m: BaseArgType, angleInRadians: number, dst?: T_17 | undefined) => T_17;
-    scaling: <T_18 extends BaseArgType = Float64Array>(v: BaseArgType, dst?: T_18 | undefined) => T_18;
-    scale: <T_19 extends BaseArgType = Float64Array>(m: BaseArgType, v: BaseArgType, dst?: T_19 | undefined) => T_19;
-    uniformScaling: <T_20 extends BaseArgType = Float64Array>(s: number, dst?: T_20 | undefined) => T_20;
-    uniformScale: <T_21 extends BaseArgType = Float64Array>(m: BaseArgType, s: number, dst?: T_21 | undefined) => T_21;
+    get3DScaling: <T_14 extends BaseArgType = Float64Array>(m: BaseArgType, dst?: T_14 | undefined) => Float64Array | T_14;
+    translation: <T_15 extends BaseArgType = Float64Array>(v: BaseArgType, dst?: T_15 | undefined) => T_15;
+    translate: <T_16 extends BaseArgType = Float64Array>(m: BaseArgType, v: BaseArgType, dst?: T_16 | undefined) => T_16;
+    rotation: <T_17 extends BaseArgType = Float64Array>(angleInRadians: number, dst?: T_17 | undefined) => T_17;
+    rotate: <T_18 extends BaseArgType = Float64Array>(m: BaseArgType, angleInRadians: number, dst?: T_18 | undefined) => T_18;
+    scaling: <T_19 extends BaseArgType = Float64Array>(v: BaseArgType, dst?: T_19 | undefined) => T_19;
+    scale: <T_20 extends BaseArgType = Float64Array>(m: BaseArgType, v: BaseArgType, dst?: T_20 | undefined) => T_20;
+    uniformScaling: <T_21 extends BaseArgType = Float64Array>(s: number, dst?: T_21 | undefined) => T_21;
+    uniformScale: <T_22 extends BaseArgType = Float64Array>(m: BaseArgType, s: number, dst?: T_22 | undefined) => T_22;
 }, mat4d: {
     create: (v0?: number | undefined, v1?: number | undefined, v2?: number | undefined, v3?: number | undefined, v4?: number | undefined, v5?: number | undefined, v6?: number | undefined, v7?: number | undefined, v8?: number | undefined, v9?: number | undefined, v10?: number | undefined, v11?: number | undefined, v12?: number | undefined, v13?: number | undefined, v14?: number | undefined, v15?: number | undefined) => Float64Array;
     set: <T extends BaseArgType = Float64Array>(v0: number, v1: number, v2: number, v3: number, v4: number, v5: number, v6: number, v7: number, v8: number, v9: number, v10: number, v11: number, v12: number, v13: number, v14: number, v15: number, dst?: T | undefined) => T;
@@ -620,14 +622,15 @@ export declare const mat3n: {
     getAxis: <T_11 extends BaseArgType = number[]>(m: BaseArgType, axis: number, dst?: T_11 | undefined) => T_11;
     setAxis: <T_12 extends BaseArgType = number[]>(m: BaseArgType, v: BaseArgType, axis: number, dst?: T_12 | undefined) => T_12;
     getScaling: <T_13 extends BaseArgType = number[]>(m: BaseArgType, dst?: T_13 | undefined) => number[] | T_13;
-    translation: <T_14 extends BaseArgType = number[]>(v: BaseArgType, dst?: T_14 | undefined) => T_14;
-    translate: <T_15 extends BaseArgType = number[]>(m: BaseArgType, v: BaseArgType, dst?: T_15 | undefined) => T_15;
-    rotation: <T_16 extends BaseArgType = number[]>(angleInRadians: number, dst?: T_16 | undefined) => T_16;
-    rotate: <T_17 extends BaseArgType = number[]>(m: BaseArgType, angleInRadians: number, dst?: T_17 | undefined) => T_17;
-    scaling: <T_18 extends BaseArgType = number[]>(v: BaseArgType, dst?: T_18 | undefined) => T_18;
-    scale: <T_19 extends BaseArgType = number[]>(m: BaseArgType, v: BaseArgType, dst?: T_19 | undefined) => T_19;
-    uniformScaling: <T_20 extends BaseArgType = number[]>(s: number, dst?: T_20 | undefined) => T_20;
-    uniformScale: <T_21 extends BaseArgType = number[]>(m: BaseArgType, s: number, dst?: T_21 | undefined) => T_21;
+    get3DScaling: <T_14 extends BaseArgType = number[]>(m: BaseArgType, dst?: T_14 | undefined) => number[] | T_14;
+    translation: <T_15 extends BaseArgType = number[]>(v: BaseArgType, dst?: T_15 | undefined) => T_15;
+    translate: <T_16 extends BaseArgType = number[]>(m: BaseArgType, v: BaseArgType, dst?: T_16 | undefined) => T_16;
+    rotation: <T_17 extends BaseArgType = number[]>(angleInRadians: number, dst?: T_17 | undefined) => T_17;
+    rotate: <T_18 extends BaseArgType = number[]>(m: BaseArgType, angleInRadians: number, dst?: T_18 | undefined) => T_18;
+    scaling: <T_19 extends BaseArgType = number[]>(v: BaseArgType, dst?: T_19 | undefined) => T_19;
+    scale: <T_20 extends BaseArgType = number[]>(m: BaseArgType, v: BaseArgType, dst?: T_20 | undefined) => T_20;
+    uniformScaling: <T_21 extends BaseArgType = number[]>(s: number, dst?: T_21 | undefined) => T_21;
+    uniformScale: <T_22 extends BaseArgType = number[]>(m: BaseArgType, s: number, dst?: T_22 | undefined) => T_22;
 }, mat4n: {
     create: (v0?: number | undefined, v1?: number | undefined, v2?: number | undefined, v3?: number | undefined, v4?: number | undefined, v5?: number | undefined, v6?: number | undefined, v7?: number | undefined, v8?: number | undefined, v9?: number | undefined, v10?: number | undefined, v11?: number | undefined, v12?: number | undefined, v13?: number | undefined, v14?: number | undefined, v15?: number | undefined) => number[];
     set: <T extends BaseArgType = number[]>(v0: number, v1: number, v2: number, v3: number, v4: number, v5: number, v6: number, v7: number, v8: number, v9: number, v10: number, v11: number, v12: number, v13: number, v14: number, v15: number, dst?: T | undefined) => T;

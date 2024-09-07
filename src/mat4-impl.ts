@@ -687,11 +687,11 @@ function setAxis<T extends Mat4Arg = MatType>(m: Mat4Arg, v: Vec3Arg, axis: numb
   return newDst;
 }
 
-///**
-// * Returns the scaling component of the matrix
-// * @param m - The Matrix
-// * @param dst - The vector to set. If not passed a new one is created.
-// */
+/**
+ * Returns the "3d" scaling component of the matrix
+ * @param m - The Matrix
+ * @param dst - The vector to set. If not passed a new one is created.
+ */
 function getScaling<T extends Vec3Arg = MatType>(m: Mat4Arg, dst?: T) {
   const newDst = (dst ?? vec3.create()) as T;
 

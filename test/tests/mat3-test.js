@@ -70,6 +70,24 @@ function check(mat3, Type) {
       testV2WithDest(func, expected);
     }
 
+    function testV3WithoutDest(func, expected) {
+      const d = func();
+      assertEqual(d, expected);
+    }
+
+    function testV3WithDest(func, expected) {
+      const d = new Type(3).fill(0);
+      const c = func(d);
+      assertStrictEqual(c, d);
+      assertEqual(c, expected);
+    }
+
+    function testVec3WithAndWithoutDest(func, expected) {
+      expected = createCopyOfType(expected);
+      testV3WithoutDest(func, expected);
+      testV3WithDest(func, expected);
+    }
+
     it('should create', () => {
       const tests = [
         {e: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], args: []},
@@ -362,6 +380,23 @@ function check(mat3, Type) {
       ];
       testV2WithAndWithoutDest((newDst) => {
         return mat3.getScaling(m, newDst);
+      }, expected);
+    });
+
+    it('should get 3D scaling', () => {
+      const m = [
+        1, 2, 3, 4,
+        5, 6, 7, 8,
+        9, 10, 11, 12,
+        13, 14, 15, 16,
+      ];
+      const expected = [
+        Math.sqrt(1 * 1 + 2 * 2 + 3 * 3),
+        Math.sqrt(5 * 5 + 6 * 6 + 7 * 7),
+        Math.sqrt(9 * 9 + 10 * 10 + 11 * 11),
+      ];
+      testVec3WithAndWithoutDest((newDst) => {
+        return mat3.get3DScaling(m, newDst);
       }, expected);
     });
 

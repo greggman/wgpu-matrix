@@ -25,7 +25,9 @@ import { QuatArg } from './quat';
 import { Mat3Arg, Mat3Type } from './mat3';
 import { Mat4Arg } from './mat4';
 import { Vec2Arg } from './vec2';
+import { Vec3Arg } from './vec3';
 import { getAPI as getVec2API } from './vec2-impl';
+import { getAPI as getVec3API } from './vec3-impl';
 import { BaseArgType } from './types';
 
 export { Mat3Arg, Mat3Type };
@@ -37,6 +39,7 @@ type Mat3Ctor<T extends Mat3Arg = Float32Array>  = new (n: number) => T;
  * */
 function getAPIImpl<MatType extends Mat3Arg = Float32Array>(Ctor: Mat3Ctor<MatType>) {
   const vec2 = getVec2API<MatType>(Ctor);
+  const vec3 = getVec3API<MatType>(Ctor);
 
 /**
  * Create a Mat3 from values
@@ -502,11 +505,11 @@ function setAxis<T extends Mat3Arg = MatType>(m: Mat3Arg, v: Vec2Arg, axis: numb
   return newDst;
 }
 
-///**
-// * Returns the scaling component of the matrix
-// * @param m - The Matrix
-// * @param dst - The vector to set. If not passed a new one is created.
-// */
+/**
+ * Returns the "2d" scaling component of the matrix
+ * @param m - The Matrix
+ * @param dst - The vector to set. If not passed a new one is created.
+ */
 function getScaling<T extends Vec2Arg = MatType>(m: Mat3Arg, dst?: T) {
   const newDst = (dst ?? vec2.create());
 
@@ -517,6 +520,32 @@ function getScaling<T extends Vec2Arg = MatType>(m: Mat3Arg, dst?: T) {
 
   newDst[0] = Math.sqrt(xx * xx + xy * xy);
   newDst[1] = Math.sqrt(yx * yx + yy * yy);
+
+  return newDst;
+}
+
+
+/**
+ * Returns the "3d" scaling component of the matrix
+ * @param m - The Matrix
+ * @param dst - The vector to set. If not passed a new one is created.
+ */
+function get3DScaling<T extends Vec3Arg = MatType>(m: Mat3Arg, dst?: T) {
+  const newDst = (dst ?? vec3.create());
+
+  const xx = m[0];
+  const xy = m[1];
+  const xz = m[2];
+  const yx = m[4];
+  const yy = m[5];
+  const yz = m[6];
+  const zx = m[8];
+  const zy = m[9];
+  const zz = m[10];
+
+  newDst[0] = Math.sqrt(xx * xx + xy * xy + xz * xz);
+  newDst[1] = Math.sqrt(yx * yx + yy * yy + yz * yz);
+  newDst[2] = Math.sqrt(zx * zx + zy * zy + zz * zz);
 
   return newDst;
 }
@@ -750,6 +779,7 @@ return {
   getAxis,
   setAxis,
   getScaling,
+  get3DScaling,
   translation,
   translate,
   rotation,
