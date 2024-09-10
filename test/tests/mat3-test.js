@@ -448,6 +448,78 @@ function check(mat3, Type) {
       }, expected);
     });
 
+    it('should make rotationX matrix', () => {
+      const angle = 1.23;
+      const c = Math.cos(angle);
+      const s = Math.sin(angle);
+      const expected = [
+         1,  0, 0, 0,
+         0,  c, s, 0,
+         0, -s, c, 0,
+      ];
+      testMat3WithAndWithoutDest((newDst) => {
+        return mat3.rotationX(angle, newDst);
+      }, expected);
+    });
+
+    it('should rotateX', () => {
+      const angle = 1.23;
+      // switch to Array type to keep precision high for expected
+      const expected = mat3n.multiply(m, mat3.rotationX(angle));
+
+      testMat3WithAndWithoutDest((newDst) => {
+        return mat3.rotateX(m, angle, newDst);
+      }, expected);
+    });
+
+    it('should make rotationY matrix', () => {
+      const angle = 1.23;
+      const c = Math.cos(angle);
+      const s = Math.sin(angle);
+      const expected = [
+         c, 0, -s, 0,
+         0, 1,  0, 0,
+         s, 0,  c, 0,
+      ];
+      testMat3WithAndWithoutDest((newDst) => {
+        return mat3.rotationY(angle, newDst);
+      }, expected);
+    });
+
+    it('should rotateY', () => {
+      const angle = 1.23;
+      // switch to Array type to keep precision high for expected
+      const expected = mat3n.multiply(m, mat3.rotationY(angle));
+
+      testMat3WithAndWithoutDest((newDst) => {
+        return mat3.rotateY(m, angle, newDst);
+      }, expected);
+    });
+
+    it('should make rotationZ matrix', () => {
+      const angle = 1.23;
+      const c = Math.cos(angle);
+      const s = Math.sin(angle);
+      const expected = [
+         c, s, 0, 0,
+        -s, c, 0, 0,
+         0, 0, 1, 0,
+      ];
+      testMat3WithAndWithoutDest((newDst) => {
+        return mat3.rotationZ(angle, newDst);
+      }, expected);
+    });
+
+    it('should rotateZ', () => {
+      const angle = 1.23;
+      // switch to Array type to keep precision high for expected
+      const expected = mat3n.multiply(m, mat3.rotationZ(angle));
+
+      testMat3WithAndWithoutDest((newDst) => {
+        return mat3.rotateZ(m, angle, newDst);
+      }, expected);
+    });
+
     it('should make scaling matrix', () => {
       const expected = [
         2, 0, 0, 0,
@@ -470,6 +542,28 @@ function check(mat3, Type) {
       }, expected);
     });
 
+    it('should make 3D scaling matrix', () => {
+      const expected = [
+        2, 0, 0, 0,
+        0, 3, 0, 0,
+        0, 0, 4, 0,
+      ];
+      testMat3WithAndWithoutDest((newDst) => {
+        return mat3.scaling3D([2, 3, 4], newDst);
+      }, expected);
+    });
+
+    it('should scale 3D', () => {
+      const expected = [
+         0,  2,  4,  0,
+        12, 15, 18,  0,
+        32, 36, 40,  0,
+      ];
+      testMat3WithAndWithoutDest((newDst) => {
+        return mat3.scale3D(m, [2, 3, 4], newDst);
+      }, expected);
+    });
+
     it('should make uniform scaling matrix', () => {
       const expected = [
         2, 0, 0, 0,
@@ -489,6 +583,28 @@ function check(mat3, Type) {
       ];
       testMat3WithAndWithoutDest((newDst) => {
         return mat3.uniformScale(m, 2, newDst);
+      }, expected);
+    });
+
+    it('should make uniform scaling 3D matrix', () => {
+      const expected = [
+        2, 0, 0, 0,
+        0, 2, 0, 0,
+        0, 0, 2, 0,
+      ];
+      testMat3WithAndWithoutDest((newDst) => {
+        return mat3.uniformScaling3D(2, newDst);
+      }, expected);
+    });
+
+    it('should uniformly scale 3D', () => {
+      const expected = [
+         0,  2,  4,  0,
+         8, 10, 12,  0,
+        16, 18, 20,  0,
+      ];
+      testMat3WithAndWithoutDest((newDst) => {
+        return mat3.uniformScale3D(m, 2, newDst);
       }, expected);
     });
 

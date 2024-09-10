@@ -62,10 +62,20 @@ mat3: {
     translate: <T_16 extends BaseArgType = Float32Array>(m: BaseArgType, v: BaseArgType, dst?: T_16 | undefined) => T_16;
     rotation: <T_17 extends BaseArgType = Float32Array>(angleInRadians: number, dst?: T_17 | undefined) => T_17;
     rotate: <T_18 extends BaseArgType = Float32Array>(m: BaseArgType, angleInRadians: number, dst?: T_18 | undefined) => T_18;
-    scaling: <T_19 extends BaseArgType = Float32Array>(v: BaseArgType, dst?: T_19 | undefined) => T_19;
-    scale: <T_20 extends BaseArgType = Float32Array>(m: BaseArgType, v: BaseArgType, dst?: T_20 | undefined) => T_20;
-    uniformScaling: <T_21 extends BaseArgType = Float32Array>(s: number, dst?: T_21 | undefined) => T_21;
-    uniformScale: <T_22 extends BaseArgType = Float32Array>(m: BaseArgType, s: number, dst?: T_22 | undefined) => T_22;
+    rotationX: <T_19 extends BaseArgType = Float32Array>(angleInRadians: number, dst?: T_19 | undefined) => T_19;
+    rotateX: <T_20 extends BaseArgType = Float32Array>(m: BaseArgType, angleInRadians: number, dst?: T_20 | undefined) => T_20;
+    rotationY: <T_21 extends BaseArgType = Float32Array>(angleInRadians: number, dst?: T_21 | undefined) => T_21;
+    rotateY: <T_22 extends BaseArgType = Float32Array>(m: BaseArgType, angleInRadians: number, dst?: T_22 | undefined) => T_22;
+    rotationZ: <T_17 extends BaseArgType = Float32Array>(angleInRadians: number, dst?: T_17 | undefined) => T_17;
+    rotateZ: <T_18 extends BaseArgType = Float32Array>(m: BaseArgType, angleInRadians: number, dst?: T_18 | undefined) => T_18;
+    scaling: <T_23 extends BaseArgType = Float32Array>(v: BaseArgType, dst?: T_23 | undefined) => T_23;
+    scale: <T_24 extends BaseArgType = Float32Array>(m: BaseArgType, v: BaseArgType, dst?: T_24 | undefined) => T_24;
+    uniformScaling: <T_25 extends BaseArgType = Float32Array>(s: number, dst?: T_25 | undefined) => T_25;
+    uniformScale: <T_26 extends BaseArgType = Float32Array>(m: BaseArgType, s: number, dst?: T_26 | undefined) => T_26;
+    scaling3D: <T_27 extends BaseArgType = Float32Array>(v: BaseArgType, dst?: T_27 | undefined) => T_27;
+    scale3D: <T_28 extends BaseArgType = Float32Array>(m: BaseArgType, v: BaseArgType, dst?: T_28 | undefined) => T_28;
+    uniformScaling3D: <T_29 extends BaseArgType = Float32Array>(s: number, dst?: T_29 | undefined) => T_29;
+    uniformScale3D: <T_30 extends BaseArgType = Float32Array>(m: BaseArgType, s: number, dst?: T_30 | undefined) => T_30;
 }, 
 /**
  * 4x4 Matrix functions that default to returning `Float32Array`
@@ -357,10 +367,20 @@ export declare const mat3d: {
     translate: <T_16 extends BaseArgType = Float64Array>(m: BaseArgType, v: BaseArgType, dst?: T_16 | undefined) => T_16;
     rotation: <T_17 extends BaseArgType = Float64Array>(angleInRadians: number, dst?: T_17 | undefined) => T_17;
     rotate: <T_18 extends BaseArgType = Float64Array>(m: BaseArgType, angleInRadians: number, dst?: T_18 | undefined) => T_18;
-    scaling: <T_19 extends BaseArgType = Float64Array>(v: BaseArgType, dst?: T_19 | undefined) => T_19;
-    scale: <T_20 extends BaseArgType = Float64Array>(m: BaseArgType, v: BaseArgType, dst?: T_20 | undefined) => T_20;
-    uniformScaling: <T_21 extends BaseArgType = Float64Array>(s: number, dst?: T_21 | undefined) => T_21;
-    uniformScale: <T_22 extends BaseArgType = Float64Array>(m: BaseArgType, s: number, dst?: T_22 | undefined) => T_22;
+    rotationX: <T_19 extends BaseArgType = Float64Array>(angleInRadians: number, dst?: T_19 | undefined) => T_19;
+    rotateX: <T_20 extends BaseArgType = Float64Array>(m: BaseArgType, angleInRadians: number, dst?: T_20 | undefined) => T_20;
+    rotationY: <T_21 extends BaseArgType = Float64Array>(angleInRadians: number, dst?: T_21 | undefined) => T_21;
+    rotateY: <T_22 extends BaseArgType = Float64Array>(m: BaseArgType, angleInRadians: number, dst?: T_22 | undefined) => T_22;
+    rotationZ: <T_17 extends BaseArgType = Float64Array>(angleInRadians: number, dst?: T_17 | undefined) => T_17;
+    rotateZ: <T_18 extends BaseArgType = Float64Array>(m: BaseArgType, angleInRadians: number, dst?: T_18 | undefined) => T_18;
+    scaling: <T_23 extends BaseArgType = Float64Array>(v: BaseArgType, dst?: T_23 | undefined) => T_23;
+    scale: <T_24 extends BaseArgType = Float64Array>(m: BaseArgType, v: BaseArgType, dst?: T_24 | undefined) => T_24;
+    uniformScaling: <T_25 extends BaseArgType = Float64Array>(s: number, dst?: T_25 | undefined) => T_25;
+    uniformScale: <T_26 extends BaseArgType = Float64Array>(m: BaseArgType, s: number, dst?: T_26 | undefined) => T_26;
+    scaling3D: <T_27 extends BaseArgType = Float64Array>(v: BaseArgType, dst?: T_27 | undefined) => T_27;
+    scale3D: <T_28 extends BaseArgType = Float64Array>(m: BaseArgType, v: BaseArgType, dst?: T_28 | undefined) => T_28;
+    uniformScaling3D: <T_29 extends BaseArgType = Float64Array>(s: number, dst?: T_29 | undefined) => T_29;
+    uniformScale3D: <T_30 extends BaseArgType = Float64Array>(m: BaseArgType, s: number, dst?: T_30 | undefined) => T_30;
 }, mat4d: {
     create: (v0?: number | undefined, v1?: number | undefined, v2?: number | undefined, v3?: number | undefined, v4?: number | undefined, v5?: number | undefined, v6?: number | undefined, v7?: number | undefined, v8?: number | undefined, v9?: number | undefined, v10?: number | undefined, v11?: number | undefined, v12?: number | undefined, v13?: number | undefined, v14?: number | undefined, v15?: number | undefined) => Float64Array;
     set: <T extends BaseArgType = Float64Array>(v0: number, v1: number, v2: number, v3: number, v4: number, v5: number, v6: number, v7: number, v8: number, v9: number, v10: number, v11: number, v12: number, v13: number, v14: number, v15: number, dst?: T | undefined) => T;
@@ -627,10 +647,20 @@ export declare const mat3n: {
     translate: <T_16 extends BaseArgType = number[]>(m: BaseArgType, v: BaseArgType, dst?: T_16 | undefined) => T_16;
     rotation: <T_17 extends BaseArgType = number[]>(angleInRadians: number, dst?: T_17 | undefined) => T_17;
     rotate: <T_18 extends BaseArgType = number[]>(m: BaseArgType, angleInRadians: number, dst?: T_18 | undefined) => T_18;
-    scaling: <T_19 extends BaseArgType = number[]>(v: BaseArgType, dst?: T_19 | undefined) => T_19;
-    scale: <T_20 extends BaseArgType = number[]>(m: BaseArgType, v: BaseArgType, dst?: T_20 | undefined) => T_20;
-    uniformScaling: <T_21 extends BaseArgType = number[]>(s: number, dst?: T_21 | undefined) => T_21;
-    uniformScale: <T_22 extends BaseArgType = number[]>(m: BaseArgType, s: number, dst?: T_22 | undefined) => T_22;
+    rotationX: <T_19 extends BaseArgType = number[]>(angleInRadians: number, dst?: T_19 | undefined) => T_19;
+    rotateX: <T_20 extends BaseArgType = number[]>(m: BaseArgType, angleInRadians: number, dst?: T_20 | undefined) => T_20;
+    rotationY: <T_21 extends BaseArgType = number[]>(angleInRadians: number, dst?: T_21 | undefined) => T_21;
+    rotateY: <T_22 extends BaseArgType = number[]>(m: BaseArgType, angleInRadians: number, dst?: T_22 | undefined) => T_22;
+    rotationZ: <T_17 extends BaseArgType = number[]>(angleInRadians: number, dst?: T_17 | undefined) => T_17;
+    rotateZ: <T_18 extends BaseArgType = number[]>(m: BaseArgType, angleInRadians: number, dst?: T_18 | undefined) => T_18;
+    scaling: <T_23 extends BaseArgType = number[]>(v: BaseArgType, dst?: T_23 | undefined) => T_23;
+    scale: <T_24 extends BaseArgType = number[]>(m: BaseArgType, v: BaseArgType, dst?: T_24 | undefined) => T_24;
+    uniformScaling: <T_25 extends BaseArgType = number[]>(s: number, dst?: T_25 | undefined) => T_25;
+    uniformScale: <T_26 extends BaseArgType = number[]>(m: BaseArgType, s: number, dst?: T_26 | undefined) => T_26;
+    scaling3D: <T_27 extends BaseArgType = number[]>(v: BaseArgType, dst?: T_27 | undefined) => T_27;
+    scale3D: <T_28 extends BaseArgType = number[]>(m: BaseArgType, v: BaseArgType, dst?: T_28 | undefined) => T_28;
+    uniformScaling3D: <T_29 extends BaseArgType = number[]>(s: number, dst?: T_29 | undefined) => T_29;
+    uniformScale3D: <T_30 extends BaseArgType = number[]>(m: BaseArgType, s: number, dst?: T_30 | undefined) => T_30;
 }, mat4n: {
     create: (v0?: number | undefined, v1?: number | undefined, v2?: number | undefined, v3?: number | undefined, v4?: number | undefined, v5?: number | undefined, v6?: number | undefined, v7?: number | undefined, v8?: number | undefined, v9?: number | undefined, v10?: number | undefined, v11?: number | undefined, v12?: number | undefined, v13?: number | undefined, v14?: number | undefined, v15?: number | undefined) => number[];
     set: <T extends BaseArgType = number[]>(v0: number, v1: number, v2: number, v3: number, v4: number, v5: number, v6: number, v7: number, v8: number, v9: number, v10: number, v11: number, v12: number, v13: number, v14: number, v15: number, dst?: T | undefined) => T;
