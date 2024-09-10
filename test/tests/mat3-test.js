@@ -542,6 +542,28 @@ function check(mat3, Type) {
       }, expected);
     });
 
+    it('should make 3D scaling matrix', () => {
+      const expected = [
+        2, 0, 0, 0,
+        0, 3, 0, 0,
+        0, 0, 4, 0,
+      ];
+      testMat3WithAndWithoutDest((newDst) => {
+        return mat3.scaling3D([2, 3, 4], newDst);
+      }, expected);
+    });
+
+    it('should scale 3D', () => {
+      const expected = [
+         0,  2,  4,  0,
+        12, 15, 18,  0,
+        32, 36, 40,  0,
+      ];
+      testMat3WithAndWithoutDest((newDst) => {
+        return mat3.scale3D(m, [2, 3, 4], newDst);
+      }, expected);
+    });
+
     it('should make uniform scaling matrix', () => {
       const expected = [
         2, 0, 0, 0,
@@ -561,6 +583,28 @@ function check(mat3, Type) {
       ];
       testMat3WithAndWithoutDest((newDst) => {
         return mat3.uniformScale(m, 2, newDst);
+      }, expected);
+    });
+
+    it('should make uniform scaling 3D matrix', () => {
+      const expected = [
+        2, 0, 0, 0,
+        0, 2, 0, 0,
+        0, 0, 2, 0,
+      ];
+      testMat3WithAndWithoutDest((newDst) => {
+        return mat3.uniformScaling3D(2, newDst);
+      }, expected);
+    });
+
+    it('should uniformly scale 3D', () => {
+      const expected = [
+         0,  2,  4,  0,
+         8, 10, 12,  0,
+        16, 18, 20,  0,
+      ];
+      testMat3WithAndWithoutDest((newDst) => {
+        return mat3.uniformScale3D(m, 2, newDst);
       }, expected);
     });
 

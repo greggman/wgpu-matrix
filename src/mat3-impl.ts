@@ -792,7 +792,7 @@ const rotateZ = rotate;
 
 /**
  * Creates a 3-by-3 matrix which scales in each dimension by an amount given by
- * the corresponding entry in the given vector; assumes the vector has three
+ * the corresponding entry in the given vector; assumes the vector has two
  * entries.
  * @param v - A vector of
  *     2 entries specifying the factor by which to scale in each dimension.
@@ -812,7 +812,7 @@ function scaling<T extends Mat3Arg = MatType>(v: Vec2Arg, dst?: T) {
 /**
  * Scales the given 3-by-3 matrix in each dimension by an amount
  * given by the corresponding entry in the given vector; assumes the vector has
- * three entries.
+ * two entries.
  * @param m - The matrix to be modified.
  * @param v - A vector of 2 entries specifying the
  *     factor by which to scale in each dimension.
@@ -843,7 +843,58 @@ function scale<T extends Mat3Arg = MatType>(m: Mat3Arg, v: Vec2Arg, dst?: T) {
 }
 
 /**
- * Creates a 3-by-3 matrix which scales uniformly in each dimension
+ * Creates a 3-by-3 matrix which scales in each dimension by an amount given by
+ * the corresponding entry in the given vector; assumes the vector has three
+ * entries.
+ * @param v - A vector of
+ *     3 entries specifying the factor by which to scale in each dimension.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The scaling matrix.
+ */
+function scaling3D<T extends Mat3Arg = MatType>(v: Vec3Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(12)) as T;
+
+  newDst[ 0] = v[0];  newDst[ 1] = 0;     newDst[ 2] = 0;
+  newDst[ 4] = 0;     newDst[ 5] = v[1];  newDst[ 6] = 0;
+  newDst[ 8] = 0;     newDst[ 9] = 0;     newDst[10] = v[2];
+
+  return newDst;
+}
+
+/**
+ * Scales the given 3-by-3 matrix in each dimension by an amount
+ * given by the corresponding entry in the given vector; assumes the vector has
+ * three entries.
+ * @param m - The matrix to be modified.
+ * @param v - A vector of 3 entries specifying the
+ *     factor by which to scale in each dimension.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The scaled matrix.
+ */
+function scale3D<T extends Mat3Arg = MatType>(m: Mat3Arg, v: Vec3Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(12)) as T;
+
+  const v0 = v[0];
+  const v1 = v[1];
+  const v2 = v[2];
+
+  newDst[ 0] = v0 * m[0 * 4 + 0];
+  newDst[ 1] = v0 * m[0 * 4 + 1];
+  newDst[ 2] = v0 * m[0 * 4 + 2];
+
+  newDst[ 4] = v1 * m[1 * 4 + 0];
+  newDst[ 5] = v1 * m[1 * 4 + 1];
+  newDst[ 6] = v1 * m[1 * 4 + 2];
+
+  newDst[ 8] = v2 * m[2 * 4 + 0];
+  newDst[ 9] = v2 * m[2 * 4 + 1];
+  newDst[10] = v2 * m[2 * 4 + 2];
+
+  return newDst;
+}
+
+/**
+ * Creates a 3-by-3 matrix which scales uniformly in the X and Y dimensions
  * @param s - Amount to scale
  * @param dst - matrix to hold result. If not passed a new one is created.
  * @returns The scaling matrix.
@@ -859,7 +910,7 @@ function uniformScaling<T extends Mat3Arg = MatType>(s: number, dst?: T) {
 }
 
 /**
- * Scales the given 3-by-3 matrix in each dimension by an amount
+ * Scales the given 3-by-3 matrix in the X and Y dimension by an amount
  * given.
  * @param m - The matrix to be modified.
  * @param s - Amount to scale.
@@ -882,6 +933,48 @@ function uniformScale<T extends Mat3Arg = MatType>(m: Mat3Arg, s: number, dst?: 
     newDst[ 9] = m[ 9];
     newDst[10] = m[10];
   }
+
+  return newDst;
+}
+
+/**
+ * Creates a 3-by-3 matrix which scales uniformly in each dimension
+ * @param s - Amount to scale
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The scaling matrix.
+ */
+function uniformScaling3D<T extends Mat3Arg = MatType>(s: number, dst?: T) {
+  const newDst = (dst ?? new Ctor(12)) as T;
+
+  newDst[ 0] = s;  newDst[ 1] = 0;  newDst[ 2] = 0;
+  newDst[ 4] = 0;  newDst[ 5] = s;  newDst[ 6] = 0;
+  newDst[ 8] = 0;  newDst[ 9] = 0;  newDst[10] = s;
+
+  return newDst;
+}
+
+/**
+ * Scales the given 3-by-3 matrix in each dimension by an amount
+ * given.
+ * @param m - The matrix to be modified.
+ * @param s - Amount to scale.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns The scaled matrix.
+ */
+function uniformScale3D<T extends Mat3Arg = MatType>(m: Mat3Arg, s: number, dst?: T) {
+  const newDst = (dst ?? new Ctor(12)) as T;
+
+  newDst[ 0] = s * m[0 * 4 + 0];
+  newDst[ 1] = s * m[0 * 4 + 1];
+  newDst[ 2] = s * m[0 * 4 + 2];
+
+  newDst[ 4] = s * m[1 * 4 + 0];
+  newDst[ 5] = s * m[1 * 4 + 1];
+  newDst[ 6] = s * m[1 * 4 + 2];
+
+  newDst[ 8] = s * m[2 * 4 + 0];
+  newDst[ 9] = s * m[2 * 4 + 1];
+  newDst[10] = s * m[2 * 4 + 2];
 
   return newDst;
 }
@@ -923,6 +1016,10 @@ return {
   scale,
   uniformScaling,
   uniformScale,
+  scaling3D,
+  scale3D,
+  uniformScaling3D,
+  uniformScale3D,
 };
 
 }
