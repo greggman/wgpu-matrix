@@ -5,8 +5,8 @@
  * values.
  */
 export interface MutableNumberArray {
-	readonly length: number;
-	[n: number]: number;
+  readonly length: number;
+  [n: number]: number;
 }
 
 /**
