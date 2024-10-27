@@ -2,7 +2,7 @@
  * Some docs
  * @namespace wgpu-matrix
  */
-import {BaseArgType, ZeroArray} from './types';
+import {MutableNumberArray, BaseArgType, ZeroArray} from './types';
 import {Mat3Arg, Mat3Type, getAPI as getMat3API} from './mat3-impl';
 import {Mat4Arg, Mat4Type, getAPI as getMat4API} from './mat4-impl';
 import {QuatArg, QuatType, getAPI as getQuatAPI, RotationOrder} from './quat-impl';
@@ -15,6 +15,7 @@ export {
   RotationOrder,
   utils,
 
+  MutableNumberArray,
   BaseArgType,
 
   Mat3Arg,

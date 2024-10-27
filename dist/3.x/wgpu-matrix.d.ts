@@ -2,7 +2,7 @@
  * Some docs
  * @namespace wgpu-matrix
  */
-import { BaseArgType } from './types';
+import { MutableNumberArray, BaseArgType } from './types';
 import { Mat3Arg, Mat3Type } from './mat3-impl';
 import { Mat4Arg, Mat4Type } from './mat4-impl';
 import { QuatArg, QuatType, RotationOrder } from './quat-impl';
@@ -10,7 +10,7 @@ import { Vec2Arg, Vec2Type } from './vec2-impl';
 import { Vec3Arg, Vec3Type } from './vec3-impl';
 import { Vec4Arg, Vec4Type } from './vec4-impl';
 import * as utils from './utils';
-export { RotationOrder, utils, BaseArgType, Mat3Arg, Mat4Arg, QuatArg, Vec2Arg, Vec3Arg, Vec4Arg, Mat3Type, Mat4Type, QuatType, Vec2Type, Vec3Type, Vec4Type, };
+export { RotationOrder, utils, MutableNumberArray, BaseArgType, Mat3Arg, Mat4Arg, QuatArg, Vec2Arg, Vec3Arg, Vec4Arg, Mat3Type, Mat4Type, QuatType, Vec2Type, Vec3Type, Vec4Type, };
 export type BaseCtor<T extends BaseArgType> = new (n: number) => T;
 export type Mat3 = Mat3Type<Float32Array>;
 export type Mat4 = Mat4Type<Float32Array>;
