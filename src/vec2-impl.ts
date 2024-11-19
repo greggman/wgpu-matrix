@@ -640,7 +640,7 @@ function zero<T extends Vec2Arg = VecType>(dst?: T) {
 
 
 /**
- * transform Vec2 by 4x4 matrix
+ * Transform Vec2 by 4x4 matrix
  * @param v - the vector
  * @param m - The matrix.
  * @param dst - optional Vec2 to store result. If not passed a new one is created.
@@ -659,7 +659,7 @@ function transformMat4<T extends Vec2Arg = VecType>(v: Vec2Arg, m: Mat4Arg, dst?
 }
 
 /**
- * Transforms vec4 by 3x3 matrix
+ * Transform Vec2 by 3x3 matrix
  *
  * @param v - the vector
  * @param m - The matrix.
