@@ -1,8 +1,56 @@
 import { QuatArg, QuatType } from './quat';
+import { Mat3Arg } from './mat3.js';
+import { Mat4Arg } from './mat4.js';
+import { Vec3Arg } from './vec3.js';
 import { BaseArgType } from './types';
 export { QuatArg, QuatType };
 type QuatCtor<T extends QuatArg = Float32Array> = new (n: number) => T;
 export type RotationOrder = 'xyz' | 'xzy' | 'yxz' | 'yzx' | 'zxy' | 'zyx';
+/**
+ * Generates am typed API for Qud
+ * */
+declare function getAPIImpl<QuatType extends QuatArg = Float32Array>(Ctor: QuatCtor<QuatType>): {
+    create: (x?: number, y?: number, z?: number, w?: number) => QuatType;
+    fromValues: (x?: number, y?: number, z?: number, w?: number) => QuatType;
+    set: <T extends QuatArg = QuatType>(x: number, y: number, z: number, w: number, dst?: T) => T;
+    fromAxisAngle: <T extends QuatArg = QuatType>(axis: Vec3Arg, angleInRadians: number, dst?: T) => T;
+    toAxisAngle: <T extends Vec3Arg = QuatType>(q: QuatArg, dst?: T) => {
+        angle: number;
+        axis: T;
+    };
+    angle: (a: QuatArg, b: QuatArg) => number;
+    multiply: <T extends QuatArg = QuatType>(a: QuatArg, b: QuatArg, dst?: T) => T;
+    mul: <T extends QuatArg = QuatType>(a: QuatArg, b: QuatArg, dst?: T) => T;
+    rotateX: <T extends QuatArg = QuatType>(q: QuatArg, angleInRadians: number, dst?: T) => T;
+    rotateY: <T extends QuatArg = QuatType>(q: QuatArg, angleInRadians: number, dst?: T) => T;
+    rotateZ: <T extends QuatArg = QuatType>(q: QuatArg, angleInRadians: number, dst?: T) => T;
+    slerp: <T extends QuatArg = QuatType>(a: QuatArg, b: QuatArg, t: number, dst?: T) => T;
+    inverse: <T extends QuatArg = QuatType>(q: QuatArg, dst?: T) => T;
+    conjugate: <T extends QuatArg = QuatType>(q: QuatArg, dst?: T) => T;
+    fromMat: <T extends QuatArg = QuatType>(m: Mat3Arg | Mat4Arg, dst?: T) => T;
+    fromEuler: <T extends QuatArg = QuatType>(xAngleInRadians: number, yAngleInRadians: number, zAngleInRadians: number, order: RotationOrder, dst?: T) => T;
+    copy: <T extends QuatArg = QuatType>(q: QuatArg, dst?: T) => T;
+    clone: <T extends QuatArg = QuatType>(q: QuatArg, dst?: T) => T;
+    add: <T extends QuatArg = QuatType>(a: QuatArg, b: QuatArg, dst?: T) => T;
+    subtract: <T extends QuatArg = QuatType>(a: QuatArg, b: QuatArg, dst?: T) => T;
+    sub: <T extends QuatArg = QuatType>(a: QuatArg, b: QuatArg, dst?: T) => T;
+    mulScalar: <T extends QuatArg = QuatType>(v: QuatArg, k: number, dst?: T) => T;
+    scale: <T extends QuatArg = QuatType>(v: QuatArg, k: number, dst?: T) => T;
+    divScalar: <T extends QuatArg = QuatType>(v: QuatArg, k: number, dst?: T) => T;
+    dot: (a: QuatArg, b: QuatArg) => number;
+    lerp: <T extends QuatArg = QuatType>(a: QuatArg, b: QuatArg, t: number, dst?: T) => T;
+    length: (v: QuatArg) => number;
+    len: (v: QuatArg) => number;
+    lengthSq: (v: QuatArg) => number;
+    lenSq: (v: QuatArg) => number;
+    normalize: <T extends QuatArg = QuatType>(v: QuatArg, dst?: T) => T;
+    equalsApproximately: (a: QuatArg, b: QuatArg) => boolean;
+    equals: (a: QuatArg, b: QuatArg) => boolean;
+    identity: <T extends QuatArg = QuatType>(dst?: T) => T;
+    rotationTo: <T extends QuatArg = QuatType>(aUnit: Vec3Arg, bUnit: Vec3Arg, dst?: T) => T;
+    sqlerp: <T extends QuatArg = QuatType>(a: QuatArg, b: QuatArg, c: QuatArg, d: QuatArg, t: number, dst?: T) => T;
+};
+type API<T extends BaseArgType = Float32Array> = ReturnType<typeof getAPIImpl<T>>;
 /**
  *
  * Quat4 math functions.
@@ -25,44 +73,4 @@ export type RotationOrder = 'xyz' | 'xzy' | 'yxz' | 'yzx' | 'zxy' | 'zyx';
  *     quat4.cross(v1, v2, v1);  // Puts the cross product of v1 x v2 in v1
  *
  */
-export declare function getAPI<T extends QuatArg = Float32Array>(Ctor: QuatCtor<T>): {
-    create: (x?: number | undefined, y?: number | undefined, z?: number | undefined, w?: number | undefined) => T;
-    fromValues: (x?: number | undefined, y?: number | undefined, z?: number | undefined, w?: number | undefined) => T;
-    set: <T_1 extends BaseArgType = T>(x: number, y: number, z: number, w: number, dst?: T_1 | undefined) => T_1;
-    fromAxisAngle: <T_2 extends BaseArgType = T>(axis: BaseArgType, angleInRadians: number, dst?: T_2 | undefined) => T_2;
-    toAxisAngle: <T_3 extends BaseArgType = T>(q: BaseArgType, dst?: T_3 | undefined) => {
-        angle: number;
-        axis: T_3;
-    };
-    angle: (a: BaseArgType, b: BaseArgType) => number;
-    multiply: <T_4 extends BaseArgType = T>(a: BaseArgType, b: BaseArgType, dst?: T_4 | undefined) => T_4;
-    mul: <T_4 extends BaseArgType = T>(a: BaseArgType, b: BaseArgType, dst?: T_4 | undefined) => T_4;
-    rotateX: <T_5 extends BaseArgType = T>(q: BaseArgType, angleInRadians: number, dst?: T_5 | undefined) => T_5;
-    rotateY: <T_6 extends BaseArgType = T>(q: BaseArgType, angleInRadians: number, dst?: T_6 | undefined) => T_6;
-    rotateZ: <T_7 extends BaseArgType = T>(q: BaseArgType, angleInRadians: number, dst?: T_7 | undefined) => T_7;
-    slerp: <T_8 extends BaseArgType = T>(a: BaseArgType, b: BaseArgType, t: number, dst?: T_8 | undefined) => T_8;
-    inverse: <T_9 extends BaseArgType = T>(q: BaseArgType, dst?: T_9 | undefined) => T_9;
-    conjugate: <T_10 extends BaseArgType = T>(q: BaseArgType, dst?: T_10 | undefined) => T_10;
-    fromMat: <T_11 extends BaseArgType = T>(m: BaseArgType, dst?: T_11 | undefined) => T_11;
-    fromEuler: <T_12 extends BaseArgType = T>(xAngleInRadians: number, yAngleInRadians: number, zAngleInRadians: number, order: RotationOrder, dst?: T_12 | undefined) => T_12;
-    copy: <T_13 extends BaseArgType = T>(q: BaseArgType, dst?: T_13 | undefined) => T_13;
-    clone: <T_13 extends BaseArgType = T>(q: BaseArgType, dst?: T_13 | undefined) => T_13;
-    add: <T_14 extends BaseArgType = T>(a: BaseArgType, b: BaseArgType, dst?: T_14 | undefined) => T_14;
-    subtract: <T_15 extends BaseArgType = T>(a: BaseArgType, b: BaseArgType, dst?: T_15 | undefined) => T_15;
-    sub: <T_15 extends BaseArgType = T>(a: BaseArgType, b: BaseArgType, dst?: T_15 | undefined) => T_15;
-    mulScalar: <T_16 extends BaseArgType = T>(v: BaseArgType, k: number, dst?: T_16 | undefined) => T_16;
-    scale: <T_16 extends BaseArgType = T>(v: BaseArgType, k: number, dst?: T_16 | undefined) => T_16;
-    divScalar: <T_17 extends BaseArgType = T>(v: BaseArgType, k: number, dst?: T_17 | undefined) => T_17;
-    dot: (a: BaseArgType, b: BaseArgType) => number;
-    lerp: <T_18 extends BaseArgType = T>(a: BaseArgType, b: BaseArgType, t: number, dst?: T_18 | undefined) => T_18;
-    length: (v: BaseArgType) => number;
-    len: (v: BaseArgType) => number;
-    lengthSq: (v: BaseArgType) => number;
-    lenSq: (v: BaseArgType) => number;
-    normalize: <T_19 extends BaseArgType = T>(v: BaseArgType, dst?: T_19 | undefined) => T_19;
-    equalsApproximately: (a: BaseArgType, b: BaseArgType) => boolean;
-    equals: (a: BaseArgType, b: BaseArgType) => boolean;
-    identity: <T_20 extends BaseArgType = T>(dst?: T_20 | undefined) => T_20;
-    rotationTo: <T_21 extends BaseArgType = T>(aUnit: BaseArgType, bUnit: BaseArgType, dst?: T_21 | undefined) => T_21;
-    sqlerp: <T_22 extends BaseArgType = T>(a: BaseArgType, b: BaseArgType, c: BaseArgType, d: BaseArgType, t: number, dst?: T_22 | undefined) => T_22;
-};
+export declare function getAPI<T extends QuatArg = Float32Array>(Ctor: QuatCtor<T>): API<T>;

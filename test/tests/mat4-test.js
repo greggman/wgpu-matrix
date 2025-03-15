@@ -94,6 +94,29 @@ function check(mat4, Type) {
       }, expected);
     });
 
+    it('should add', () => {
+      const expected = [
+         0,   2,   4,   6,
+         8,  10,  12,  14,
+        16,  18,  20,  22,
+        24,  26,  28,  30,
+      ];
+      testMat4WithAndWithoutDest((newDst) => {
+        return mat4.add(m, m, newDst);
+      }, expected);
+    });
+
+    it('should multiplyScalar', () => {
+      const expected = [
+         0,   2,   4,   6,
+         8,  10,  12,  14,
+        16,  18,  20,  22,
+        24,  26,  28,  30,
+      ];
+      testMat4WithAndWithoutDest((newDst) => {
+        return mat4.multiplyScalar(m, 2, newDst);
+      }, expected);
+    });
     it('should copy', () => {
       const expected = m;
       testMat4WithAndWithoutDest((newDst) => {

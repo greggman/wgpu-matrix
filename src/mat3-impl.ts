@@ -194,6 +194,49 @@ function negate<T extends Mat3Arg = MatType>(m: Mat3Arg, dst?: T) {
 }
 
 /**
+ * multiply a matrix by a scalar matrix.
+ * @param m - The matrix.
+ * @param s - the scalar
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns m * s.
+ */
+function multiplyScalar<T extends Mat3Arg = MatType>(m: Mat3Arg, s: number, dst?: T) {
+  const newDst = (dst ?? new Ctor(12)) as T;
+
+  newDst[ 0] = m[ 0] * s;  newDst[ 1] = m[ 1] * s;  newDst[ 2] = m[ 2] * s;
+  newDst[ 4] = m[ 4] * s;  newDst[ 5] = m[ 5] * s;  newDst[ 6] = m[ 6] * s;
+  newDst[ 8] = m[ 8] * s;  newDst[ 9] = m[ 9] * s;  newDst[10] = m[10] * s;
+
+  return newDst;
+}
+
+/**
+ * multiply a matrix by a scalar matrix.
+ * @param m - The matrix.
+ * @param s - the scalar
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns m * s.
+ */
+const mulScalar = multiplyScalar;
+
+/**
+ * add 2 matrices.
+ * @param a - matrix 1.
+ * @param b - matrix 2.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns a + b.
+ */
+function add<T extends Mat3Arg = MatType>(a: Mat3Arg, b: Mat3Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(12)) as T;
+
+  newDst[ 0] = a[ 0] + b[ 0];  newDst[ 1] = a[ 1] + b[ 1];  newDst[ 2] = a[ 2] + b[ 2];
+  newDst[ 4] = a[ 4] + b[ 4];  newDst[ 5] = a[ 5] + b[ 5];  newDst[ 6] = a[ 6] + b[ 6];
+  newDst[ 8] = a[ 8] + b[ 8];  newDst[ 9] = a[ 9] + b[ 9];  newDst[10] = a[10] + b[10];
+
+  return newDst;
+}
+
+/**
  * Copies a matrix. (same as {@link mat3.clone})
  * Also see {@link mat3.create} and {@link mat3.set}
  * @param m - The matrix.
@@ -980,46 +1023,49 @@ function uniformScale3D<T extends Mat3Arg = MatType>(m: Mat3Arg, s: number, dst?
 }
 
 return {
+  add,
   clone,
+  copy,
   create,
-  set,
+  determinant,
+  equals,
+  equalsApproximately,
   fromMat4,
   fromQuat,
-  negate,
-  copy,
-  equalsApproximately,
-  equals,
+  get3DScaling,
+  getAxis,
+  getScaling,
+  getTranslation,
   identity,
-  transpose,
   inverse,
   invert,
-  determinant,
   mul,
+  mulScalar,
   multiply,
-  setTranslation,
-  getTranslation,
-  getAxis,
-  setAxis,
-  getScaling,
-  get3DScaling,
-  translation,
-  translate,
-  rotation,
+  multiplyScalar,
+  negate,
   rotate,
-  rotationX,
   rotateX,
-  rotationY,
   rotateY,
-  rotationZ,
   rotateZ,
-  scaling,
+  rotation,
+  rotationX,
+  rotationY,
+  rotationZ,
   scale,
-  uniformScaling,
-  uniformScale,
-  scaling3D,
   scale3D,
-  uniformScaling3D,
+  scaling,
+  scaling3D,
+  set,
+  setAxis,
+  setTranslation,
+  translate,
+  translation,
+  transpose,
+  uniformScale,
   uniformScale3D,
+  uniformScaling,
+  uniformScaling3D,
 };
 
 }

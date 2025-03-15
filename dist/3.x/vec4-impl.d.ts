@@ -4,6 +4,56 @@ import { BaseArgType } from './types';
 export { Vec4Arg, Vec4Type };
 type Vec4Ctor<T extends Vec4Arg = Float32Array> = new (n: number) => T;
 /**
+ * Generates am typed API for Vec4
+ * */
+declare function getAPIImpl<VecType extends Vec4Arg = Float32Array>(Ctor: Vec4Ctor<VecType>): {
+    create: (x?: number, y?: number, z?: number, w?: number) => VecType;
+    fromValues: (x?: number, y?: number, z?: number, w?: number) => VecType;
+    set: <T extends Vec4Arg = VecType>(x: number, y: number, z: number, w: number, dst?: T) => T;
+    ceil: <T extends Vec4Arg = VecType>(v: Vec4Arg, dst?: T) => T;
+    floor: <T extends Vec4Arg = VecType>(v: Vec4Arg, dst?: T) => T;
+    round: <T extends Vec4Arg = VecType>(v: Vec4Arg, dst?: T) => T;
+    clamp: <T extends Vec4Arg = VecType>(v: Vec4Arg, min?: number, max?: number, dst?: T) => T;
+    add: <T extends Vec4Arg = VecType>(a: Vec4Arg, b: Vec4Arg, dst?: T) => T;
+    addScaled: <T extends Vec4Arg = VecType>(a: Vec4Arg, b: Vec4Arg, scale: number, dst?: T) => T;
+    subtract: <T extends Vec4Arg = VecType>(a: Vec4Arg, b: Vec4Arg, dst?: T) => T;
+    sub: <T extends Vec4Arg = VecType>(a: Vec4Arg, b: Vec4Arg, dst?: T) => T;
+    equalsApproximately: (a: Vec4Arg, b: Vec4Arg) => boolean;
+    equals: (a: Vec4Arg, b: Vec4Arg) => boolean;
+    lerp: <T extends Vec4Arg = VecType>(a: Vec4Arg, b: Vec4Arg, t: number, dst?: T) => T;
+    lerpV: <T extends Vec4Arg = VecType>(a: Vec4Arg, b: Vec4Arg, t: Vec4Arg, dst?: T) => T;
+    max: <T extends Vec4Arg = VecType>(a: Vec4Arg, b: Vec4Arg, dst?: T) => T;
+    min: <T extends Vec4Arg = VecType>(a: Vec4Arg, b: Vec4Arg, dst?: T) => T;
+    mulScalar: <T extends Vec4Arg = VecType>(v: Vec4Arg, k: number, dst?: T) => T;
+    scale: <T extends Vec4Arg = VecType>(v: Vec4Arg, k: number, dst?: T) => T;
+    divScalar: <T extends Vec4Arg = VecType>(v: Vec4Arg, k: number, dst?: T) => T;
+    inverse: <T extends Vec4Arg = VecType>(v: Vec4Arg, dst?: T) => T;
+    invert: <T extends Vec4Arg = VecType>(v: Vec4Arg, dst?: T) => T;
+    dot: (a: Vec4Arg, b: Vec4Arg) => number;
+    length: (v: Vec4Arg) => number;
+    len: (v: Vec4Arg) => number;
+    lengthSq: (v: Vec4Arg) => number;
+    lenSq: (v: Vec4Arg) => number;
+    distance: (a: Vec4Arg, b: Vec4Arg) => number;
+    dist: (a: Vec4Arg, b: Vec4Arg) => number;
+    distanceSq: (a: Vec4Arg, b: Vec4Arg) => number;
+    distSq: (a: Vec4Arg, b: Vec4Arg) => number;
+    normalize: <T extends Vec4Arg = VecType>(v: Vec4Arg, dst?: T) => T;
+    negate: <T extends Vec4Arg = VecType>(v: Vec4Arg, dst?: T) => T;
+    copy: <T extends Vec4Arg = VecType>(v: Vec4Arg, dst?: T) => T;
+    clone: <T extends Vec4Arg = VecType>(v: Vec4Arg, dst?: T) => T;
+    multiply: <T extends Vec4Arg = VecType>(a: Vec4Arg, b: Vec4Arg, dst?: T) => T;
+    mul: <T extends Vec4Arg = VecType>(a: Vec4Arg, b: Vec4Arg, dst?: T) => T;
+    divide: <T extends Vec4Arg = VecType>(a: Vec4Arg, b: Vec4Arg, dst?: T) => T;
+    div: <T extends Vec4Arg = VecType>(a: Vec4Arg, b: Vec4Arg, dst?: T) => T;
+    zero: <T extends Vec4Arg = VecType>(dst?: T) => T;
+    transformMat4: <T extends Vec4Arg = VecType>(v: Vec4Arg, m: Mat4Arg, dst?: T) => T;
+    setLength: <T extends Vec4Arg = VecType>(a: Vec4Arg, len: number, dst?: T) => T;
+    truncate: <T extends Vec4Arg = VecType>(a: Vec4Arg, maxLen: number, dst?: T) => T;
+    midpoint: <T extends Vec4Arg = VecType>(a: Vec4Arg, b: Vec4Arg, dst?: T) => T;
+};
+type API<T extends BaseArgType = Float32Array> = ReturnType<typeof getAPIImpl<T>>;
+/**
  *
  * Vec4 math functions.
  *
@@ -25,49 +75,4 @@ type Vec4Ctor<T extends Vec4Arg = Float32Array> = new (n: number) => T;
  *     vec4.cross(v1, v2, v1);  // Puts the cross product of v1 x v2 in v1
  *
  */
-export declare function getAPI<T extends Mat4Arg = Float32Array>(Ctor: Vec4Ctor<T>): {
-    create: (x?: number | undefined, y?: number | undefined, z?: number | undefined, w?: number | undefined) => T;
-    fromValues: (x?: number | undefined, y?: number | undefined, z?: number | undefined, w?: number | undefined) => T;
-    set: <T_1 extends BaseArgType = T>(x: number, y: number, z: number, w: number, dst?: T_1 | undefined) => T_1;
-    ceil: <T_2 extends BaseArgType = T>(v: BaseArgType, dst?: T_2 | undefined) => T_2;
-    floor: <T_3 extends BaseArgType = T>(v: BaseArgType, dst?: T_3 | undefined) => T_3;
-    round: <T_4 extends BaseArgType = T>(v: BaseArgType, dst?: T_4 | undefined) => T_4;
-    clamp: <T_5 extends BaseArgType = T>(v: BaseArgType, min?: number, max?: number, dst?: T_5 | undefined) => T_5;
-    add: <T_6 extends BaseArgType = T>(a: BaseArgType, b: BaseArgType, dst?: T_6 | undefined) => T_6;
-    addScaled: <T_7 extends BaseArgType = T>(a: BaseArgType, b: BaseArgType, scale: number, dst?: T_7 | undefined) => T_7;
-    subtract: <T_8 extends BaseArgType = T>(a: BaseArgType, b: BaseArgType, dst?: T_8 | undefined) => T_8;
-    sub: <T_8 extends BaseArgType = T>(a: BaseArgType, b: BaseArgType, dst?: T_8 | undefined) => T_8;
-    equalsApproximately: (a: BaseArgType, b: BaseArgType) => boolean;
-    equals: (a: BaseArgType, b: BaseArgType) => boolean;
-    lerp: <T_9 extends BaseArgType = T>(a: BaseArgType, b: BaseArgType, t: number, dst?: T_9 | undefined) => T_9;
-    lerpV: <T_10 extends BaseArgType = T>(a: BaseArgType, b: BaseArgType, t: BaseArgType, dst?: T_10 | undefined) => T_10;
-    max: <T_11 extends BaseArgType = T>(a: BaseArgType, b: BaseArgType, dst?: T_11 | undefined) => T_11;
-    min: <T_12 extends BaseArgType = T>(a: BaseArgType, b: BaseArgType, dst?: T_12 | undefined) => T_12;
-    mulScalar: <T_13 extends BaseArgType = T>(v: BaseArgType, k: number, dst?: T_13 | undefined) => T_13;
-    scale: <T_13 extends BaseArgType = T>(v: BaseArgType, k: number, dst?: T_13 | undefined) => T_13;
-    divScalar: <T_14 extends BaseArgType = T>(v: BaseArgType, k: number, dst?: T_14 | undefined) => T_14;
-    inverse: <T_15 extends BaseArgType = T>(v: BaseArgType, dst?: T_15 | undefined) => T_15;
-    invert: <T_15 extends BaseArgType = T>(v: BaseArgType, dst?: T_15 | undefined) => T_15;
-    dot: (a: BaseArgType, b: BaseArgType) => number;
-    length: (v: BaseArgType) => number;
-    len: (v: BaseArgType) => number;
-    lengthSq: (v: BaseArgType) => number;
-    lenSq: (v: BaseArgType) => number;
-    distance: (a: BaseArgType, b: BaseArgType) => number;
-    dist: (a: BaseArgType, b: BaseArgType) => number;
-    distanceSq: (a: BaseArgType, b: BaseArgType) => number;
-    distSq: (a: BaseArgType, b: BaseArgType) => number;
-    normalize: <T_16 extends BaseArgType = T>(v: BaseArgType, dst?: T_16 | undefined) => T_16;
-    negate: <T_17 extends BaseArgType = T>(v: BaseArgType, dst?: T_17 | undefined) => T_17;
-    copy: <T_18 extends BaseArgType = T>(v: BaseArgType, dst?: T_18 | undefined) => T_18;
-    clone: <T_18 extends BaseArgType = T>(v: BaseArgType, dst?: T_18 | undefined) => T_18;
-    multiply: <T_19 extends BaseArgType = T>(a: BaseArgType, b: BaseArgType, dst?: T_19 | undefined) => T_19;
-    mul: <T_19 extends BaseArgType = T>(a: BaseArgType, b: BaseArgType, dst?: T_19 | undefined) => T_19;
-    divide: <T_20 extends BaseArgType = T>(a: BaseArgType, b: BaseArgType, dst?: T_20 | undefined) => T_20;
-    div: <T_20 extends BaseArgType = T>(a: BaseArgType, b: BaseArgType, dst?: T_20 | undefined) => T_20;
-    zero: <T_21 extends BaseArgType = T>(dst?: T_21 | undefined) => T_21;
-    transformMat4: <T_22 extends BaseArgType = T>(v: BaseArgType, m: BaseArgType, dst?: T_22 | undefined) => T_22;
-    setLength: <T_23 extends BaseArgType = T>(a: BaseArgType, len: number, dst?: T_23 | undefined) => T_23;
-    truncate: <T_24 extends BaseArgType = T>(a: BaseArgType, maxLen: number, dst?: T_24 | undefined) => T_24;
-    midpoint: <T_25 extends BaseArgType = T>(a: BaseArgType, b: BaseArgType, dst?: T_25 | undefined) => T_25;
-};
+export declare function getAPI<T extends Mat4Arg = Float32Array>(Ctor: Vec4Ctor<T>): API<T>;

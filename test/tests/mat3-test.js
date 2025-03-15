@@ -119,6 +119,28 @@ function check(mat3, Type) {
       }, expected);
     });
 
+    it('should add', () => {
+      const expected = [
+        0,  2,  4,  6,
+        8, 10, 12, 14,
+       16, 18, 20, 22,
+      ];
+      testMat3WithAndWithoutDest((newDst) => {
+        return mat3.add(m, m, newDst);
+      }, expected);
+    });
+
+    it('should multiplyScalar', () => {
+      const expected = [
+        0,  2,  4,  6,
+        8, 10, 12, 14,
+       16, 18, 20, 22,
+      ];
+      testMat3WithAndWithoutDest((newDst) => {
+        return mat3.multiplyScalar(m, 2, newDst);
+      }, expected);
+    });
+
     it('should copy', () => {
       const expected = m;
       testMat3WithAndWithoutDest((newDst) => {

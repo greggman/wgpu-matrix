@@ -232,6 +232,51 @@ function negate<T extends Mat4Arg = MatType>(m: Mat4Arg, dst?: T) {
 }
 
 /**
+ * add 2 matrices.
+ * @param a - matrix 1.
+ * @param b - matrix 2.
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns a + b.
+ */
+function add<T extends Mat4Arg = MatType>(a: Mat4Arg, b: Mat4Arg, dst?: T) {
+  const newDst = (dst ?? new Ctor(16)) as T;
+
+  newDst[ 0] = a[ 0] + b[ 0];  newDst[ 1] = a[ 1] + b[ 1];  newDst[ 2] = a[ 2] + b[ 2];  newDst[ 3] = a[ 3] + b[ 3];
+  newDst[ 4] = a[ 4] + b[ 4];  newDst[ 5] = a[ 5] + b[ 5];  newDst[ 6] = a[ 6] + b[ 6];  newDst[ 7] = a[ 7] + b[ 7];
+  newDst[ 8] = a[ 8] + b[ 8];  newDst[ 9] = a[ 9] + b[ 9];  newDst[10] = a[10] + b[10];  newDst[11] = a[11] + b[11];
+  newDst[12] = a[12] + b[12];  newDst[13] = a[13] + b[13];  newDst[14] = a[14] + b[14];  newDst[15] = a[15] + b[15];
+
+  return newDst;
+}
+
+/**
+ * Multiplies a matrix by a scalar
+ * @param m - The matrix.
+ * @param s - The scalar
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns m * s.
+ */
+function multiplyScalar<T extends Mat4Arg = MatType>(m: Mat4Arg, s: number, dst?: T) {
+  const newDst = (dst ?? new Ctor(16)) as T;
+
+  newDst[ 0] = m[ 0] * s;  newDst[ 1] = m[ 1] * s;  newDst[ 2] = m[ 2] * s;  newDst[ 3] = m[ 3] * s;
+  newDst[ 4] = m[ 4] * s;  newDst[ 5] = m[ 5] * s;  newDst[ 6] = m[ 6] * s;  newDst[ 7] = m[ 7] * s;
+  newDst[ 8] = m[ 8] * s;  newDst[ 9] = m[ 9] * s;  newDst[10] = m[10] * s;  newDst[11] = m[11] * s;
+  newDst[12] = m[12] * s;  newDst[13] = m[13] * s;  newDst[14] = m[14] * s;  newDst[15] = m[15] * s;
+
+  return newDst;
+}
+
+/**
+ * Multiplies a matrix by a scalar
+ * @param m - The matrix.
+ * @param s - The scalar
+ * @param dst - matrix to hold result. If not passed a new one is created.
+ * @returns m * s.
+ */
+const mulScalar = multiplyScalar;
+
+/**
  * Copies a matrix. (same as {@link mat4.clone})
  * Also see {@link mat4.create} and {@link mat4.set}
  * @param m - The matrix.
@@ -1579,51 +1624,54 @@ function uniformScale<T extends Mat4Arg = MatType>(m: Mat4Arg, s: number, dst?: 
 }
 
 return {
+  add,
+  aim,
+  axisRotate,
+  axisRotation,
+  cameraAim,
+  clone,
+  copy,
   create,
-  set,
+  determinant,
+  equals,
+  equalsApproximately,
   fromMat3,
   fromQuat,
-  negate,
-  copy,
-  clone,
-  equalsApproximately,
-  equals,
-  identity,
-  transpose,
-  inverse,
-  determinant,
-  invert,
-  multiply,
-  mul,
-  setTranslation,
-  getTranslation,
-  getAxis,
-  setAxis,
-  getScaling,
-  perspective,
-  perspectiveReverseZ,
-  ortho,
   frustum,
   frustumReverseZ,
-  aim,
-  cameraAim,
+  getAxis,
+  getScaling,
+  getTranslation,
+  identity,
+  inverse,
+  invert,
   lookAt,
-  translation,
-  translate,
-  rotationX,
-  rotateX,
-  rotationY,
-  rotateY,
-  rotationZ,
-  rotateZ,
-  axisRotation,
-  rotation,
-  axisRotate,
+  mul,
+  mulScalar,
+  multiply,
+  multiplyScalar,
+  negate,
+  ortho,
+  perspective,
+  perspectiveReverseZ,
   rotate,
-  scaling,
+  rotateX,
+  rotateY,
+  rotateZ,
+  rotation,
+  rotationX,
+  rotationY,
+  rotationZ,
   scale,
-  uniformScaling,
+  scaling,
+  set,
+  setAxis,
+  setTranslation,
+  translate,
+  translation,
+  transpose,
   uniformScale,
+  uniformScaling,
 };
 
 }
