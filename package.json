@@ -56,11 +56,11 @@
     "eslint-plugin-one-variable-per-var": "^0.0.3",
     "eslint-plugin-optional-comma-spacing": "^0.0.4",
     "eslint-plugin-require-trailing-comma": "^0.0.1",
-    "express": "^4.21.1",
-    "mocha": "^10.7.3",
-    "rollup": "^4.24.1",
+    "express": "^4.21.2",
+    "mocha": "^10.8.2",
+    "rollup": "^4.42.0",
     "showdown": "^2.1.0",
-    "tslib": "^2.8.0",
+    "tslib": "^2.8.1",
     "typedoc": "^0.28.5",
     "typescript": "^5.8.3"
   }
