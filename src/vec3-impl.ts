@@ -522,18 +522,13 @@ function normalize<T extends Vec3Arg = VecType>(v: Vec3Arg, dst?: T) {
   const v0 = v[0];
   const v1 = v[1];
   const v2 = v[2];
+
   const len = Math.sqrt(v0 * v0 + v1 * v1 + v2 * v2);
+  const scale = len > 0 ? 1 / len : len;
 
-  if (len > 0.00001) {
-    newDst[0] = v0 / len;
-    newDst[1] = v1 / len;
-    newDst[2] = v2 / len;
-  } else {
-    newDst[0] = 0;
-    newDst[1] = 0;
-    newDst[2] = 0;
-  }
-
+  newDst[0] = v0 * scale;
+  newDst[1] = v1 * scale;
+  newDst[2] = v2 * scale;
 
   return newDst;
 }
