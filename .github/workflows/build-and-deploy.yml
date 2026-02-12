@@ -5,6 +5,7 @@ on:
       - v*
 permissions:
   contents: write
+  id-token: write
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -16,19 +17,16 @@ jobs:
       - name: Use Node.js 😂
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 24
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Install and Build 🔧
         run: |
           npm ci
           npm run build-ci
+          npm publish
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: .
-
-      - name: Publish to NPM 📖
-        uses: JS-DevTools/npm-publish@v2
-        with:
-          token: ${{ secrets.NPM_TOKEN }}
