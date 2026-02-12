@@ -502,8 +502,8 @@ function normalize<T extends Vec2Arg = VecType>(v: Vec2Arg, dst?: T) {
   const v0 = v[0];
   const v1 = v[1];
 
-  const len = Math.sqrt(v0 * v0 + v1 * v1);
-  const scale = len > 0 ? 1 / len : len;
+  const lenSq = v0 * v0 + v1 * v1;
+  const scale = lenSq > 0 ? 1 / Math.sqrt(lenSq) : 1;
 
   newDst[0] = v0 * scale;
   newDst[1] = v1 * scale;
