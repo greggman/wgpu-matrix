@@ -1,4 +1,4 @@
-/* wgpu-matrix@3.4.1, license MIT */
+/* wgpu-matrix@3.4.2, license MIT */
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
     typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -544,8 +544,8 @@
             const newDst = (dst ?? new Ctor(2));
             const v0 = v[0];
             const v1 = v[1];
-            const len = Math.sqrt(v0 * v0 + v1 * v1);
-            const scale = len > 0 ? 1 / len : len;
+            const lenSq = v0 * v0 + v1 * v1;
+            const scale = lenSq > 0 ? 1 / Math.sqrt(lenSq) : 1;
             newDst[0] = v0 * scale;
             newDst[1] = v1 * scale;
             return newDst;
@@ -1249,8 +1249,8 @@
             const v0 = v[0];
             const v1 = v[1];
             const v2 = v[2];
-            const len = Math.sqrt(v0 * v0 + v1 * v1 + v2 * v2);
-            const scale = len > 0 ? 1 / len : len;
+            const lenSq = v0 * v0 + v1 * v1 + v2 * v2;
+            const scale = lenSq > 0 ? 1 / Math.sqrt(lenSq) : 1;
             newDst[0] = v0 * scale;
             newDst[1] = v1 * scale;
             newDst[2] = v2 * scale;
@@ -5633,8 +5633,8 @@
             const v1 = v[1];
             const v2 = v[2];
             const v3 = v[3];
-            const len = Math.sqrt(v0 * v0 + v1 * v1 + v2 * v2 + v3 * v3);
-            const scale = len > 0 ? 1 / len : len;
+            const lenSq = v0 * v0 + v1 * v1 + v2 * v2 + v3 * v3;
+            const scale = lenSq > 0 ? 1 / Math.sqrt(lenSq) : 1;
             newDst[0] = v0 * scale;
             newDst[1] = v1 * scale;
             newDst[2] = v2 * scale;
